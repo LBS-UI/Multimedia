@@ -1196,15 +1196,8 @@
             { id: 4, username: 'kai_nakamura', email: 'kai.nakamura@school.edu', passwordHash: btoa('member2026'), role: 'Member', joined: '2025-02-20', active: true, online: true, officerRole: null }
         ];
 
-        const SAMPLE_EVENTS = [
-            { id: 1, name: "Winter Showcase 2026", date: "2026-02-14T18:30:00", description: "Annual showcase of student films and photography.", location: "Main Auditorium", posterColor: "#FFD700" },
-            { id: 2, name: "Spring Film Festival", date: "2026-04-18T17:00:00", description: "Screenings of award-winning short films.", location: "School Theater", posterColor: "#FFC107" }
-        ];
-
-        const SAMPLE_ANNOUNCEMENTS = [
-            { id: 1, title: "New Camera Equipment Arrived!", content: "We received new Sony FX3 cameras and lighting kit.", category: "General", date: "2026-01-20", pinned: true, author: "admin_alex" },
-            { id: 2, title: "Call for Submissions: Spring Film Festival", content: "Submit your short films by March 25.", category: "Event", date: "2026-01-28", pinned: true, author: "editor_maya" }
-        ];
+        const DEMO_EVENT_NAMES = ["Winter Showcase 2026", "Spring Film Festival"];
+        const DEMO_ANNOUNCEMENT_TITLES = ["New Camera Equipment Arrived!", "Call for Submissions: Spring Film Festival"];
 
         // Allowed passwords for member access (strict list)
         const ALLOWED_PASSWORDS = [
@@ -1773,9 +1766,13 @@
         // Auth with safe storage
         function loadData() {
             users = JSON.parse(safeStorage.getItem('mm_users')) || SAMPLE_USERS;
-            events = JSON.parse(safeStorage.getItem('mm_events')) || SAMPLE_EVENTS;
-            announcements = JSON.parse(safeStorage.getItem('mm_announcements')) || SAMPLE_ANNOUNCEMENTS;
+            events = JSON.parse(safeStorage.getItem('mm_events')) || [];
+            announcements = JSON.parse(safeStorage.getItem('mm_announcements')) || [];
             mediaItems = JSON.parse(safeStorage.getItem('mm_media')) || [];
+            events = events.filter(function (item) { return DEMO_EVENT_NAMES.indexOf(item.name) === -1; });
+            announcements = announcements.filter(function (item) { return DEMO_ANNOUNCEMENT_TITLES.indexOf(item.title) === -1; });
+            mediaItems = mediaItems.filter(function (item) { return item.caption !== "Winter showcase"; });
+            saveData();
             
             loginHistory = JSON.parse(safeStorage.getItem('mm_login_history') || '[]');
 
@@ -1921,7 +1918,10 @@
         function renderEvents() {
             const grid = document.getElementById('events-grid');
             grid.innerHTML = '';
-            
+            if (!events.length) {
+                grid.innerHTML = '<div class="glass rounded-3xl p-8 text-[#B8B8D0]">No events yet. New club events will show up here.</div>';
+                return;
+            }
             events.forEach(ev => {
                 const remaining = getTimeRemaining(ev.date);
                 const card = document.createElement('div');
@@ -2011,6 +2011,10 @@
             let list = filtered || announcements;
             
             list.sort((a,b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || new Date(b.date) - new Date(a.date));
+            if (!list.length) {
+                container.innerHTML = '<div class="glass rounded-3xl p-8 text-[#B8B8D0]">No announcements yet. Real club updates will show up here.</div>';
+                return;
+            }
             
             list.forEach(ann => {
                 const div = document.createElement('div');
@@ -2436,34 +2440,35 @@
                     return;
                 }
                 target.scrollIntoView({ behavior: "smooth", block: "start" });
-                target.style.transition = "box-shadow 0.4s ease";
+                target.style.transition = "box-shadow 0.3s ease";
                 target.style.boxShadow = "0 0 0 2px rgba(255, 215, 0, 0.7)";
                 window.setTimeout(function () {
                     target.style.boxShadow = "";
                     resolve();
-                }, 700);
+                }, 280);
             });
         }
 
         async function startWebsiteTour() {
             hideVerityChat();
             const steps = [
-                { el: "events", text: "This is the Events section. You can see upcoming club events and live countdowns here." },
-                { el: "announcements", text: "This is the School Announcements section. Club news and updates are posted here." },
-                { el: "about", text: "This is the About section, where you can learn who made the Multimedia Club site." },
-                { el: "home", text: "And this is the home page. Click the yellow orb anytime if you want to chat with me." }
+                { el: "events", text: "Here are the Events." },
+                { el: "announcements", text: "Here are the School Announcements." },
+                { el: "about", text: "Here is the About section." },
+                { el: "home", text: "And this is the home page." }
             ];
 
             for (let i = 0; i < steps.length; i++) {
                 const step = steps[i];
                 showVerityOrbBubble(step.text);
-                if (step.el) await scrollToTourSection(step.el);
-                addVerityMessage(step.text, { speak: false });
+                const scrollPromise = step.el ? scrollToTourSection(step.el) : Promise.resolve();
+                const speakPromise = verityVoiceEnabled ? speakVerity(step.text) : Promise.resolve();
+                await Promise.all([scrollPromise, speakPromise]);
                 if (verityVoiceEnabled) {
-                    await speakVerity(step.text);
-                    await waitForVeritySpeech();
-                } else {
-                    await new Promise(function (resolve) { window.setTimeout(resolve, 1600); });
+                    await Promise.race([
+                        waitForVeritySpeech(),
+                        new Promise(function (resolve) { window.setTimeout(resolve, 2200); })
+                    ]);
                 }
             }
             hideVerityOrbBubble();
@@ -2692,11 +2697,6 @@
             renderEvents();
             renderAnnouncements();
             filterAnnouncementsInit();
-            
-            // Seed media if empty
-            if (mediaItems.length === 0) {
-                mediaItems = [{id:1, url:'https://picsum.photos/id/1015/600/400', type:'image', caption:'Winter showcase'}];
-            }
             
             // Welcome toast removed so Verity's greeting stays in the chat bubble.
             
