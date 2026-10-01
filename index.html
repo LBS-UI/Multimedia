@@ -770,7 +770,7 @@
                                 <span class="font-semibold text-xl">Verity</span>
                                 <span class="px-2.5 py-px text-[10px] font-mono tracking-widest bg-[#FFD700] text-[#0A0A1F] rounded">AI GUIDE</span>
                             </div>
-                            <p class="text-[#B8B8D0] text-sm">Hello! I'm Verity, your AI guide for the Multimedia Club.</p>
+                            <p class="text-[#B8B8D0] text-sm">Hellooo, I'm Verity, your personal assistant. Ask me to show you around by clicking the Show me around button.</p>
                             <button onclick="showVerityChat()" class="mt-3 text-sm text-[#FFD700] hover:text-[#FFEA00] font-medium flex items-center gap-x-1">
                                 CHAT WITH ME <i class="fa-solid fa-arrow-right ml-1"></i>
                             </button>
@@ -2248,7 +2248,7 @@
             modal.classList.add("flex");
             updateVerityVoiceButton();
             if (verityChatHistory.length === 0) {
-                addVerityMessage("Hello! I'm Verity, your AI guide for the Multimedia Club.", { speak: false });
+                addVerityMessage("Hellooo, I'm Verity, your personal assistant. Ask me to show you around by clicking the Show me around button.", { speak: false });
             }
             renderVerityChat();
             const input = document.getElementById("chat-input");
@@ -2367,7 +2367,7 @@
             const offeredTour = lastVerity && /tour of the website/i.test(lastVerity.content || "");
             if (q.includes("tour") || q.includes("show me around") || (offeredTour && (q === "yes" || q.startsWith("yes")))) {
                 verityStartTourAfterSpeech = true;
-                return "Sure. I'll give you a quick tour of the website.";
+                return "Sure. Click Show me around, and I will walk you through the website.";
             }
             if (q.includes("event")) return "We have exciting events coming up with live countdowns! Check the Events section.";
             if (q.includes("announcement")) return "You can find all official updates in the Announcements board above.";
@@ -2391,13 +2391,13 @@
         }
 
         async function startWebsiteTour() {
-            hideVerityChat();
+            showVerityChat();
             const steps = [
-                { el: "events", text: "This is the Events section with live countdown timers!" },
-                { el: "announcements", text: "Here you can find all school announcements and news." },
-                { el: null, text: "You can always chat with me (Verity) by clicking the floating orb!" },
-                { el: null, text: currentUser ? "Your Member Dashboard shows the full member list and your info." : "Use the secret key sequence to access login." },
-                { el: null, text: "That's the quick tour! Feel free to explore.", type: "success" }
+                { el: "events", text: "This is the Events section. You can see upcoming club events and live countdowns here." },
+                { el: "announcements", text: "This is the Announcements section. Club news and updates are posted here." },
+                { el: null, text: "You can chat with me anytime by clicking the Verity orb." },
+                { el: null, text: "The Member Dashboard is your personal hub after you join the club." },
+                { el: null, text: "That's the quick tour. Ask me about events, announcements, or how to join." }
             ];
 
             for (let i = 0; i < steps.length; i++) {
@@ -2406,22 +2406,13 @@
                     const target = document.getElementById(step.el);
                     if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
                 }
-                showToast(step.text, step.type || "info");
+                addVerityMessage(step.text, { speak: false });
                 if (verityVoiceEnabled) {
                     await speakVerity(step.text);
                     await waitForVeritySpeech();
                 }
-                await new Promise(function (resolve) { window.setTimeout(resolve, 700); });
+                await new Promise(function (resolve) { window.setTimeout(resolve, 500); });
             }
-
-            const homeSection = document.getElementById("home");
-            if (!homeSection) return;
-            homeSection.style.transition = "opacity 0.9s ease";
-            homeSection.style.opacity = "0.2";
-            window.setTimeout(function () {
-                homeSection.scrollIntoView({ behavior: "smooth", block: "start" });
-                homeSection.style.opacity = "1";
-            }, 450);
         }
 
         // Dashboard
@@ -2611,25 +2602,27 @@
                         
                         // After loading, greet with Verity + offer tour (text only until user interacts)
                         setTimeout(() => {
+                            const greeting = "Hellooo, I'm Verity, your personal assistant. Ask me to show you around by clicking the Show me around button.";
                             showVerityChat();
-                            setTimeout(() => {
-                                addVerityMessage("Would you like me to give you a quick tour of the website?", { speak: false });
-                                const chatContainer = document.getElementById('chat-messages');
-                                const replyDiv = document.createElement('div');
-                                replyDiv.className = 'flex gap-2 mt-2';
-                                replyDiv.innerHTML = `
-                                    <button onclick="startWebsiteTour();" 
-                                            class="px-4 py-1.5 text-sm rounded-2xl bg-[#FFD700] text-[#0A0A1F] font-medium">
-                                        Yes, show me around
-                                    </button>
-                                    <button onclick="hideVerityChat()" 
-                                            class="px-4 py-1.5 text-sm rounded-2xl border border-white/30">
-                                        No thanks
-                                    </button>
-                                `;
-                                chatContainer.appendChild(replyDiv);
-                                chatContainer.scrollTop = chatContainer.scrollHeight;
-                            }, 500);
+                            if (verityChatHistory.length === 1 && verityChatHistory[0].content.indexOf("Hellooo") === 0) {
+                                verityChatHistory = [];
+                            }
+                            addVerityMessage(greeting, { speak: true });
+                            const chatContainer = document.getElementById('chat-messages');
+                            const replyDiv = document.createElement('div');
+                            replyDiv.className = 'flex gap-2 mt-2';
+                            replyDiv.innerHTML = `
+                                <button onclick="startWebsiteTour();" 
+                                        class="px-4 py-1.5 text-sm rounded-2xl bg-[#FFD700] text-[#0A0A1F] font-medium">
+                                    Show me around
+                                </button>
+                                <button onclick="hideVerityChat()" 
+                                        class="px-4 py-1.5 text-sm rounded-2xl border border-white/30">
+                                    No thanks
+                                </button>
+                            `;
+                            chatContainer.appendChild(replyDiv);
+                            chatContainer.scrollTop = chatContainer.scrollHeight;
                         }, 400);
                     }, 600);
                 }, 1600);
@@ -2651,13 +2644,7 @@
                 mediaItems = [{id:1, url:'https://picsum.photos/id/1015/600/400', type:'image', caption:'Winter showcase'}];
             }
             
-            // Welcome message (no Konami mention)
-            setTimeout(() => {
-                if (!safeStorage.getItem('mm_welcomed')) {
-                    showToast('Welcome to the Multi Media Club!', 'info');
-                    safeStorage.setItem('mm_welcomed', 'true');
-                }
-            }, 4500);
+            // Welcome toast removed so Verity's greeting stays in the chat bubble.
             
             // Ctrl + A for Admin Panel
             document.addEventListener("keydown", function(e) {
@@ -2666,7 +2653,7 @@
                     if (currentUser && currentUser.role === "Admin") {
                         showAdminPanel();
                     } else {
-                        showToast("Admin access required. Use ↑↑↓↓→← + 2254 to become Admin.", "info");
+                        showToast("Admin access required.", "info");
                     }
                 }
             });
