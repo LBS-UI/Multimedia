@@ -288,6 +288,27 @@
         #floating-verity {
             bottom: 1.5rem;
             right: 1.25rem;
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        #verity-orb-bubble {
+            display: none;
+            max-width: min(280px, 70vw);
+            background: #1A1A3A;
+            color: #F8F9FA;
+            border: 1px solid rgba(255, 215, 0, 0.45);
+            border-radius: 18px 18px 6px 18px;
+            padding: 12px 14px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+            animation: message-pop 0.3s ease;
+        }
+
+        #verity-orb-bubble.is-visible {
+            display: block;
         }
 
         @media (max-width: 768px) {
@@ -922,8 +943,9 @@
     </section>
 
     <!-- FLOATING VERITY ORB -->
-    <div onclick="showVerityChat()" id="floating-verity" class="fixed z-[60] cursor-pointer" role="button" tabindex="0" aria-label="Open Verity chat">
-        <div class="verity-orb">
+    <div id="floating-verity" class="fixed z-[60]">
+        <div id="verity-orb-bubble" role="status" aria-live="polite"></div>
+        <div onclick="showVerityChat()" class="verity-orb" role="button" tabindex="0" aria-label="Open Verity chat">
             <img src="images/idle.jpg" class="verity-avatar-img" alt="Verity, Multimedia Club AI guide">
         </div>
     </div>
@@ -2141,6 +2163,7 @@
         function finishVeritySpeech(audio, url) {
             if (verityAudio !== audio) return;
             setVerityTalking(false);
+            hideVerityOrbBubble();
             verityAudio = null;
             if (url) {
                 window.setTimeout(function () {
@@ -2191,6 +2214,7 @@
                 audio.onplay = function () {
                     if (token !== veritySpeechToken) return;
                     setVerityTalking(true);
+                    showVerityOrbBubble(text);
                     showVerityPlayVoiceButton(false);
                 };
                 audio.onended = function () {
@@ -2390,29 +2414,59 @@
             });
         }
 
+        function showVerityOrbBubble(text) {
+            const bubble = document.getElementById("verity-orb-bubble");
+            if (!bubble) return;
+            bubble.textContent = text;
+            bubble.classList.add("is-visible");
+        }
+
+        function hideVerityOrbBubble() {
+            const bubble = document.getElementById("verity-orb-bubble");
+            if (!bubble) return;
+            bubble.classList.remove("is-visible");
+            bubble.textContent = "";
+        }
+
+        function scrollToTourSection(id) {
+            return new Promise(function (resolve) {
+                const target = document.getElementById(id);
+                if (!target) {
+                    resolve();
+                    return;
+                }
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
+                target.style.transition = "box-shadow 0.4s ease";
+                target.style.boxShadow = "0 0 0 2px rgba(255, 215, 0, 0.7)";
+                window.setTimeout(function () {
+                    target.style.boxShadow = "";
+                    resolve();
+                }, 700);
+            });
+        }
+
         async function startWebsiteTour() {
-            showVerityChat();
+            hideVerityChat();
             const steps = [
                 { el: "events", text: "This is the Events section. You can see upcoming club events and live countdowns here." },
-                { el: "announcements", text: "This is the Announcements section. Club news and updates are posted here." },
-                { el: null, text: "You can chat with me anytime by clicking the Verity orb." },
-                { el: null, text: "The Member Dashboard is your personal hub after you join the club." },
-                { el: null, text: "That's the quick tour. Ask me about events, announcements, or how to join." }
+                { el: "announcements", text: "This is the School Announcements section. Club news and updates are posted here." },
+                { el: "about", text: "This is the About section, where you can learn who made the Multimedia Club site." },
+                { el: "home", text: "And this is the home page. Click the yellow orb anytime if you want to chat with me." }
             ];
 
             for (let i = 0; i < steps.length; i++) {
                 const step = steps[i];
-                if (step.el) {
-                    const target = document.getElementById(step.el);
-                    if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
-                }
+                showVerityOrbBubble(step.text);
+                if (step.el) await scrollToTourSection(step.el);
                 addVerityMessage(step.text, { speak: false });
                 if (verityVoiceEnabled) {
                     await speakVerity(step.text);
                     await waitForVeritySpeech();
+                } else {
+                    await new Promise(function (resolve) { window.setTimeout(resolve, 1600); });
                 }
-                await new Promise(function (resolve) { window.setTimeout(resolve, 500); });
             }
+            hideVerityOrbBubble();
         }
 
         // Dashboard
