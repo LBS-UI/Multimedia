@@ -5,2450 +5,410 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi Media Club • Official School Portal</title>
     <meta name="description" content="Official portal for the Multi Media Club. Stay connected with events, announcements, and creative projects.">
-    
-    <!-- Tailwind CSS via CDN (Demo only) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      // Suppress Tailwind Play CDN production warning (this is a demo)
-      const originalWarn = console.warn;
-      console.warn = (...args) => {
-        if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) {
-          return;
-        }
-        originalWarn.apply(console, args);
-      };
-    </script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         :root {
             --gold: #FFD700;
-            --gold-dark: #E6B800;
             --amber: #FFC107;
-            --yellow: #FFEA00;
-            --yellow-light: #FFF59D;
             --dark-bg: #0A0A1F;
-            --dark-surface: #111133;
             --dark-card: #1A1A3A;
             --glass-bg: rgba(255, 255, 255, 0.08);
             --glass-border: rgba(255, 215, 0, 0.2);
-            --text-primary: #F8F9FA;
             --text-secondary: #B8B8D0;
-            --neon-glow: 0 0 10px rgba(255, 215, 0, 0.6), 0 0 20px rgba(255, 215, 0, 0.3);
-            --neon-glow-strong: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.5);
         }
-
-        * {
-            scrollbar-width: thin;
-            scrollbar-color: var(--gold) var(--dark-surface);
-        }
-
-        body {
-            font-family: 'Inter', system_ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
-            overflow-x: hidden;
-        }
-
-        .font-display {
-            font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
-            font-feature-settings: "ss02";
-        }
-
-        .section-header {
-            font-size: 2.25rem;
-            line-height: 2.5rem;
-            font-weight: 700;
-            letter-spacing: -0.025em;
-        }
-
+        body { font-family: Inter, system-ui, sans-serif; background: var(--dark-bg); color: #F8F9FA; }
+        .font-display { font-family: "Space Grotesk", Inter, sans-serif; }
+        .section-header { font-size: 2.25rem; line-height: 2.5rem; font-weight: 700; }
         .futuristic-grid {
-            background-image: 
-                linear-gradient(rgba(255,215,0,0.07) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,215,0,0.07) 1px, transparent 1px);
+            background-image: linear-gradient(rgba(255,215,0,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,215,0,0.07) 1px, transparent 1px);
             background-size: 60px 60px;
         }
-
-        /* Glassmorphism */
-        .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .glass-strong {
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 215, 0, 0.25);
-        }
-
-        /* Neon & Glow Effects */
-        .neon-text {
-            text-shadow: var(--neon-glow);
-        }
-
-        .glow-gold {
-            box-shadow: var(--neon-glow);
-            transition: box-shadow 0.3s ease;
-        }
-
-        .glow-gold:hover {
-            box-shadow: var(--neon-glow-strong);
-        }
-
-        /* Futuristic Buttons */
-        .btn-gold {
-            background: linear-gradient(135deg, var(--gold), var(--amber));
-            color: #0A0A1F;
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Rainbow Glow Hover Effect for Primary Buttons */
-        .btn-gold::before {
-            content: "";
-            background: linear-gradient(
-                45deg,
-                #FF0000, #FF7300, #FFFB00, #48FF00,
-                #00FFD5, #002BFF, #FF00C8, #FF0000
-            );
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            background-size: 600%;
-            z-index: -1;
-            width: calc(100% + 4px);
-            height: calc(100% + 4px);
-            filter: blur(8px);
-            animation: glowing 20s linear infinite;
-            transition: opacity .3s ease-in-out;
-            border-radius: 12px;
-            opacity: 0;
-        }
-
-        .btn-gold:hover::before {
-            opacity: 1;
-        }
-
-        .btn-gold:active {
-            color: #000;
-            font-weight: bold;
-        }
-
-        @keyframes glowing {
-            0% { background-position: 0 0; }
-            50% { background-position: 400% 0; }
-            100% { background-position: 0 0; }
-        }
-
-        .btn-gold:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: var(--neon-glow-strong);
-        }
-
-        .btn-gold:active {
-            transform: scale(0.98);
-        }
-
-        .btn-gold::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -100%;
-            width: 50%;
-            height: 200%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: 0.6s;
-        }
-
-        .btn-gold:hover::after {
-            left: 250%;
-        }
-
-        /* Cards */
-        .card {
-            transition: transform 0.4s cubic-bezier(0.23, 1.0, 0.32, 1), 
-                        box-shadow 0.4s cubic-bezier(0.23, 1.0, 0.32, 1),
-                        border-color 0.3s ease;
-            border: 1px solid rgba(255, 215, 0, 0.15);
-        }
-
-        .card:hover {
-            transform: translateY(-8px) scale(1.01);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            border-color: var(--gold);
-        }
-
-        /* Event Cards & Countdown */
-        .countdown {
-            font-family: 'Space Grotesk', 'Inter', sans-serif;
-            font-feature-settings: "tnum";
-        }
-
-        .countdown .time-unit {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid var(--gold);
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        /* Announcement Cards */
-        .announcement-card {
-            position: relative;
-        }
-
-        .announcement-card.pinned::before {
-            content: '📌';
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            font-size: 1.25rem;
-            z-index: 10;
-        }
-
-        /* Verity circular orb */
+        .glass { background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); }
+        .btn-gold { background: linear-gradient(135deg, var(--gold), var(--amber)); color: #0A0A1F; font-weight: 600; }
+        .card, .nav-card { transition: transform 0.3s ease, border-color 0.3s ease; border: 1px solid rgba(255,215,0,0.15); }
+        .nav-card:hover, .card:hover { transform: translateY(-6px); border-color: var(--gold); }
         .verity-orb {
-            width: 72px;
-            height: 72px;
-            border-radius: 9999px;
-            position: relative;
-            box-shadow: 
-                0 0 20px rgba(255, 215, 0, 0.7),
-                0 0 40px rgba(255, 215, 0, 0.4);
-            cursor: pointer;
-            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), 
-                        box-shadow 0.4s ease;
+            width: 72px; height: 72px; border-radius: 50%; overflow: hidden; cursor: pointer;
+            box-shadow: 0 0 20px rgba(255,215,0,0.7), 0 0 40px rgba(255,215,0,0.4);
             animation: verity-float 4.5s ease-in-out infinite;
-            overflow: hidden;
         }
-
-
-        .verity-orb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center top;
-            border-radius: 50%;
-            overflow: hidden;
-            transition: opacity 0.28s ease, transform 0.28s ease, filter 0.28s ease;
-        }
-
-        .verity-avatar-img {
-            border-radius: 50%;
-            object-fit: cover;
-            object-position: center top;
-            width: 100%;
-            height: 100%;
-            transition: opacity 0.28s ease, transform 0.28s ease;
-        }
-
-        .verity-avatar-img.is-swapping {
-            opacity: 0.7;
-            transform: scale(0.96);
-        }
-
-        .verity-orb.is-talking {
-            box-shadow:
-                0 0 22px rgba(255, 215, 0, 0.85),
-                0 0 44px rgba(255, 215, 0, 0.4);
-        }
-
-        @keyframes verity-float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-7px); }
-        }
-
-        #verity-chat-modal .verity-panel {
-            animation: modal-enter 0.35s cubic-bezier(0.23, 1, 0.32, 1);
-            max-height: min(620px, 92dvh);
-        }
-
-        #verity-voice-btn[aria-pressed="true"] {
-            background: rgba(255, 215, 0, 0.18);
-            color: #FFD700;
-        }
-
-        #verity-voice-btn[aria-pressed="false"] {
-            color: #B8B8D0;
-        }
-
-        #verity-play-voice-btn {
-            display: none;
-        }
-
-        #floating-verity {
-            bottom: 1.5rem;
-            right: 1.25rem;
-            display: flex;
-            align-items: flex-end;
-            gap: 12px;
-        }
-
-        #verity-orb-bubble {
-            display: none;
-            max-width: min(280px, 70vw);
-            background: #1A1A3A;
-            color: #F8F9FA;
-            border: 1px solid rgba(255, 215, 0, 0.45);
-            border-radius: 18px 18px 6px 18px;
-            padding: 12px 14px;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
-            animation: message-pop 0.3s ease;
-        }
-
-        #verity-orb-bubble.is-visible {
-            display: block;
-        }
-
+        .verity-avatar-img, .verity-orb img { width: 100%; height: 100%; object-fit: cover; object-position: center top; border-radius: 50%; transition: opacity 0.28s ease, transform 0.28s ease; }
+        .verity-avatar-img.is-swapping { opacity: 0.7; transform: scale(0.96); }
+        @keyframes verity-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+        .chat-bubble-user { background: linear-gradient(135deg, var(--gold), var(--amber)); color: #0A0A1F; border-radius: 20px 20px 4px 20px; padding: 12px 18px; max-width: 75%; margin-left: auto; }
+        .chat-bubble-verity { background: var(--dark-card); border: 1px solid var(--glass-border); border-radius: 20px 20px 20px 4px; padding: 12px 18px; max-width: 80%; }
+        .input-gold { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,215,0,0.3); color: white; }
+        .input-gold:focus { outline: none; border-color: var(--gold); }
+        #floating-verity { bottom: 1.5rem; right: 1.25rem; display: flex; align-items: flex-end; gap: 12px; z-index: 60; }
+        #verity-orb-bubble { display: none; max-width: min(280px, 70vw); background: #1A1A3A; border: 1px solid rgba(255,215,0,0.45); border-radius: 18px 18px 6px 18px; padding: 12px 14px; font-size: 0.9rem; line-height: 1.4; }
+        #verity-orb-bubble.is-visible { display: block; }
         @media (max-width: 768px) {
-            #floating-verity {
-                display: block;
-                bottom: 5.5rem;
-                right: 0.9rem;
-            }
-            .verity-orb {
-                width: 56px;
-                height: 56px;
-            }
-            #verity-chat-modal .verity-panel {
-                height: min(88dvh, 100%);
-                max-height: 88dvh;
-            }
-        }
-
-        .verity-orb:hover {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 
-                0 0 35px rgba(255, 215, 0, 0.9),
-                0 0 60px rgba(255, 215, 0, 0.5);
-        }
-
-        /* Chat Bubbles */
-        .chat-bubble-user {
-            background: linear-gradient(135deg, var(--gold), var(--amber));
-            color: #0A0A1F;
-            border-radius: 20px 20px 4px 20px;
-            padding: 12px 18px;
-            max-width: 75%;
-            margin-left: auto;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-            animation: message-pop 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        .chat-bubble-verity {
-            background: var(--dark-card);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px 20px 20px 4px;
-            padding: 12px 18px;
-            max-width: 80%;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            animation: message-pop 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        @keyframes message-pop {
-            from { opacity: 0; transform: translateY(10px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        /* Typing Indicator */
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 8px 16px;
-        }
-
-        .typing-indicator span {
-            height: 6px;
-            width: 6px;
-            background: var(--gold);
-            border-radius: 50%;
-            animation: typing-bounce 1.2s infinite ease-in-out;
-        }
-
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes typing-bounce {
-            0%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-6px); }
-        }
-
-        /* Form Inputs */
-        .input-gold {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            color: white;
-            transition: all 0.2s ease;
-        }
-
-        .input-gold:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
-            outline: none;
-            background: rgba(255,255,255,0.1);
-        }
-
-        .input-gold::placeholder {
-            color: #8888AA;
-        }
-
-        /* Modal */
-        .modal {
-            animation: modal-enter 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        @keyframes modal-enter {
-            from { opacity: 0; transform: translateY(40px) scale(0.96); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        /* Toast Notifications */
-        .toast {
-            animation: toast-slide 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            backdrop-filter: blur(12px);
-        }
-
-        @keyframes toast-slide {
-            from { transform: translateX(120%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Countdown Status */
-        .status-badge {
-            padding: 2px 10px;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .status-upcoming { background: rgba(52, 211, 153, 0.2); color: #34D399; border: 1px solid #34D399; }
-        .status-live { background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid #EF4444; animation: pulse-live 2s infinite; }
-        .status-past { background: rgba(156, 163, 175, 0.2); color: #9CA3AF; border: 1px solid #9CA3AF; }
-
-        @keyframes pulse-live {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        /* Filter Chips */
-        .filter-chip {
-            padding: 6px 16px;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            background: transparent;
-            color: var(--text-secondary);
-        }
-
-        .filter-chip.active, .filter-chip:hover {
-            background: var(--gold);
-            color: #0A0A1F;
-            border-color: var(--gold);
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
-        }
-
-        /* Quick Nav Cards */
-        .nav-card {
-            background: linear-gradient(145deg, var(--dark-card), var(--dark-surface));
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        .nav-card:hover {
-            transform: translateY(-6px) rotate(1deg);
-            border-color: var(--gold);
-            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
-        }
-
-        .nav-card .icon-wrapper {
-            transition: transform 0.4s ease;
-        }
-
-        .nav-card:hover .icon-wrapper {
-            transform: scale(1.15) rotate(8deg);
-        }
-
-        /* Floating Shapes */
-        .floating-shape {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,215,0,0.15) 0%, transparent 70%);
-            animation: float-shape 20s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes float-shape {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(30px, -40px) rotate(90deg); }
-            50% { transform: translate(-20px, 30px) rotate(180deg); }
-            75% { transform: translate(40px, 20px) rotate(270deg); }
-        }
-
-        .multimedia-bg {
-            background: radial-gradient(circle at center, #1A1A3A 0%, #0A0A1F 70%);
-        }
-
-        @media (max-width: 768px) {
-            .verity-orb {
-                width: 56px;
-                height: 56px;
-            }
-            
-            .countdown {
-                font-size: 0.75rem;
-            }
+            #floating-verity { bottom: 5.5rem; right: 0.9rem; }
+            .verity-orb { width: 56px; height: 56px; }
         }
     </style>
 </head>
 <body class="bg-[#0A0A1F] text-white antialiased">
-
-    <!-- IMPROVED CINEMATIC LOADING SCREEN -->
-    <div id="loading-screen" class="fixed inset-0 z-[999] flex items-center justify-center bg-[#0A0A1F] overflow-hidden">
-        <!-- Background Effects -->
-        <div class="absolute inset-0 futuristic-grid opacity-30"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,#FFD70010_0%,transparent_70%)]"></div>
-        
-        <div class="relative z-10 text-center px-6">
-            
-            <!-- Enhanced Animated Logo -->
-            <div class="mx-auto mb-8 relative w-24 h-24">
-                <!-- Outer glowing ring -->
-                <div class="absolute inset-0 rounded-full border-[3px] border-[#FFD700] animate-[pulse-glow_2s_ease-in-out_infinite]"></div>
-                
-                <!-- Main SVG -->
-                <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" 
-                     class="relative z-10 animate-[spin_4s_linear_infinite]">
-                    
-                    <!-- Outer ring with gradient -->
-                    <defs>
-                        <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#FFD700"/>
-                            <stop offset="100%" stop-color="#FFEA00"/>
-                        </linearGradient>
-                    </defs>
-                    
-                    <!-- Background circle -->
-                    <circle cx="48" cy="48" r="42" fill="#111133" stroke="#FFD700" stroke-width="2.5"/>
-                    
-                    <!-- Inner film reel circle -->
-                    <circle cx="48" cy="48" r="30" fill="none" stroke="#FFD700" stroke-width="1.5" stroke-opacity="0.6"/>
-                    
-                    <!-- Aperture blades (rotating effect) -->
-                    <g stroke="#FFD700" stroke-width="3" stroke-linecap="round">
-                        <line x1="48" y1="18" x2="48" y2="30"/>
-                        <line x1="70" y1="30" x2="60" y2="38"/>
-                        <line x1="70" y1="66" x2="60" y2="58"/>
-                        <line x1="48" y1="78" x2="48" y2="66"/>
-                        <line x1="26" y1="66" x2="36" y2="58"/>
-                        <line x1="26" y1="30" x2="36" y2="38"/>
-                    </g>
-                    
-                    <!-- Center glowing core -->
-                    <circle cx="48" cy="48" r="11" fill="#FFD700"/>
-                    <circle cx="48" cy="48" r="7" fill="#0A0A1F"/>
-                    
-                    <!-- Play icon -->
-                    <polygon points="42,40 42,56 56,48" fill="#FFD700"/>
-                </svg>
-                
-                <!-- Subtle inner glow -->
-                <div class="absolute inset-[22px] rounded-full bg-[#FFD700] opacity-20 blur-md animate-[pulse-glow_1.5s_ease-in-out_infinite]"></div>
-            </div>
-            
-            <!-- Brand -->
-            <div class="mb-3">
-                <div class="font-display text-5xl font-bold tracking-tighter">
-                    <span class="text-white">Multi</span>
-                    <span class="bg-gradient-to-r from-[#FFD700] via-[#FFEA00] to-[#FFD700] bg-clip-text text-transparent">Media</span>
-                </div>
-                <div class="mt-1 text-sm tracking-[4px] text-[#B8B8D0] font-medium">SCHOOL MULTIMEDIA HUB</div>
-            </div>
-            
-            <!-- Elegant Loading Bar -->
-            <div class="mt-10 w-64 mx-auto">
-                <div class="relative h-[3px] bg-white/10 rounded-full overflow-hidden">
-                    <!-- Main loading bar -->
-                    <div class="absolute h-[3px] bg-gradient-to-r from-[#FFD700] via-[#FFEA00] to-[#FFD700] w-0 
-                                animate-[loading-bar_2.2s_ease-in-out_forwards]"></div>
-                    
-                    <!-- Shimmer effect -->
-                    <div class="absolute h-[3px] w-1/3 bg-gradient-to-r from-transparent via-white to-transparent 
-                                animate-[shimmer_1.8s_linear_infinite]"></div>
-                </div>
-                
-                <div class="mt-3 text-[10px] tracking-[2px] text-white/40 font-mono">INITIALIZING CREATIVE SYSTEM</div>
-            </div>
-            
+    <div id="loading-screen" class="fixed inset-0 z-[999] flex items-center justify-center bg-[#0A0A1F]">
+        <div class="text-center">
+            <div class="font-display text-5xl font-bold">Multi<span class="text-[#FFD700]">Media</span></div>
+            <div class="mt-2 text-xs tracking-[3px] text-white/50">SCHOOL MULTIMEDIA HUB</div>
         </div>
     </div>
 
-    <style>
-        @keyframes loading-bar {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-        
-        @keyframes shimmer {
-            0% { transform: translateX(-150%); }
-            100% { transform: translateX(400%); }
-        }
-        
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 0.15; transform: scale(1); }
-            50% { opacity: 0.35; transform: scale(1.05); }
-        }
-        
-        .futuristic-grid {
-            background-image: 
-                linear-gradient(rgba(255,215,0,0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,215,0,0.06) 1px, transparent 1px);
-            background-size: 50px 50px;
-        }
-    </style>
-
-    <!-- NAVIGATION -->
     <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/10">
-        <div class="max-w-screen-2xl mx-auto">
-            <div class="px-8 py-4 flex items-center justify-between">
-                <!-- Logo -->
-                <div class="flex items-center gap-x-3">
-                    <div class="w-11 h-11 flex items-center justify-center">
-                        <!-- Custom SVG Picture Logo -->
-                        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Outer glow ring -->
-                            <circle cx="22" cy="22" r="20" fill="#FFD700" fill-opacity="0.15"/>
-                            <!-- Main circle -->
-                            <circle cx="22" cy="22" r="17" fill="#111133" stroke="#FFD700" stroke-width="2.5"/>
-                            <!-- Inner film reel style -->
-                            <circle cx="22" cy="22" r="11" fill="none" stroke="#FFD700" stroke-width="1.5"/>
-                            <!-- Camera aperture blades -->
-                            <g stroke="#FFD700" stroke-width="1.2" stroke-linecap="round">
-                                <line x1="22" y1="11" x2="22" y2="17"/>
-                                <line x1="30.5" y1="15.5" x2="26.5" y2="19.5"/>
-                                <line x1="30.5" y1="28.5" x2="26.5" y2="24.5"/>
-                                <line x1="22" y1="33" x2="22" y2="27"/>
-                                <line x1="13.5" y1="28.5" x2="17.5" y2="24.5"/>
-                                <line x1="13.5" y1="15.5" x2="17.5" y2="19.5"/>
-                            </g>
-                            <!-- Center dot -->
-                            <circle cx="22" cy="22" r="3.5" fill="#FFD700"/>
-                            <!-- Play triangle -->
-                            <polygon points="19,18 19,26 26,22" fill="#0A0A1F"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <span class="font-display text-3xl font-bold tracking-tighter">Multi</span>
-                        <span class="font-display text-3xl font-bold tracking-tighter bg-gradient-to-r from-[#FFD700] to-[#FFEA00] bg-clip-text text-transparent">Media</span>
-                    </div>
-                </div>
-
-                <!-- Desktop Nav -->
-                <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
-                    <a href="#home" onclick="document.getElementById('home').scrollIntoView({ behavior: 'smooth' })" class="hover:text-[#FFD700] transition-colors">Home</a>
-                    <a href="#events" onclick="document.getElementById('events').scrollIntoView({ behavior: 'smooth' })" class="hover:text-[#FFD700] transition-colors">Events</a>
-                    <a href="#announcements" onclick="document.getElementById('announcements').scrollIntoView({ behavior: 'smooth' })" class="hover:text-[#FFD700] transition-colors">Announcements</a>
-                    <a href="#" onclick="showVerityChat(); return false;" class="hover:text-[#FFD700] transition-colors flex items-center gap-x-1.5" aria-label="Open Verity assistant">
-                        <i class="fa-solid fa-robot"></i>
-                        <span>Verity</span>
-                    </a>
-                    <a href="#about" onclick="document.getElementById('about').scrollIntoView({ behavior: 'smooth' })" class="hover:text-[#FFD700] transition-colors">About</a>
-                </div>
-
-                <!-- Right Side Actions -->
-                <div class="flex items-center gap-x-3">
-                    <!-- Music Toggle -->
-                    <div class="relative group">
-                        <button onclick="toggleMusic()" id="music-btn"
-                                class="w-10 h-10 flex items-center justify-center rounded-2xl glass hover:bg-white/10 transition-all text-[#FFD700]">
-                            <i class="fa-solid fa-music text-lg"></i>
-                        </button>
-                        <div class="absolute hidden group-hover:block top-12 right-0 w-64 glass rounded-3xl p-4 text-sm z-50">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="font-semibold">Background Music</span>
-                                <button onclick="event.stopImmediatePropagation(); toggleMusic()" class="text-xs px-3 py-1 rounded-full bg-white/10">Close</button>
-                            </div>
-                            <select id="music-track" onchange="changeMusicTrack()" class="w-full bg-[#1A1A3A] border border-white/20 rounded-2xl px-4 py-2 text-sm mb-3">
-                                <option value="welcome">Welcome Theme</option>
-                                <option value="creative">Creative Focus</option>
-                                <option value="digital">Digital Campus</option>
-                                <option value="verity">Verity Theme</option>
-                            </select>
-                            <div class="flex items-center gap-x-3">
-                                <button onclick="toggleMusic()" id="music-play-btn" 
-                                        class="flex-1 flex items-center justify-center gap-x-2 px-4 py-2 rounded-2xl bg-[#FFD700] text-[#0A0A1F] font-semibold text-sm">
-                                    <i class="fa-solid fa-play mr-1"></i> <span>Play</span>
-                                </button>
-                                <input type="range" id="music-volume" min="0" max="1" step="0.05" value="0.6" 
-                                       oninput="setMusicVolume(this.value)" class="w-24 accent-[#FFD700]">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Theme Toggle -->
-                    <button onclick="toggleTheme()" 
-                            class="w-10 h-10 flex items-center justify-center rounded-2xl glass hover:bg-white/10 transition-all text-[#FFD700]">
-                        <i class="fa-solid fa-adjust text-lg" id="theme-icon"></i>
-                    </button>
-
-                    <!-- User / Auth -->
-                    <div id="nav-user-section">
-                        <!-- Only shows when logged in. Use secret sequence to access login/register -->
-                    </div>
-                </div>
+        <div class="max-w-screen-2xl mx-auto px-8 py-4 flex items-center justify-between">
+            <div class="font-display text-3xl font-bold">Multi<span class="text-[#FFD700]">Media</span></div>
+            <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                <a href="#home" class="hover:text-[#FFD700]">Home</a>
+                <a href="#events" class="hover:text-[#FFD700]">Events</a>
+                <a href="#announcements" class="hover:text-[#FFD700]">Announcements</a>
+                <a href="#" onclick="showVerityChat(); return false;" class="hover:text-[#FFD700]">Verity</a>
+                <a href="#about" class="hover:text-[#FFD700]">About</a>
             </div>
+            <div id="nav-user-section"></div>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
-    <section id="home" class="min-h-[100dvh] pt-16 relative flex items-center justify-center overflow-hidden multimedia-bg">
+    <section id="home" class="min-h-[100dvh] pt-24 relative flex items-center">
         <div class="absolute inset-0 futuristic-grid opacity-40"></div>
-        
-        <div class="floating-shape w-72 h-72 top-20 -left-20" style="animation-delay: 0s;"></div>
-        <div class="floating-shape w-96 h-96 top-1/3 right-10" style="animation-delay: -7s;"></div>
-        <div class="floating-shape w-64 h-64 bottom-20 left-1/4" style="animation-delay: -12s;"></div>
+        <div class="max-w-screen-2xl mx-auto px-6 relative z-10">
+            <div class="text-sm tracking-[2px] text-[#FFD700] mb-4">SCHOOL YEAR 2026-2027</div>
+            <h1 class="font-display text-6xl md:text-8xl font-bold tracking-tighter">Where <span class="text-[#FFD700]">Creativity</span><br>Meets Collaboration</h1>
+            <p class="max-w-lg text-xl text-[#B8B8D0] mt-6">The official portal for the Multi Media Club. Collaborate on creative projects, stay updated with events, and grow your skills.</p>
+            <button onclick="document.getElementById('events').scrollIntoView({behavior:'smooth'})" class="btn-gold mt-8 px-8 py-4 rounded-3xl">Explore Events</button>
+        </div>
+    </section>
 
-        <div class="max-w-screen-2xl mx-auto px-6 relative z-10 pt-8">
-            <div class="grid lg:grid-cols-12 gap-12 items-center">
-                <div class="lg:col-span-7 text-center lg:text-left">
-                    <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-full glass mb-6 border border-[#FFD700]/30">
-                        <div class="w-2 h-2 bg-[#FFD700] rounded-full animate-pulse"></div>
-                        <span class="text-sm font-medium tracking-[2px] text-[#FFD700]">SCHOOL YEAR 2026-2027</span>
-                    </div>
-                    
-                    <h1 class="font-display text-7xl lg:text-8xl font-bold tracking-tighter leading-none mb-4">
-                        Where <span class="bg-gradient-to-r from-[#FFD700] via-[#FFEA00] to-[#FFC107] bg-clip-text text-transparent">Creativity</span><br>
-                        Meets <span class="bg-gradient-to-r from-[#FFD700] via-[#FFEA00] to-[#FFC107] bg-clip-text text-transparent">Collaboration</span>
-                    </h1>
-                    
-                    <p class="max-w-lg mx-auto lg:mx-0 text-xl text-[#B8B8D0] mb-8">
-                        The official portal for the Multi Media Club. 
-                        Collaborate on creative projects, stay updated with events, and grow your skills.
-                    </p>
-
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <button onclick="document.getElementById('events').scrollIntoView({ behavior: 'smooth' })" 
-                                class="btn-gold px-9 py-4 rounded-3xl text-lg flex items-center justify-center gap-x-3 shadow-xl">
-                            <span>Explore Events</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
+    <section class="max-w-screen-2xl mx-auto px-6 py-16">
+        <div class="glass rounded-3xl p-8 border border-[#FFD700]/20 max-w-xl ml-auto">
+            <div class="flex items-start gap-5">
+                <div onclick="showVerityChat()" class="verity-orb" role="button" aria-label="Open Verity chat">
+                    <img src="images/idle.jpg" class="verity-avatar-img" alt="Verity, Multimedia Club AI guide">
                 </div>
-
-                <!-- Hero Image -->
-                <div class="lg:col-span-5 relative">
-                    <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 aspect-[16/10]">
-                        <img src="images/class-photo.jpg" 
-                             class="w-full h-full object-cover brightness-[0.85]" alt="Multimedia hero banner">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-[#0A0A1F] via-[#0A0A1F]/70 to-transparent"></div>
-                        
-                        <div class="absolute bottom-6 left-6 glass px-5 py-3 rounded-2xl flex items-center gap-x-3">
-                            <div>
-                                <div class="text-xs tracking-widest text-[#FFD700]">NOW ACTIVE</div>
-                                <div class="font-semibold">MULTIMEDIA 2026 - 2027</div>
-                            </div>
-                            <div class="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
-                        </div>
-                    </div>
+                <div>
+                    <div class="font-semibold text-xl">Verity <span class="text-[10px] bg-[#FFD700] text-[#0A0A1F] px-2 py-px rounded">AI GUIDE</span></div>
+                    <p class="text-[#B8B8D0] text-sm mt-2">Hellooo, I'm Verity, your personal assistant. Ask me to show you around by clicking the Show me around button.</p>
+                    <button onclick="showVerityChat()" class="mt-3 text-sm text-[#FFD700]">CHAT WITH ME</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- INTRO + VERITY -->
-    <section class="max-w-screen-2xl mx-auto px-6 pt-16 pb-12">
-        <div class="grid lg:grid-cols-12 gap-8 items-center">
-            <div class="lg:col-span-7">
-                <div class="uppercase tracking-[3px] text-[#FFD700] text-sm font-semibold mb-3">EST. 2025 • CREATIVE MEDIA ARTS</div>
-                <h2 class="section-header mb-5">We turn moments into<br>memories that matter.</h2>
-                <p class="text-[#B8B8D0] max-w-prose text-[15px]">
-                    Multi Media is the beating heart of our school's creative ecosystem.
-                </p>
-            </div>
-
-            <!-- Verity intro card -->
-            <div class="lg:col-span-5">
-                <div class="glass rounded-3xl p-8 border border-[#FFD700]/20">
-                    <div class="flex items-start gap-x-5">
-                        <div onclick="showVerityChat()" class="verity-orb flex-shrink-0 mt-1" role="button" tabindex="0" aria-label="Open Verity chat">
-                            <img src="images/idle.jpg" class="verity-avatar-img" alt="Verity, Multimedia Club AI guide">
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center gap-x-2 mb-1">
-                                <span class="font-semibold text-xl">Verity</span>
-                                <span class="px-2.5 py-px text-[10px] font-mono tracking-widest bg-[#FFD700] text-[#0A0A1F] rounded">AI GUIDE</span>
-                            </div>
-                            <p class="text-[#B8B8D0] text-sm">Hellooo, I'm Verity, your personal assistant. Ask me to show you around by clicking the Show me around button.</p>
-                            <button onclick="showVerityChat()" class="mt-3 text-sm text-[#FFD700] hover:text-[#FFEA00] font-medium flex items-center gap-x-1">
-                                CHAT WITH ME <i class="fa-solid fa-arrow-right ml-1"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- QUICK NAV -->
-    <section class="max-w-screen-2xl mx-auto px-6 pb-16">
-        <h3 class="text-3xl font-semibold tracking-tight mb-6 px-1">Jump right in</h3>
-        
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div onclick="document.getElementById('events').scrollIntoView({ behavior: 'smooth' })" class="nav-card cursor-pointer rounded-3xl p-6 border border-white/10">
-                <div class="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#FFD700]/10 text-[#FFD700] mb-4">
-                    <i class="fa-solid fa-calendar text-3xl"></i>
-                </div>
-                <div class="font-semibold text-xl mb-2">Upcoming Events</div>
-                <p class="text-sm text-[#B8B8D0]">Live countdowns and details</p>
-            </div>
-            
-            <div onclick="document.getElementById('announcements').scrollIntoView({ behavior: 'smooth' })" class="nav-card cursor-pointer rounded-3xl p-6 border border-white/10">
-                <div class="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#FFD700]/10 text-[#FFD700] mb-4">
-                    <i class="fa-solid fa-bullhorn text-3xl"></i>
-                </div>
-                <div class="font-semibold text-xl mb-2">Announcements</div>
-                <p class="text-sm text-[#B8B8D0]">Stay updated with the latest news</p>
-            </div>
-            
-            <div onclick="showVerityChat()" class="nav-card cursor-pointer rounded-3xl p-6 border border-white/10">
-                <div class="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#FFD700]/10 text-[#FFD700] mb-4">
-                    <i class="fa-solid fa-robot text-3xl"></i>
-                </div>
-                <div class="font-semibold text-xl mb-2">Talk to Verity</div>
-                <p class="text-sm text-[#B8B8D0]">Your intelligent AI guide</p>
-            </div>
-            
-            <div onclick="if (currentUser) showDashboard(); else showLoginModal()" class="nav-card cursor-pointer rounded-3xl p-6 border border-white/10">
-                <div class="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#FFD700]/10 text-[#FFD700] mb-4">
-                    <i class="fa-solid fa-user-astronaut text-3xl"></i>
-                </div>
-                <div class="font-semibold text-xl mb-2">Member Dashboard</div>
-                <p class="text-sm text-[#B8B8D0]">Your personal hub</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- EVENTS SECTION -->
     <section id="events" class="max-w-screen-2xl mx-auto px-6 pb-20 border-t border-white/10 pt-10">
         <div class="flex justify-between items-end mb-6">
             <h2 class="section-header">Events Countdown</h2>
-            <button onclick="if (currentUser && (currentUser.role === 'Editor' || currentUser.role === 'Admin')) showCreateEventModal(); else alert('Editor/Admin only')" 
-                    class="px-5 py-2 rounded-2xl border border-[#FFD700]/60 text-sm flex items-center gap-x-2">
-                <i class="fa-solid fa-plus"></i> Add Event
-            </button>
+            <button onclick="if (currentUser && (currentUser.role === 'Editor' || currentUser.role === 'Admin')) showCreateEventModal(); else alert('Editor/Admin only')" class="px-5 py-2 rounded-2xl border border-[#FFD700]/60 text-sm">Add Event</button>
         </div>
         <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </section>
 
-    <!-- ANNOUNCEMENTS SECTION -->
     <section id="announcements" class="max-w-screen-2xl mx-auto px-6 pb-20 border-t border-white/10 pt-10">
         <div class="flex justify-between items-end mb-6">
             <h2 class="section-header">School Announcements</h2>
-            <button onclick="if (currentUser && (currentUser.role === 'Editor' || currentUser.role === 'Admin')) showCreateAnnouncementModal(); else alert('Editor/Admin only')" 
-                    class="px-5 py-2 rounded-2xl bg-[#FFD700] text-[#0A0A1F] text-sm font-semibold flex items-center gap-x-2">
-                <i class="fa-solid fa-plus"></i> Publish
-            </button>
+            <button onclick="if (currentUser && (currentUser.role === 'Editor' || currentUser.role === 'Admin')) showCreateAnnouncementModal(); else alert('Editor/Admin only')" class="px-5 py-2 rounded-2xl bg-[#FFD700] text-[#0A0A1F] text-sm font-semibold">Publish</button>
         </div>
-        
-        <div class="flex gap-3 mb-4">
-            <input type="text" id="announcement-search" placeholder="Search..." onkeyup="filterAnnouncements()" 
-                   class="input-gold flex-1 px-5 py-3 rounded-3xl text-sm">
-            <div id="announcement-filters" class="flex gap-2"></div>
-        </div>
-        
         <div id="announcements-list" class="space-y-4"></div>
     </section>
 
-    <!-- SOCIAL MEDIA SECTION -->
-    <section class="max-w-screen-2xl mx-auto px-6 pb-16 border-t border-white/10 pt-10">
-        <div class="text-center mb-8">
-            <h2 class="section-header mb-2">Stay Connected</h2>
-            <p class="text-[#B8B8D0]">Follow us on our social media channels</p>
-        </div>
-        
-        <div class="flex justify-center gap-x-8">
-            <a href="https://facebook.com" target="_blank" class="flex flex-col items-center gap-y-3 group">
-                <div class="w-16 h-16 flex items-center justify-center rounded-3xl glass group-hover:bg-[#FFD700]/10 transition-all">
-                    <i class="fa-brands fa-facebook-f text-4xl text-[#FFD700]"></i>
-                </div>
-                <span class="text-sm font-medium">Facebook</span>
-            </a>
-            
-            <a href="https://tiktok.com" target="_blank" class="flex flex-col items-center gap-y-3 group">
-                <div class="w-16 h-16 flex items-center justify-center rounded-3xl glass group-hover:bg-[#FFD700]/10 transition-all">
-                    <i class="fa-brands fa-tiktok text-4xl text-[#FFD700]"></i>
-                </div>
-                <span class="text-sm font-medium">TikTok</span>
-            </a>
-            
-            <a href="https://instagram.com" target="_blank" class="flex flex-col items-center gap-y-3 group">
-                <div class="w-16 h-16 flex items-center justify-center rounded-3xl glass group-hover:bg-[#FFD700]/10 transition-all">
-                    <i class="fa-brands fa-instagram text-4xl text-[#FFD700]"></i>
-                </div>
-                <span class="text-sm font-medium">Instagram</span>
-            </a>
-        </div>
-    </section>
-
-    <!-- ABOUT THE DEVELOPER -->
     <section id="about" class="max-w-screen-2xl mx-auto px-6 py-20 border-t border-white/10">
-        <h2 class="section-header text-center mb-12">About the Developer</h2>
-        
-        <div class="grid md:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
-            <!-- Profile Image -->
-            <div class="flex justify-center">
-                <div class="w-64 h-64 relative">
-                    <img src="images/developer.jpg" 
-                         alt="Kaitorenn - Creator" 
-                         class="w-full h-full rounded-full object-cover border-4 border-[#FFD700] shadow-lg glow-gold">
-                    <div class="absolute -bottom-2 -right-2 w-12 h-12 bg-[#FFD700] rounded-full flex items-center justify-center shadow-lg">
-                        <i class="fa-solid fa-code text-[#0A0A1F] text-xl"></i>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Bio Text -->
-            <div>
-                <h3 class="font-display text-3xl font-semibold mb-3">Ron Matthew Ferreras</h3>
-                <p class="text-[#B8B8D0] mb-6">
-                    I made this website so that students can have a centralized hub for all multimedia activities. As a passionate developer and designer, I wanted to create an interactive and engaging platform that fosters creativity and collaboration among students. This project is a testament to the power of technology in enhancing educational experiences.
-                </p>
-                
-                <div class="flex gap-4 flex-wrap">
-                    <a href="#" class="glass px-5 py-2.5 rounded-2xl border border-white/10 hover:border-[#FFD700] transition-all inline-flex items-center">
-                        <i class="fa-solid fa-globe mr-2"></i> Portfolio
-                    </a>
-                    <a href="#" class="glass px-5 py-2.5 rounded-2xl border border-white/10 hover:border-[#FFD700] transition-all inline-flex items-center">
-                        <i class="fa-brands fa-github mr-2"></i> GitHub
-                    </a>
-                    <a href="#" class="glass px-5 py-2.5 rounded-2xl border border-white/10 hover:border-[#FFD700] transition-all inline-flex items-center">
-                        <i class="fa-solid fa-envelope mr-2"></i> Contact
-                    </a>
-                </div>
-            </div>
+        <h2 class="section-header text-center mb-8">About the Developer</h2>
+        <div class="max-w-3xl mx-auto glass rounded-3xl p-8">
+            <h3 class="font-display text-3xl mb-3">Ron Matthew Ferreras</h3>
+            <p class="text-[#B8B8D0]">I made this website so that students can have a centralized hub for all multimedia activities.</p>
         </div>
     </section>
 
-    <!-- FLOATING VERITY ORB -->
-    <div id="floating-verity" class="fixed z-[60]">
+    <div id="floating-verity" class="fixed">
         <div id="verity-orb-bubble" role="status" aria-live="polite"></div>
-        <div onclick="showVerityChat()" class="verity-orb" role="button" tabindex="0" aria-label="Open Verity chat">
+        <div onclick="showVerityChat()" class="verity-orb" role="button" aria-label="Open Verity chat">
             <img src="images/idle.jpg" class="verity-avatar-img" alt="Verity, Multimedia Club AI guide">
         </div>
     </div>
 
-    <!-- LOGIN MODAL -->
-    <div id="login-modal" onclick="if (event.target.id === 'login-modal') hideLoginModal()" class="hidden fixed inset-0 z-[70] flex items-center justify-center bg-black/70 p-4">
-        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-md rounded-3xl p-8">
-            <h3 class="font-display text-3xl font-semibold mb-6">Welcome back</h3>
-            <form id="login-form" onsubmit="handleLogin(event)">
-                <input type="text" id="login-email" value="admin@school.edu" placeholder="Email or Username" class="input-gold w-full px-5 py-3.5 rounded-2xl mb-4" required>
-                <input type="password" id="login-password" value="admin123" placeholder="Password" class="input-gold w-full px-5 py-3.5 rounded-2xl mb-4" required>
-                <button type="submit" class="btn-gold w-full py-4 rounded-2xl font-semibold">Sign In</button>
+    <div id="login-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center bg-black/70 p-4">
+        <div class="glass w-full max-w-md rounded-3xl p-8">
+            <h3 class="font-display text-3xl mb-6">Welcome back</h3>
+            <form onsubmit="handleLogin(event)">
+                <input id="login-email" placeholder="Email or Username" class="input-gold w-full px-5 py-3 rounded-2xl mb-4" required>
+                <input id="login-password" type="password" placeholder="Password" class="input-gold w-full px-5 py-3 rounded-2xl mb-4" required>
+                <button class="btn-gold w-full py-4 rounded-2xl">Sign In</button>
             </form>
-            <p class="text-center mt-4 text-sm">Don't have an account? <button onclick="hideLoginModal(); showRegisterModal()" class="text-[#FFD700]">Join now</button></p>
+            <button onclick="hideLoginModal(); showRegisterModal()" class="mt-4 text-[#FFD700]">Join now</button>
         </div>
     </div>
 
-    <!-- REGISTER MODAL (with Photographer role) -->
-    <div id="register-modal" onclick="if (event.target.id === 'register-modal') hideRegisterModal()" class="hidden fixed inset-0 z-[70] flex items-center justify-center bg-black/70 p-4">
-        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-md rounded-3xl p-8">
-            <h3 class="font-display text-3xl font-semibold mb-6">Join the Multi Media Club</h3>
-            <form id="register-form" onsubmit="handleRegister(event)">
-                <input type="text" id="reg-username" value="creative_kai" placeholder="Username" class="input-gold w-full px-5 py-3 rounded-2xl mb-3" required>
-                <input type="email" id="reg-email" value="kai@school.edu" placeholder="Email" class="input-gold w-full px-5 py-3 rounded-2xl mb-3" required>
-                <div class="grid grid-cols-2 gap-3 mb-3">
-                    <input type="password" id="reg-password" value="demo2026" placeholder="Password" class="input-gold w-full px-5 py-3 rounded-2xl" required>
-                    <input type="password" id="reg-confirm" value="demo2026" placeholder="Confirm" class="input-gold w-full px-5 py-3 rounded-2xl" required>
-                </div>
+    <div id="register-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center bg-black/70 p-4">
+        <div class="glass w-full max-w-md rounded-3xl p-8">
+            <h3 class="font-display text-3xl mb-6">Join the Multi Media Club</h3>
+            <form onsubmit="handleRegister(event)">
+                <input id="reg-username" placeholder="Username" class="input-gold w-full px-5 py-3 rounded-2xl mb-3" required>
+                <input id="reg-email" type="email" placeholder="Email" class="input-gold w-full px-5 py-3 rounded-2xl mb-3" required>
+                <input id="reg-password" type="password" placeholder="Password" class="input-gold w-full px-5 py-3 rounded-2xl mb-3" required>
                 <select id="reg-role" class="input-gold w-full px-5 py-3 rounded-2xl mb-3">
-                    <option value="Member">Member</option>
-                    <option value="Editor">Editor</option>
-                    <option value="Photographer">Photographer</option>
-                    <option value="Admin">Admin</option>
+                    <option>Member</option><option>Editor</option><option>Photographer</option><option>Admin</option>
                 </select>
-                <input type="text" id="reg-passcode" value="MULTIMEDIA2026" placeholder="Registration Passcode" class="input-gold w-full px-5 py-3 rounded-2xl mb-4 font-mono" required>
-                <button type="submit" class="btn-gold w-full py-4 rounded-2xl font-semibold">Create Account</button>
+                <input id="reg-passcode" placeholder="Registration Passcode" class="input-gold w-full px-5 py-3 rounded-2xl mb-4" required>
+                <button class="btn-gold w-full py-4 rounded-2xl">Create Account</button>
             </form>
         </div>
     </div>
 
-    <!-- VERITY CHAT MODAL -->
-    <div id="verity-chat-modal" onclick="if (event.target.id === 'verity-chat-modal') hideVerityChat()" class="hidden fixed inset-0 z-[80] bg-black/80 flex items-end md:items-center justify-center p-0 md:p-4">
-        <div onclick="event.stopImmediatePropagation()" class="verity-panel glass w-full md:w-[620px] md:rounded-3xl rounded-t-3xl h-[85dvh] md:h-[620px] flex flex-col overflow-hidden" role="dialog" aria-labelledby="verity-chat-title">
+    <div id="verity-chat-modal" class="hidden fixed inset-0 z-[80] bg-black/80 flex items-end md:items-center justify-center p-0 md:p-4">
+        <div class="glass w-full md:w-[620px] md:rounded-3xl rounded-t-3xl h-[85dvh] md:h-[620px] flex flex-col overflow-hidden" role="dialog" aria-labelledby="verity-chat-title">
             <div class="px-5 py-4 border-b border-white/10 flex justify-between items-center gap-3">
-                <div class="flex items-center gap-x-3 min-w-0">
-                    <div class="verity-orb" style="width:40px;height:40px;animation:none;">
-                        <img src="images/idle.jpg" class="verity-avatar-img" alt="Verity, Multimedia Club AI guide">
-                    </div>
-                    <div class="min-w-0">
-                        <div id="verity-chat-title" class="font-semibold">Verity <span class="text-emerald-400 text-xs">ONLINE</span></div>
-                        <div class="text-xs text-white/50">Your Multimedia Club AI assistant</div>
-                    </div>
+                <div class="flex items-center gap-3">
+                    <div class="verity-orb" style="width:40px;height:40px;animation:none;"><img src="images/idle.jpg" class="verity-avatar-img" alt="Verity"></div>
+                    <div><div id="verity-chat-title" class="font-semibold">Verity</div><div class="text-xs text-white/50">Your Multimedia Club AI assistant</div></div>
                 </div>
-                <div class="flex items-center gap-2 flex-shrink-0">
-                    <button type="button" id="verity-play-voice-btn" onclick="replayLastVerityVoice()" class="px-3 py-1.5 rounded-2xl border border-white/15 text-xs" aria-label="Play Verity voice">Play voice</button>
-                    <button type="button" id="verity-voice-btn" onclick="toggleVerityVoice()" class="px-3 py-1.5 rounded-2xl border border-white/15 text-xs font-medium" aria-pressed="true" aria-label="Verity voice is on">🔊 Voice ON</button>
-                    <button type="button" onclick="hideVerityChat()" class="w-9 h-9 rounded-2xl hover:bg-white/10 text-2xl leading-none" aria-label="Close Verity chat">&times;</button>
+                <div class="flex items-center gap-2">
+                    <button id="verity-voice-btn" onclick="toggleVerityVoice()" class="px-3 py-1.5 rounded-2xl border border-white/15 text-xs" aria-pressed="true">🔊 Voice ON</button>
+                    <button onclick="hideVerityChat()" class="w-9 h-9 rounded-2xl" aria-label="Close Verity chat">&times;</button>
                 </div>
             </div>
-            
             <div id="chat-messages" class="flex-1 p-5 overflow-y-auto space-y-4" aria-live="polite"></div>
-            
             <div class="p-4 border-t border-white/10">
-                <div class="flex gap-x-3">
-                    <input type="text" id="chat-input" placeholder="Ask Verity anything..." onkeypress="if (event.key === 'Enter') sendChatMessage()" class="input-gold flex-1 px-5 py-3 rounded-3xl text-sm" aria-label="Message Verity">
-                    <button onclick="sendChatMessage()" class="btn-gold px-6 rounded-3xl" aria-label="Send message"><i class="fa-solid fa-paper-plane"></i></button>
+                <div class="flex gap-3">
+                    <input id="chat-input" placeholder="Ask Verity anything..." onkeypress="if (event.key === 'Enter') sendChatMessage()" class="input-gold flex-1 px-5 py-3 rounded-3xl text-sm" aria-label="Message Verity">
+                    <button onclick="sendChatMessage()" class="btn-gold px-6 rounded-3xl" aria-label="Send message">Send</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TOAST CONTAINER -->
     <div id="toast-container" class="fixed top-20 right-5 z-[90] flex flex-col gap-y-2"></div>
-
-    <!-- DASHBOARD OVERLAY -->
-    <div id="dashboard-overlay" class="hidden fixed inset-0 z-[75] bg-black/90 flex">
-        <div class="w-full max-w-[1100px] mx-auto my-6 glass rounded-3xl overflow-hidden flex flex-col">
-            <div class="px-8 py-5 border-b border-white/10 flex justify-between items-center">
-                <div class="flex items-center gap-x-4">
-                    <span class="font-display text-2xl font-bold">Member Portal</span>
-                    <span id="dashboard-role-badge" class="px-3 py-1 text-xs rounded-full bg-[#FFD700] text-[#0A0A1F] font-bold"></span>
-                </div>
-                <div>
-                    <button onclick="logout()" class="px-4 py-2 text-sm rounded-2xl border border-white/20 mr-3">Logout</button>
-                    <button onclick="hideDashboard()" class="text-xl">&times;</button>
-                </div>
-            </div>
-            <div class="flex flex-1 overflow-hidden">
-                <div class="w-56 border-r border-white/10 p-5 hidden md:block text-sm">
-                    <div onclick="switchDashboardTab('overview')" class="dashboard-tab px-4 py-2.5 rounded-2xl cursor-pointer mb-1 hover:bg-white/5 active">Overview</div>
-                    <div onclick="switchDashboardTab('members')" class="dashboard-tab px-4 py-2.5 rounded-2xl cursor-pointer mb-1 hover:bg-white/5">View Members</div>
-                    <div onclick="switchDashboardTab('media')" class="dashboard-tab px-4 py-2.5 rounded-2xl cursor-pointer hover:bg-white/5">Media Gallery</div>
-                </div>
-                <div class="flex-1 p-7 overflow-auto" id="dashboard-content"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ADMIN PANEL -->
-    <div id="admin-panel" class="hidden fixed inset-0 bg-black/95 z-[85] flex">
-        <div class="w-full max-w-[1200px] mx-auto my-8 glass rounded-3xl overflow-hidden flex flex-col">
-            <div class="px-8 py-5 border-b flex justify-between items-center bg-[#111133]">
-                <div class="flex items-center gap-x-3">
-                    <i class="fa-solid fa-shield-halved text-[#FFD700] text-2xl"></i>
-                    <span class="font-display text-2xl font-bold">Admin Control Center</span>
-                </div>
-                <button onclick="hideAdminPanel()" class="px-5 py-2 rounded-2xl border border-white/20 text-sm">Close</button>
-            </div>
-            
-            <div class="p-8 flex-1 overflow-auto">
-                <!-- Header with Quick Actions -->
-                <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-                    <div>
-                        <h2 class="text-2xl font-semibold">Admin Dashboard</h2>
-                        <p class="text-sm text-white/50">Real-time overview of the Multi Media Club</p>
-                    </div>
-                    <div class="flex gap-3">
-                        <button onclick="showAnalyticsModal()" 
-                                class="px-5 py-2.5 rounded-2xl border border-[#FFD700]/40 text-[#FFD700] hover:bg-[#FFD700]/10 flex items-center gap-x-2 text-sm">
-                            <i class="fa-solid fa-chart-line"></i>
-                            <span>Analytics</span>
-                        </button>
-                        <button onclick="exportLoginHistoryCSV()" 
-                                class="px-5 py-2.5 rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2 text-sm">
-                            <i class="fa-solid fa-download"></i>
-                            <span>Export Data</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Live Stats -->
-                <div class="mb-8">
-                    <div class="flex items-center justify-between mb-3">
-                        <h4 class="uppercase tracking-widest text-xs text-[#FFD700]">LIVE STATISTICS</h4>
-                        <span class="text-xs text-white/40">Updates automatically</span>
-                    </div>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" id="admin-stats"></div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                    <!-- Recent Activity -->
-                    <div class="lg:col-span-2">
-                        <div class="flex items-center justify-between mb-3">
-                            <h4 class="uppercase tracking-widest text-xs text-[#FFD700]">RECENT ACTIVITY</h4>
-                        </div>
-                        <div class="glass rounded-3xl p-4 max-h-[280px] overflow-auto text-sm" id="login-history"></div>
-                    </div>
-
-                    <!-- Live Users -->
-                    <div class="lg:col-span-3">
-                        <div class="flex items-center justify-between mb-3">
-                            <h4 class="uppercase tracking-widest text-xs text-[#FFD700]">CURRENTLY ONLINE</h4>
-                            <span id="online-count" class="text-xs px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400"></span>
-                        </div>
-                        <div class="glass rounded-3xl p-4 max-h-[280px] overflow-auto" id="live-users-list">
-                            <!-- Populated by JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- User Management -->
-                <div class="mt-8">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
-                        <h4 class="uppercase tracking-widest text-xs text-[#FFD700]">MEMBER MANAGEMENT</h4>
-                        <div class="flex gap-3">
-                            <input type="text" id="user-search" placeholder="Search members..." 
-                                   onkeyup="filterAdminUsers()" 
-                                   class="input-gold px-4 py-2 rounded-2xl text-sm w-64">
-                            <button onclick="showAnalyticsModal()" 
-                                    class="px-4 py-2 rounded-2xl border border-[#FFD700]/40 text-[#FFD700] text-sm flex items-center gap-x-2">
-                                <i class="fa-solid fa-chart-bar"></i>
-                                <span>Analytics</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="glass rounded-3xl overflow-hidden">
-                        <table class="w-full text-sm">
-                            <thead class="text-left text-white/60 bg-white/5">
-                                <tr>
-                                    <th class="py-3 px-6">Member</th>
-                                    <th class="py-3">Email</th>
-                                    <th class="py-3">Role</th>
-                                    <th class="py-3">Position</th>
-                                    <th class="py-3">Status</th>
-                                    <th class="py-3 text-right pr-6">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-users-table" class="divide-y divide-white/10"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+    <div id="dashboard-overlay" class="hidden fixed inset-0 z-[75] bg-black/90 p-6">
+        <div class="max-w-4xl mx-auto glass rounded-3xl p-8">
+            <div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-semibold">Member Portal</h3><button onclick="hideDashboard()">Close</button></div>
+            <div id="dashboard-content"></div>
         </div>
     </div>
 
     <script>
-        // =============================================
-        // COMPLETE SINGLE-FILE JAVASCRIPT (Enhanced)
-        // =============================================
-        
-        let currentUser = null;
-        let users = [];
-        let events = [];
-        let announcements = [];
-        let mediaItems = [];
-        let activityLog = [];
-        let loginHistory = [];
-        let verityChatHistory = [];
-        let isMusicPlaying = false;
-        let musicInterval = null;
-        let musicVolume = 0.6;
-        let currentMusicTrack = 'welcome';
-        let audioContext = null;
-        let musicGain = null;
-
-        // Robust safeStorage wrapper for sandboxed environments
-        let storageAvailable = true;
-        
-        const safeStorage = {
-            getItem(key) {
-                try {
-                    return localStorage.getItem(key);
-                } catch (e) {
-                    if (storageAvailable) {
-                        storageAvailable = false;
-                        console.warn('%c[Multi Media] Running in sandboxed environment. Using memory fallback (data will not persist after refresh).', 'color:#FFD700');
-                    }
-                    return null;
-                }
-            },
-            setItem(key, value) {
-                try {
-                    localStorage.setItem(key, value);
-                } catch (e) {
-                    if (storageAvailable) {
-                        storageAvailable = false;
-                        console.warn('%c[Multi Media] Running in sandboxed environment. Data changes will not persist.', 'color:#FFD700');
-                    }
-                }
-            }
-        };
-
-        const SAMPLE_USERS = [
-            { id: 1, username: 'alex_rivera', email: 'alex.rivera@school.edu', passwordHash: btoa('admin2026'), role: 'Admin', joined: '2024-09-01', active: true, online: true, officerRole: 'President' },
-            { id: 2, username: 'maya_chen', email: 'maya.chen@school.edu', passwordHash: btoa('editor2026'), role: 'Editor', joined: '2025-01-12', active: true, online: true, officerRole: 'Vice President' },
-            { id: 3, username: 'jake_morales', email: 'jake.morales@school.edu', passwordHash: btoa('photo2026'), role: 'Photographer', joined: '2025-02-03', active: true, online: false, officerRole: 'P.I.O.' },
-            { id: 4, username: 'kai_nakamura', email: 'kai.nakamura@school.edu', passwordHash: btoa('member2026'), role: 'Member', joined: '2025-02-20', active: true, online: true, officerRole: null }
-        ];
-
-        const DEMO_EVENT_NAMES = ["Winter Showcase 2026", "Spring Film Festival"];
-        const DEMO_ANNOUNCEMENT_TITLES = ["New Camera Equipment Arrived!", "Call for Submissions: Spring Film Festival"];
-
-        // Allowed passwords for member access (strict list)
-        const ALLOWED_PASSWORDS = [
-            "Q7#mL2!x", "V$9pT4@k", "n8&Xr1*F", "Z!5qHm#2",
-            "c@7YwL9%", "R3^fNp8!", "u#6Jx2$M", "P!4vK9&d", "h8*Qz1@T"
-        ];
-
-        // Secure password hashing using Web Crypto API (SHA-256)
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            return hashHex;
-        }
-
-        // Verify password during login
-        async function verifyPassword(inputPassword, storedHash) {
-            const inputHash = await hashPassword(inputPassword);
-            return inputHash === storedHash;
-        }
-
-        function initTailwind() {
-            if (typeof tailwind !== 'undefined') {
-                tailwind.config = { theme: { extend: { colors: { gold: '#FFD700' } } } };
-            }
-        }
-
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast max-w-sm w-full glass px-5 py-3.5 rounded-2xl flex items-start gap-x-3 text-sm border-l-4 ${type === 'success' ? 'border-emerald-400' : type === 'error' ? 'border-red-400' : 'border-[#FFD700]'}`;
-            toast.innerHTML = `<div class="flex-1">${message}</div><button onclick="this.parentElement.remove()" class="text-xl leading-none">&times;</button>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 4200);
-        }
-
-        function initAudio() {
-            try {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                musicGain = audioContext.createGain();
-                musicGain.gain.value = musicVolume;
-                musicGain.connect(audioContext.destination);
-            } catch(e) {}
-        }
-
-        function playSFX(type) {
-            if (!audioContext) return;
-            const ctx = audioContext;
-            const now = ctx.currentTime;
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            
-            if (type === 'click') { osc.frequency.value = 880; gain.gain.value = 0.2; osc.type = 'sawtooth'; }
-            else if (type === 'success') { osc.frequency.value = 660; gain.gain.value = 0.3; }
-            else if (type === 'notification') { osc.frequency.value = 880; gain.gain.value = 0.25; }
-            
-            gain.gain.linearRampToValueAtTime(0.0001, now + 0.3);
-            osc.start(now);
-            osc.stop(now + 0.4);
-        }
-
-        function startBGM(track = 'welcome') {
-            if (!audioContext || isMusicPlaying) return;
-            stopBGM();
-            isMusicPlaying = true;
-            currentMusicTrack = track;
-            
-            const notes = track === 'creative' ? [60,64,67,71] : [64,67,71,74];
-            let i = 0;
-            
-            function playNote() {
-                if (!isMusicPlaying) return;
-                const freq = 440 * Math.pow(2, (notes[i] - 69) / 12);
-                const osc = audioContext.createOscillator();
-                const g = audioContext.createGain();
-                osc.frequency.value = freq;
-                osc.type = 'sine';
-                osc.connect(g);
-                g.connect(musicGain);
-                g.gain.value = 0.12;
-                g.gain.linearRampToValueAtTime(0.0001, audioContext.currentTime + 0.7);
-                osc.start();
-                osc.stop(audioContext.currentTime + 0.9);
-                i = (i + 1) % notes.length;
-            }
-            
-            playNote();
-            musicInterval = setInterval(playNote, 480);
-            
-            const btn = document.getElementById('music-play-btn');
-            if (btn) btn.innerHTML = `<i class="fa-solid fa-pause"></i> Pause`;
-        }
-
-        function stopBGM() {
-            isMusicPlaying = false;
-            if (musicInterval) clearInterval(musicInterval);
-            const btn = document.getElementById('music-play-btn');
-            if (btn) btn.innerHTML = `<i class="fa-solid fa-play"></i> Play`;
-        }
-
-        function toggleMusic() {
-            if (isMusicPlaying) stopBGM();
-            else startBGM(currentMusicTrack);
-        }
-
-        function changeMusicTrack() {
-            const select = document.getElementById('music-track');
-            currentMusicTrack = select.value;
-            if (isMusicPlaying) {
-                stopBGM();
-                setTimeout(() => startBGM(currentMusicTrack), 100);
-            }
-        }
-
-        function setMusicVolume(val) {
-            musicVolume = parseFloat(val);
-            if (musicGain) musicGain.gain.value = musicVolume;
-        }
-
-        // Konami Codes
-        let konami = [];
-        const KONAMI_ADMIN = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowRight','ArrowRight','ArrowLeft'];
-        const KONAMI_LOGIN = ['ArrowDown','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'];   // New secret sequence for login/register
-        
-        function initKonami() {
-            document.addEventListener('keydown', e => {
-                // Prevent scrolling when entering Konami sequences
-                if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key) && konami.length > 0) {
-                    e.preventDefault();
-                }
-
-                konami.push(e.key);
-                if (konami.length > 12) konami.shift();
-                
-                // Admin Konami: ↑↑↓↓→→← (Limited to 2 Admins)
-                if (konami.join(',') === KONAMI_ADMIN.join(',')) {
-                    konami = [];
-                    const currentAdmins = users.filter(u => u.role === 'Admin').length;
-                    
-                    if (currentAdmins >= 2) {
-                        showToast("Admin slots are full (max 2). Use special code to override.", "error");
-                        return;
-                    }
-                    
-                    const code = prompt("Enter the 4-digit secret code:");
-                    if (code === "2254") {
-                        showToast("Secret code accepted! Unlocking advanced features...");
-                        
-                        if (currentUser) {
-                            currentUser.role = "Admin";
-                            const idx = users.findIndex(u => u.id === currentUser.id);
-                            if (idx !== -1) users[idx].role = "Admin";
-                            safeStorage.setItem("mm_users", JSON.stringify(users));
-                            safeStorage.setItem("mm_currentUser", JSON.stringify(currentUser));
-                            updateNavUser();
-                            showToast("Your account is now permanent Admin!", "success");
-                        } else {
-                            showToast("Please log in first before using the admin code.", "info");
-                        }
-                        
-                        setTimeout(() => showAdminPanel(), 600);
-                    } else {
-                        showToast("Incorrect secret code.", "error");
-                    }
-                }
-                
-                // New secret sequence: Down, Up, Down, Left, Right → Ask for password to access Login/Register
-                if (konami.join(',') === KONAMI_LOGIN.join(',')) {
-                    konami = [];
-                    const pass = prompt("Enter access password:");
-                    if (pass === "MULTIMEDIA2026" || pass === "demo2026") {
-                        showToast("Access granted");
-                        showLoginModal();
-                    } else {
-                        showToast("Incorrect password", "error");
-                    }
-                }
-                
-                // Special Admin Override Code: ↓ ↓ ↓ (Bypasses the 2 Admin limit)
-                if (konami.join(',') === ['ArrowDown','ArrowDown','ArrowDown'].join(',')) {
-                    konami = [];
-                    const code = prompt("Enter the 4-digit secret code:");
-                    if (code === "2254") {
-                        if (currentUser) {
-                            currentUser.role = "Admin";
-                            const idx = users.findIndex(u => u.id === currentUser.id);
-                            if (idx !== -1) users[idx].role = "Admin";
-                            safeStorage.setItem("mm_users", JSON.stringify(users));
-                            safeStorage.setItem("mm_currentUser", JSON.stringify(currentUser));
-                            updateNavUser();
-                            showToast("Special access granted! You are now Admin (override used).", "success");
-                        }
-                        setTimeout(() => showAdminPanel(), 600);
-                    } else {
-                        showToast("Incorrect secret code.", "error");
-                    }
-                }
-            });
-        }
-
-        // Admin Panel
-        let adminRefreshInterval = null;
-
-        function showAdminPanel() {
-            if (!currentUser || currentUser.role !== "Admin") {
-                showToast("Admin access required.", "error");
-                return;
-            }
-            document.getElementById("admin-panel").classList.remove("hidden");
-            document.getElementById("admin-panel").classList.add("flex");
-            
-            renderAdminStats();
-            renderLoginHistory();
-            renderAdminUsers();
-            renderLiveOnlineUsers();
-
-            // Auto-refresh stats every 8 seconds while admin panel is open
-            if (adminRefreshInterval) clearInterval(adminRefreshInterval);
-            adminRefreshInterval = setInterval(() => {
-                if (!document.getElementById("admin-panel").classList.contains("hidden")) {
-                    renderAdminStats();
-                    renderLiveOnlineUsers();
-                } else {
-                    clearInterval(adminRefreshInterval);
-                }
-            }, 8000);
-        }
-
-        function hideAdminPanel() {
-            document.getElementById("admin-panel").classList.remove("flex");
-            document.getElementById("admin-panel").classList.add("hidden");
-            if (adminRefreshInterval) {
-                clearInterval(adminRefreshInterval);
-                adminRefreshInterval = null;
-            }
-        }
-
-        function renderAdminStats() {
-            const container = document.getElementById("admin-stats");
-            const total = users.length;
-            const online = users.filter(u => u.online).length;
-            const admins = users.filter(u => u.role === "Admin").length;
-            const editors = users.filter(u => u.role === "Editor").length;
-            const photographers = users.filter(u => u.role === "Photographer").length;
-            
-            container.innerHTML = `
-                <div class="glass p-5 rounded-2xl">
-                    <div class="text-xs text-white/50 mb-1">TOTAL MEMBERS</div>
-                    <div class="text-4xl font-bold">${total}</div>
-                </div>
-                <div class="glass p-5 rounded-2xl border border-emerald-500/30">
-                    <div class="text-xs text-emerald-400 mb-1">CURRENTLY ONLINE</div>
-                    <div class="text-4xl font-bold text-emerald-400">${online}</div>
-                </div>
-                <div class="glass p-5 rounded-2xl">
-                    <div class="text-xs text-white/50 mb-1">ADMINS</div>
-                    <div class="text-4xl font-bold">${admins}</div>
-                </div>
-                <div class="glass p-5 rounded-2xl">
-                    <div class="text-xs text-white/50 mb-1">EDITORS</div>
-                    <div class="text-4xl font-bold">${editors}</div>
-                </div>
-                <div class="glass p-5 rounded-2xl">
-                    <div class="text-xs text-white/50 mb-1">PHOTOGRAPHERS</div>
-                    <div class="text-4xl font-bold">${photographers}</div>
-                </div>
-                <div class="glass p-5 rounded-2xl">
-                    <div class="text-xs text-white/50 mb-1">UPCOMING EVENTS</div>
-                    <div class="text-4xl font-bold">${events.length}</div>
-                </div>
-            `;
-        }
-
-        function renderLoginHistory() {
-            const container = document.getElementById("login-history");
-            if (loginHistory.length === 0) {
-                container.innerHTML = `<div class="text-white/50 text-sm p-2">No recent logins yet.</div>`;
-                return;
-            }
-            container.innerHTML = loginHistory.slice(0, 8).map(log => `
-                <div class="flex justify-between py-1.5 border-b border-white/10 last:border-none">
-                    <div><span class="font-medium">${log.username}</span> <span class="text-xs text-white/40">(${log.role})</span></div>
-                    <div class="text-xs text-white/50">${new Date(log.time).toLocaleTimeString()}</div>
-                </div>
-            `).join("");
-        }
-
-        let currentUserFilter = '';
-
-        function filterAdminUsers() {
-            currentUserFilter = document.getElementById('user-search').value.toLowerCase();
-            renderAdminUsers();
-        }
-
-        function renderAdminUsers(filteredUsers = null) {
-            const tbody = document.getElementById("admin-users-table");
-            tbody.innerHTML = "";
-            
-            let list = filteredUsers || users;
-            
-            if (currentUserFilter) {
-                list = list.filter(u => 
-                    u.username.toLowerCase().includes(currentUserFilter) || 
-                    u.email.toLowerCase().includes(currentUserFilter)
-                );
-            }
-            
-            list.forEach(user => {
-                const officer = user.officerRole || '—';
-                const tr = document.createElement("tr");
-                tr.className = "hover:bg-white/5 transition-colors";
-                tr.innerHTML = `
-                    <td class="py-4 px-6">
-                        <div class="flex items-center gap-x-3">
-                            <img src="https://i.pravatar.cc/32?u=${user.id}" class="w-8 h-8 rounded-xl">
-                            <span class="font-medium">${user.username}</span>
-                        </div>
-                    </td>
-                    <td class="py-4 text-sm text-white/70">${user.email}</td>
-                    <td class="py-4">
-                        <span class="px-3 py-1 text-xs rounded-full bg-white/10">${user.role}</span>
-                    </td>
-                    <td class="py-4 text-sm text-[#FFD700]">${officer}</td>
-                    <td class="py-4">
-                        <span class="px-3 py-1 text-xs rounded-full ${user.online ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/10 text-white/60'}">
-                            ${user.online ? 'Online' : 'Offline'}
-                        </span>
-                    </td>
-                    <td class="py-4 text-right pr-6 space-x-2">
-                        <button onclick="makeAdmin(${user.id})" class="text-xs px-4 py-1.5 border border-white/20 rounded-xl hover:bg-white/5">Promote</button>
-                        <button onclick="toggleUserStatus(${user.id})" class="text-xs px-4 py-1.5 border border-white/20 rounded-xl hover:bg-white/5">
-                            ${user.active !== false ? 'Disable' : 'Enable'}
-                        </button>
-                        <button onclick="showAssignOfficerModal(${user.id})" class="text-xs px-4 py-1.5 bg-[#FFD700] text-[#0A0A1F] rounded-xl font-medium">Position</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function renderLiveOnlineUsers() {
-            const container = document.getElementById('live-users-list');
-            if (!container) return;
-            
-            const onlineUsers = users.filter(u => u.online);
-            document.getElementById('online-count').innerHTML = `${onlineUsers.length} online`;
-            
-            if (onlineUsers.length === 0) {
-                container.innerHTML = `<div class="text-center py-8 text-white/50 text-sm">No members currently online</div>`;
-                return;
-            }
-            
-            container.innerHTML = onlineUsers.map(user => `
-                <div class="flex items-center justify-between py-3 border-b border-white/10 last:border-none">
-                    <div class="flex items-center gap-x-3">
-                        <img src="https://i.pravatar.cc/28?u=${user.id}" class="w-7 h-7 rounded-lg">
-                        <div>
-                            <div class="font-medium text-sm">${user.username}</div>
-                            <div class="text-xs text-white/50">${user.role}</div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-xs text-emerald-400">Active now</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Officer Role Assignment
-        function showAssignOfficerModal(userId) {
-            const user = users.find(u => u.id === userId);
-            if (!user) return;
-
-            const roles = ['President', 'Vice President', 'Secretary', 'Treasurer', 'P.I.O.', 'None'];
-            const current = user.officerRole || 'None';
-            
-            const choice = prompt(`Assign officer role for ${user.username}\nCurrent: ${current}\n\nOptions: ${roles.join(', ')}`);
-            
-            if (!choice) return;
-            
-            if (choice.toLowerCase() === 'none') {
-                user.officerRole = null;
-            } else if (roles.includes(choice)) {
-                user.officerRole = choice;
-            } else {
-                showToast("Invalid role", "error");
-                return;
-            }
-            
-            safeStorage.setItem("mm_users", JSON.stringify(users));
-            renderAdminUsers();
-            showToast(`Officer role updated for ${user.username}`);
-        }
-
-        function makeAdmin(userId) {
-            const user = users.find(u => u.id === userId);
-            if (!user) return;
-            user.role = "Admin";
-            if (currentUser && currentUser.id === userId) currentUser.role = "Admin";
-            safeStorage.setItem("mm_users", JSON.stringify(users));
-            if (currentUser) safeStorage.setItem("mm_currentUser", JSON.stringify(currentUser));
-            renderAdminUsers();
-            showToast(`${user.username} is now Admin`, "success");
-        }
-
-        function toggleUserStatus(userId) {
-            const user = users.find(u => u.id === userId);
-            if (!user) return;
-            
-            user.active = !user.active;
-            safeStorage.setItem("mm_users", JSON.stringify(users));
-            renderAdminUsers();
-            
-            if (user.active) {
-                showToast(`${user.username} access has been restored.`);
-            } else {
-                showToast(`${user.username} has been banned from the website.`, "error");
-            }
-        }
-
-        // Export Login History as CSV
-        function exportLoginHistoryCSV() {
-            if (!loginHistory || loginHistory.length === 0) {
-                showToast("No login history available to export.", "info");
-                return;
-            }
-
-            let csv = "Username,Role,Login Time\n";
-            
-            loginHistory.forEach(log => {
-                csv += `"${log.username}","${log.role}","${new Date(log.time).toLocaleString()}"\n`;
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `login-history-${new Date().toISOString().split('T')[0]}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            showToast("Login history exported successfully!");
-        }
-
-        // Analytics Modal
-        function showAnalyticsModal() {
-            // Dynamically load Chart.js only when needed (performance optimization)
-            if (typeof Chart === 'undefined') {
-                const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
-                script.onload = () => {
-                    openAnalyticsModal();
-                };
-                document.head.appendChild(script);
-            } else {
-                openAnalyticsModal();
-            }
-        }
-
-        function openAnalyticsModal() {
-            const modal = document.createElement('div');
-            modal.className = `fixed inset-0 z-[90] flex items-center justify-center bg-black/80 p-4`;
-            modal.innerHTML = `
-                <div class="glass w-full max-w-5xl rounded-3xl p-8 max-h-[90vh] overflow-auto">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-2xl font-semibold">Dashboard Analytics</h3>
-                        <button onclick="this.closest('.fixed').remove()" class="text-2xl">×</button>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="glass p-5 rounded-2xl">
-                            <h4 class="font-semibold mb-4">Daily Logins (Last 7 Days)</h4>
-                            <canvas id="dailyLoginsChart" height="120"></canvas>
-                        </div>
-                        <div class="glass p-5 rounded-2xl">
-                            <h4 class="font-semibold mb-4">Device Usage</h4>
-                            <canvas id="deviceChart" height="120"></canvas>
-                        </div>
-                        <div class="glass p-5 rounded-2xl">
-                            <h4 class="font-semibold mb-4">Browser Distribution</h4>
-                            <canvas id="browserChart" height="120"></canvas>
-                        </div>
-                        <div class="glass p-5 rounded-2xl">
-                            <h4 class="font-semibold mb-4">User Growth</h4>
-                            <canvas id="growthChart" height="120"></canvas>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 text-center text-xs text-white/50">
-                        Data is simulated for demo purposes.
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-
-            setTimeout(() => {
-                renderAnalyticsCharts();
-            }, 150);
-        }
-
-        function renderAnalyticsCharts() {
-            // Daily Logins Line Chart
-            new Chart(document.getElementById('dailyLoginsChart'), {
-                type: 'line',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'Logins',
-                        data: [12, 19, 14, 22, 18, 9, 15],
-                        borderColor: '#FFD700',
-                        tension: 0.4,
-                        fill: false
-                    }]
-                },
-                options: { responsive: true, plugins: { legend: { display: false } } }
-            });
-
-            // Device Usage Doughnut
-            new Chart(document.getElementById('deviceChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Desktop', 'Laptop', 'Mobile', 'Tablet'],
-                    datasets: [{
-                        data: [35, 40, 20, 5],
-                        backgroundColor: ['#FFD700', '#FFC107', '#FFEA00', '#B8860B']
-                    }]
-                }
-            });
-
-            // Browser Usage Bar
-            new Chart(document.getElementById('browserChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['Chrome', 'Firefox', 'Edge', 'Safari'],
-                    datasets: [{
-                        label: 'Users',
-                        data: [55, 18, 15, 12],
-                        backgroundColor: '#FFD700'
-                    }]
-                },
-                options: { responsive: true, plugins: { legend: { display: false } } }
-            });
-
-            // User Growth Line
-            new Chart(document.getElementById('growthChart'), {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Total Users',
-                        data: [45, 62, 78, 95, 110, 128],
-                        borderColor: '#FFEA00',
-                        tension: 0.3
-                    }]
-                },
-                options: { responsive: true, plugins: { legend: { display: false } } }
-            });
-        }
-
-        // Auth with safe storage
-        function loadData() {
-            users = JSON.parse(safeStorage.getItem('mm_users')) || SAMPLE_USERS;
-            events = JSON.parse(safeStorage.getItem('mm_events')) || [];
-            announcements = JSON.parse(safeStorage.getItem('mm_announcements')) || [];
-            mediaItems = JSON.parse(safeStorage.getItem('mm_media')) || [];
-            events = events.filter(function (item) { return DEMO_EVENT_NAMES.indexOf(item.name) === -1; });
-            announcements = announcements.filter(function (item) { return DEMO_ANNOUNCEMENT_TITLES.indexOf(item.title) === -1; });
-            mediaItems = mediaItems.filter(function (item) { return item.caption !== "Winter showcase"; });
-            saveData();
-            
-            loginHistory = JSON.parse(safeStorage.getItem('mm_login_history') || '[]');
-
-            const savedUser = safeStorage.getItem('mm_currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                updateNavUser();
-            }
-
-            if (!storageAvailable) {
-                setTimeout(() => {
-                    showToast("Running in limited/sandboxed mode. Data won't persist after refresh.", "info");
-                }, 1500);
-            }
-        }
-
-        function saveData() {
-            safeStorage.setItem('mm_users', JSON.stringify(users));
-            safeStorage.setItem('mm_events', JSON.stringify(events));
-            safeStorage.setItem('mm_announcements', JSON.stringify(announcements));
-            safeStorage.setItem('mm_media', JSON.stringify(mediaItems));
-        }
-
-        function updateNavUser() {
-            const el = document.getElementById('nav-user-section');
-            if (!currentUser) {
-                el.innerHTML = '';
-                return;
-            }
-            
-            const roleColor = currentUser.role === 'Admin' ? 'text-[#FFD700]' : 'text-white/70';
-            
-            el.innerHTML = `
-                <div class="flex items-center gap-x-2 cursor-pointer" onclick="showDashboard()">
-                    <img src="${currentUser.avatar || 'pfp.jpg'}" class="w-8 h-8 rounded-2xl border border-white/30" onerror="this.src='https://i.pravatar.cc/32?u=${currentUser.id}'">
-                    <div class="hidden md:flex items-center gap-x-1.5">
-                        <span class="text-sm font-medium">${currentUser.username}</span>
-                        <span class="text-[10px] px-2 py-px rounded-full border border-white/20 ${roleColor}">${currentUser.role}</span>
-                    </div>
-                </div>
-            `;
-        }
-
-        async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const pass = document.getElementById('login-password').value;
-            
-            // Find user and verify password (supports both new SHA-256 and legacy btoa for demo accounts)
-            let user = null;
-            const legacyHash = btoa(pass);
-            
-            for (const u of users) {
-                const isLegacyMatch = u.passwordHash === legacyHash;
-                const isSecureMatch = await verifyPassword(pass, u.passwordHash);
-                
-                if ((u.email === email || u.username === email) && (isLegacyMatch || isSecureMatch)) {
-                    user = u;
-                    break;
-                }
-            }
-            
-            if (user) {
-                currentUser = user;
-                safeStorage.setItem('mm_currentUser', JSON.stringify(currentUser));
-                
-                // Record login
-                const history = JSON.parse(safeStorage.getItem('mm_login_history') || '[]');
-                history.unshift({ username: user.username, role: user.role, time: new Date().toISOString() });
-                safeStorage.setItem('mm_login_history', JSON.stringify(history.slice(0, 20)));
-                
-                hideLoginModal();
-                updateNavUser();
-                showToast(`Welcome back, ${user.username}!`, 'success');
-                setTimeout(showDashboard, 600);
-            } else {
-                showToast('Invalid credentials', 'error');
-            }
-        }
-
-        async function handleRegister(e) {
-            e.preventDefault();
-            const username = document.getElementById('reg-username').value;
-            const email = document.getElementById('reg-email').value;
-            const pass = document.getElementById('reg-password').value;
-            const role = document.getElementById('reg-role').value;
-            const passcode = document.getElementById('reg-passcode').value;
-            
-            if (passcode !== 'MULTIMEDIA2026') {
-                showToast('Invalid club registration code. Please contact a club officer for the correct code.', 'error');
-                return;
-            }
-            
-            // Professional registration rules
-            // 1. Password must not already be used by another account
-            const passwordHash = await hashPassword(pass);
-            const passwordAlreadyUsed = users.some(u => u.passwordHash === passwordHash);
-            if (passwordAlreadyUsed) {
-                showToast('This password is already in use. Please choose another.', 'error');
-                return;
-            }
-            
-            // 2. Prevent registering as Admin if slots are full (max 2)
-            if (role === 'Admin') {
-                const currentAdmins = users.filter(u => u.role === 'Admin').length;
-                if (currentAdmins >= 2) {
-                    showToast('Admin role is currently full. Please contact an existing administrator.', 'error');
-                    return;
-                }
-            }
-            
-            const newUser = {
-                id: Date.now(),
-                username,
-                email,
-                passwordHash: passwordHash,
-                role,
-                joined: new Date().toISOString().split('T')[0],
-                active: true,
-                online: true,
-                officerRole: null
-            };
-            
-            users.push(newUser);
-            saveData();
-            currentUser = newUser;
-            safeStorage.setItem('mm_currentUser', JSON.stringify(currentUser));
-            hideRegisterModal();
-            updateNavUser();
-            showToast('Account created! Welcome to the crew.', 'success');
-            setTimeout(showDashboard, 800);
-        }
-
-        function logout() {
-            currentUser = null;
-            safeStorage.setItem('mm_currentUser', '');
-            updateNavUser();
-            hideDashboard();
-            showToast('Logged out successfully');
-        }
-
-        // Events
-        function renderEvents() {
-            const grid = document.getElementById('events-grid');
-            grid.innerHTML = '';
-            if (!events.length) {
-                grid.innerHTML = '<div class="glass rounded-3xl p-8 text-[#B8B8D0]">No events yet. New club events will show up here.</div>';
-                return;
-            }
-            events.forEach(ev => {
-                const remaining = getTimeRemaining(ev.date);
-                const card = document.createElement('div');
-                card.className = `card glass rounded-3xl overflow-hidden border border-white/10`;
-                card.innerHTML = `
-                    <div class="h-36 flex items-center justify-center" style="background: linear-gradient(135deg, ${ev.posterColor || '#FFD700'}22, #111133)">
-                        <i class="fa-solid fa-film text-5xl opacity-40" style="color:${ev.posterColor || '#FFD700'}"></i>
-                    </div>
-                    <div class="p-5">
-                        <div class="font-semibold text-xl mb-1">${ev.name}</div>
-                        <div class="text-xs text-white/50 mb-3">${new Date(ev.date).toLocaleDateString()}</div>
-                        <p class="text-sm text-[#B8B8D0] line-clamp-2 mb-4">${ev.description}</p>
-                        <div class="flex justify-between items-center">
-                            <div class="countdown text-sm font-mono">
-                                ${remaining.expired ? 'ENDED' : `${remaining.days}d ${remaining.hours}h ${remaining.minutes}m`}
-                            </div>
-                            <button onclick="rsvpEvent(${ev.id}, this)" class="text-xs px-4 py-1.5 rounded-2xl border border-[#FFD700]/60">RSVP</button>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-            
-            startCountdowns();
-        }
-
-        function getTimeRemaining(dateStr) {
-            const diff = new Date(dateStr) - Date.now();
-            if (diff <= 0) return {expired: true};
-            return {
-                expired: false,
-                days: Math.floor(diff / 86400000),
-                hours: Math.floor((diff % 86400000) / 3600000),
-                minutes: Math.floor((diff % 3600000) / 60000)
-            };
-        }
-
-        let countdownTimer;
-        function startCountdowns() {
-            if (countdownTimer) clearInterval(countdownTimer);
-            countdownTimer = setInterval(() => {
-                document.querySelectorAll('#events-grid .countdown').forEach((el, i) => {
-                    if (events[i]) {
-                        const r = getTimeRemaining(events[i].date);
-                        el.innerHTML = r.expired ? 'ENDED' : `${r.days}d ${r.hours}h ${r.minutes}m`;
-                    }
-                });
-            }, 30000);
-        }
-
-        function rsvpEvent(id, btn) {
-            if (!currentUser) { showLoginModal(); return; }
-            btn.innerHTML = '✓ RSVP\'d';
-            btn.disabled = true;
-            showToast('RSVP successful!', 'success');
-        }
-
-        function showCreateEventModal() {
-            if (!currentUser || (currentUser.role !== 'Editor' && currentUser.role !== 'Admin')) {
-                alert('Editor/Admin only');
-                return;
-            }
-            const name = prompt('Event Name:');
-            if (!name) return;
-            const date = prompt('Date & Time (YYYY-MM-DDTHH:MM):', '2026-05-10T18:00');
-            if (!date) return;
-            
-            events.push({
-                id: Date.now(),
-                name,
-                date,
-                description: 'New event added via admin.',
-                location: 'Campus',
-                posterColor: '#FFD700'
-            });
-            saveData();
-            renderEvents();
-            showToast('Event created!');
-        }
-
-        // Announcements
-        let currentFilter = 'all';
-        
-        function renderAnnouncements(filtered = null) {
-            const container = document.getElementById('announcements-list');
-            container.innerHTML = '';
-            let list = filtered || announcements;
-            
-            list.sort((a,b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || new Date(b.date) - new Date(a.date));
-            if (!list.length) {
-                container.innerHTML = '<div class="glass rounded-3xl p-8 text-[#B8B8D0]">No announcements yet. Real club updates will show up here.</div>';
-                return;
-            }
-            
-            list.forEach(ann => {
-                const div = document.createElement('div');
-                div.className = `glass p-6 rounded-3xl ${ann.pinned ? 'ring-1 ring-[#FFD700]/30' : ''}`;
-                div.innerHTML = `
-                    <div class="flex justify-between">
-                        <div>
-                            <span class="px-3 py-px text-xs rounded-full bg-white/10">${ann.category}</span>
-                            ${ann.pinned ? '<span class="ml-2 text-[#FFD700] text-xs">📌 PINNED</span>' : ''}
-                            <h4 class="font-semibold text-xl mt-2">${ann.title}</h4>
-                            <p class="text-[#B8B8D0] mt-1">${ann.content}</p>
-                        </div>
-                        ${currentUser && (currentUser.role === 'Editor' || currentUser.role === 'Admin') ? `
-                        <div class="flex flex-col gap-2">
-                            <button onclick="togglePin(${ann.id})" class="text-xs px-3 py-1 border border-white/20 rounded-xl">Pin</button>
-                            <button onclick="deleteAnn(${ann.id})" class="text-xs px-3 py-1 border border-red-400/40 text-red-400 rounded-xl">Delete</button>
-                        </div>` : ''}
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function filterAnnouncements() {
-            const term = document.getElementById('announcement-search').value.toLowerCase();
-            let filtered = announcements.filter(a => a.title.toLowerCase().includes(term) || a.content.toLowerCase().includes(term));
-            renderAnnouncements(filtered);
-        }
-
-        function togglePin(id) {
-            const ann = announcements.find(a => a.id === id);
-            ann.pinned = !ann.pinned;
-            saveData();
-            renderAnnouncements();
-        }
-
-        function deleteAnn(id) {
-            if (!confirm('Delete this announcement?')) return;
-            announcements = announcements.filter(a => a.id !== id);
-            saveData();
-            renderAnnouncements();
-        }
-
-        function showCreateAnnouncementModal() {
-            if (!currentUser || (currentUser.role !== 'Editor' && currentUser.role !== 'Admin')) {
-                alert('Editor/Admin only');
-                return;
-            }
-            const title = prompt('Announcement Title:');
-            if (!title) return;
-            const content = prompt('Content:');
-            if (!content) return;
-            
-            announcements.unshift({
-                id: Date.now(),
-                title,
-                content,
-                category: 'General',
-                date: new Date().toISOString().split('T')[0],
-                pinned: false,
-                author: currentUser.username
-            });
-            saveData();
-            renderAnnouncements();
-            showToast('Announcement published!');
-        }
-
-        // Verity Chat + voice
+        let currentUser = null, users = [], events = [], announcements = [];
+        let verityChatHistory = [], verityVoiceEnabled = true, verityAudio = null, verityObjectUrl = null;
+        let verityIsTalking = false, verityMood = "idle", veritySwearStrikes = 0, veritySpeechToken = 0, verityStartTourAfterSpeech = false;
         const VERITY_IDLE_SRC = "images/idle.jpg";
         const VERITY_TALKING_SRC = "images/talking.jpg";
-        const VERITY_TTS_ENDPOINT = "/api/tts";
-        const VERITY_VOICE_STORAGE_KEY = "verityVoiceEnabled";
+        const VERITY_SAD_SRC = "images/sad.jpg";
+        const VERITY_ANGRY_SRC = "images/angry.jpg";
+        const DEMO_EVENT_NAMES = ["Winter Showcase 2026", "Spring Film Festival"];
+        const DEMO_ANNOUNCEMENT_TITLES = ["New Camera Equipment Arrived!", "Call for Submissions: Spring Film Festival"];
+        const safeStorage = { getItem(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, setItem(k,v){ try { localStorage.setItem(k,v); } catch(e){} } };
 
-        let verityVoiceEnabled = true;
-        let verityAudio = null;
-        let verityObjectUrl = null;
-        let verityIsTalking = false;
-        let lastVeritySpokenText = "";
-        let verityThinking = false;
-
-        function loadVerityVoicePreference() {
-            try {
-                const saved = safeStorage.getItem(VERITY_VOICE_STORAGE_KEY);
-                if (saved === "false") verityVoiceEnabled = false;
-                else if (saved === "true") verityVoiceEnabled = true;
-            } catch (err) {
-                verityVoiceEnabled = true;
-            }
-            updateVerityVoiceButton();
+        function showToast(message) {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            toast.className = "glass px-5 py-3 rounded-2xl text-sm";
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3200);
+        }
+        function loadData() {
+            users = JSON.parse(safeStorage.getItem("mm_users") || "[]");
+            events = JSON.parse(safeStorage.getItem("mm_events") || "[]").filter(item => DEMO_EVENT_NAMES.indexOf(item.name) === -1);
+            announcements = JSON.parse(safeStorage.getItem("mm_announcements") || "[]").filter(item => DEMO_ANNOUNCEMENT_TITLES.indexOf(item.title) === -1);
+            const saved = safeStorage.getItem("mm_currentUser");
+            if (saved) currentUser = JSON.parse(saved);
+            saveData();
+            updateNavUser();
+        }
+        function saveData() {
+            safeStorage.setItem("mm_users", JSON.stringify(users));
+            safeStorage.setItem("mm_events", JSON.stringify(events));
+            safeStorage.setItem("mm_announcements", JSON.stringify(announcements));
+        }
+        function updateNavUser() {
+            const el = document.getElementById("nav-user-section");
+            el.innerHTML = currentUser
+                ? `<button onclick="showDashboard()" class="text-sm">${currentUser.username}</button>`
+                : `<button onclick="showLoginModal()" class="text-sm text-[#FFD700]">Sign in</button>`;
+        }
+        async function hashPassword(password) {
+            const data = new TextEncoder().encode(password);
+            const hash = await crypto.subtle.digest("SHA-256", data);
+            return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, "0")).join("");
+        }
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById("login-email").value;
+            const pass = document.getElementById("login-password").value;
+            const hash = await hashPassword(pass);
+            const user = users.find(u => (u.email === email || u.username === email) && (u.passwordHash === hash || u.passwordHash === btoa(pass)));
+            if (!user) return showToast("Invalid credentials");
+            currentUser = user;
+            safeStorage.setItem("mm_currentUser", JSON.stringify(user));
+            hideLoginModal(); updateNavUser(); showToast("Welcome back");
+        }
+        async function handleRegister(e) {
+            e.preventDefault();
+            if (document.getElementById("reg-passcode").value !== "MULTIMEDIA2026") return showToast("Invalid club registration code");
+            const user = { id: Date.now(), username: document.getElementById("reg-username").value, email: document.getElementById("reg-email").value, passwordHash: await hashPassword(document.getElementById("reg-password").value), role: document.getElementById("reg-role").value, active: true };
+            users.push(user); currentUser = user; saveData(); safeStorage.setItem("mm_currentUser", JSON.stringify(user));
+            hideRegisterModal(); updateNavUser(); showToast("Account created");
+        }
+        function showLoginModal(){ document.getElementById("login-modal").classList.remove("hidden"); document.getElementById("login-modal").classList.add("flex"); }
+        function hideLoginModal(){ document.getElementById("login-modal").classList.add("hidden"); }
+        function showRegisterModal(){ document.getElementById("register-modal").classList.remove("hidden"); document.getElementById("register-modal").classList.add("flex"); }
+        function hideRegisterModal(){ document.getElementById("register-modal").classList.add("hidden"); }
+        function showDashboard(){ document.getElementById("dashboard-overlay").classList.remove("hidden"); document.getElementById("dashboard-content").textContent = currentUser ? `Signed in as ${currentUser.username} (${currentUser.role})` : ""; }
+        function hideDashboard(){ document.getElementById("dashboard-overlay").classList.add("hidden"); }
+        function renderEvents() {
+            const grid = document.getElementById("events-grid");
+            if (!events.length) { grid.innerHTML = '<div class="glass rounded-3xl p-8 text-[#B8B8D0]">No events yet. New club events will show up here.</div>'; return; }
+            grid.innerHTML = events.map(ev => `<div class="card glass rounded-3xl p-5"><div class="font-semibold text-xl">${ev.name}</div><p class="text-sm text-[#B8B8D0] mt-2">${ev.description || ""}</p></div>`).join("");
+        }
+        function renderAnnouncements() {
+            const container = document.getElementById("announcements-list");
+            if (!announcements.length) { container.innerHTML = '<div class="glass rounded-3xl p-8 text-[#B8B8D0]">No announcements yet. Real club updates will show up here.</div>'; return; }
+            container.innerHTML = announcements.map(ann => `<div class="glass rounded-3xl p-6"><h4 class="font-semibold text-xl">${ann.title}</h4><p class="text-[#B8B8D0] mt-1">${ann.content}</p></div>`).join("");
+        }
+        function showCreateEventModal() {
+            const name = prompt("Event name:"); if (!name) return;
+            const description = prompt("Description:") || "";
+            events.push({ id: Date.now(), name, description }); saveData(); renderEvents();
+        }
+        function showCreateAnnouncementModal() {
+            const title = prompt("Announcement title:"); if (!title) return;
+            const content = prompt("Content:") || "";
+            announcements.unshift({ id: Date.now(), title, content, date: new Date().toISOString().slice(0,10) }); saveData(); renderAnnouncements();
         }
 
-        function updateVerityVoiceButton() {
-            const btn = document.getElementById("verity-voice-btn");
-            if (!btn) return;
-            btn.setAttribute("aria-pressed", verityVoiceEnabled ? "true" : "false");
-            btn.setAttribute("aria-label", verityVoiceEnabled ? "Verity voice is on" : "Verity voice is off");
-            btn.textContent = verityVoiceEnabled ? "🔊 Voice ON" : "🔇 Voice OFF";
+        function verityImageForState() {
+            if (verityMood === "sad") return VERITY_SAD_SRC;
+            if (verityMood === "angry") return VERITY_ANGRY_SRC;
+            return verityIsTalking ? VERITY_TALKING_SRC : VERITY_IDLE_SRC;
         }
-
-        function toggleVerityVoice() {
-            verityVoiceEnabled = !verityVoiceEnabled;
-            safeStorage.setItem(VERITY_VOICE_STORAGE_KEY, verityVoiceEnabled ? "true" : "false");
-            updateVerityVoiceButton();
-            if (!verityVoiceEnabled) {
-                stopVeritySpeaking();
-                setVerityTalking(false);
-            }
-        }
-
+        function setVerityMood(mood) { verityMood = mood || "idle"; setVerityTalking(verityIsTalking); }
         function setVerityTalking(isTalking) {
             verityIsTalking = !!isTalking;
-            const src = verityIsTalking ? VERITY_TALKING_SRC : VERITY_IDLE_SRC;
-            document.querySelectorAll(".verity-avatar-img, .verity-orb img").forEach((img) => {
+            const src = verityImageForState();
+            document.querySelectorAll(".verity-avatar-img, .verity-orb img").forEach(img => {
                 if (img.getAttribute("src") === src) return;
                 img.classList.add("is-swapping");
                 img.setAttribute("src", src);
-                window.setTimeout(() => img.classList.remove("is-swapping"), 280);
-            });
-            document.querySelectorAll(".verity-orb").forEach((orb) => {
-                orb.classList.toggle("is-talking", verityIsTalking);
+                setTimeout(() => img.classList.remove("is-swapping"), 280);
             });
         }
-
-        function cleanupVerityAudioUrl() {
-            if (verityObjectUrl) {
-                URL.revokeObjectURL(verityObjectUrl);
-                verityObjectUrl = null;
-            }
-        }
-
-        let verityStartTourAfterSpeech = false;
-        let veritySpeechToken = 0;
-
+        function showVerityOrbBubble(text) { const bubble = document.getElementById("verity-orb-bubble"); bubble.textContent = text; bubble.classList.add("is-visible"); }
+        function hideVerityOrbBubble() { const bubble = document.getElementById("verity-orb-bubble"); bubble.classList.remove("is-visible"); bubble.textContent = ""; }
         function stopVeritySpeaking() {
-            if (verityAudio) {
-                try {
-                    verityAudio.onended = null;
-                    verityAudio.onerror = null;
-                    verityAudio.onplay = null;
-                    verityAudio.pause();
-                    verityAudio.removeAttribute("src");
-                    verityAudio.load();
-                } catch (err) {}
-                verityAudio = null;
-            }
-            cleanupVerityAudioUrl();
+            if (verityAudio) { verityAudio.pause(); verityAudio = null; }
+            if (verityObjectUrl) { URL.revokeObjectURL(verityObjectUrl); verityObjectUrl = null; }
             setVerityTalking(false);
         }
-
         function finishVeritySpeech(audio, url) {
             if (verityAudio !== audio) return;
+            verityMood = "idle";
             setVerityTalking(false);
             hideVerityOrbBubble();
             verityAudio = null;
-            if (url) {
-                window.setTimeout(function () {
-                    URL.revokeObjectURL(url);
-                }, 1500);
-            }
-            if (verityObjectUrl === url) verityObjectUrl = null;
+            if (url) setTimeout(() => URL.revokeObjectURL(url), 1200);
         }
-
-        // TTS: frontend sends text only. The key stays on the server.
         async function speakVerity(text) {
-            if (!verityVoiceEnabled || !text) {
-                return;
-            }
-
+            if (!verityVoiceEnabled || !text) return;
             const token = ++veritySpeechToken;
-            lastVeritySpokenText = text;
-
             try {
-                const response = await fetch(VERITY_TTS_ENDPOINT, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        text,
-                        voiceId: window.VERITY_TTS_VOICE_ID || undefined
-                    })
-                });
-
-                if (token !== veritySpeechToken) return;
-                if (!response.ok) {
-                    throw new Error("TTS request failed (" + response.status + ")");
-                }
-
+                const response = await fetch("/api/tts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
+                if (!response.ok || token !== veritySpeechToken) throw new Error("TTS request failed");
                 const bytes = await response.arrayBuffer();
                 if (token !== veritySpeechToken) return;
-                if (!bytes || bytes.byteLength < 128) {
-                    throw new Error("TTS returned empty audio");
-                }
-
                 stopVeritySpeaking();
-                const blob = new Blob([bytes], { type: "audio/mpeg" });
-                verityObjectUrl = URL.createObjectURL(blob);
-                const url = verityObjectUrl;
-                verityAudio = new Audio(url);
-                verityAudio.preload = "auto";
-                const audio = verityAudio;
-
-                audio.onplay = function () {
-                    if (token !== veritySpeechToken) return;
-                    setVerityTalking(true);
-                    showVerityOrbBubble(text);
-                    showVerityPlayVoiceButton(false);
-                };
-                audio.onended = function () {
-                    const duration = audio.duration;
-                    if (isFinite(duration) && duration - audio.currentTime > 0.4) {
-                        audio.play().catch(function () {});
-                        return;
-                    }
-                    finishVeritySpeech(audio, url);
-                };
-                audio.onerror = function () {
-                    console.warn("Verity voice unavailable:", "audio element error");
-                    finishVeritySpeech(audio, url);
-                };
-
-                const playPromise = audio.play();
-                if (playPromise && typeof playPromise.then === "function") {
-                    playPromise.catch(function (error) {
-                        if (token !== veritySpeechToken) return;
-                        console.warn("Verity voice unavailable:", error);
-                        setVerityTalking(false);
-                        showVerityPlayVoiceButton(true);
-                        showToast("Browser blocked autoplay. Tap Play voice to hear Verity.", "info");
-                    });
-                }
+                const url = URL.createObjectURL(new Blob([bytes], { type: "audio/mpeg" }));
+                verityObjectUrl = url;
+                const audio = new Audio(url);
+                verityAudio = audio;
+                audio.onplay = () => { if (token === veritySpeechToken) { setVerityTalking(true); showVerityOrbBubble(text); } };
+                audio.onended = () => finishVeritySpeech(audio, url);
+                audio.onerror = () => finishVeritySpeech(audio, url);
+                await audio.play();
             } catch (error) {
-                if (token !== veritySpeechToken) return;
                 console.warn("Verity voice unavailable:", error);
                 setVerityTalking(false);
             }
         }
-
-        function showVerityPlayVoiceButton(show) {
-            const btn = document.getElementById("verity-play-voice-btn");
-            if (!btn) return;
-            btn.style.display = show ? "inline-flex" : "none";
+        function toggleVerityVoice() {
+            verityVoiceEnabled = !verityVoiceEnabled;
+            safeStorage.setItem("verityVoiceEnabled", verityVoiceEnabled ? "true" : "false");
+            const btn = document.getElementById("verity-voice-btn");
+            btn.textContent = verityVoiceEnabled ? "🔊 Voice ON" : "🔇 Voice OFF";
+            btn.setAttribute("aria-pressed", verityVoiceEnabled ? "true" : "false");
+            if (!verityVoiceEnabled) stopVeritySpeaking();
         }
-
-        function replayLastVerityVoice() {
-            if (lastVeritySpokenText) speakVerity(lastVeritySpokenText);
+        function loadVerityVoicePreference() {
+            if (safeStorage.getItem("verityVoiceEnabled") === "false") verityVoiceEnabled = false;
+            const btn = document.getElementById("verity-voice-btn");
+            if (btn) btn.textContent = verityVoiceEnabled ? "🔊 Voice ON" : "🔇 Voice OFF";
         }
-
-        function showVerityThinking() {
-            verityThinking = true;
-            renderVerityChat();
-        }
-
-        function hideVerityThinking() {
-            verityThinking = false;
-        }
-
-        function showVerityChat() {
-            const modal = document.getElementById("verity-chat-modal");
-            modal.classList.remove("hidden");
-            modal.classList.add("flex");
-            updateVerityVoiceButton();
-            if (verityChatHistory.length === 0) {
-                addVerityMessage("Hellooo, I'm Verity, your personal assistant. Ask me to show you around by clicking the Show me around button.", { speak: false });
-            }
-            renderVerityChat();
-            const input = document.getElementById("chat-input");
-            if (input) input.focus();
-        }
-
-        function hideVerityChat() {
-            const modal = document.getElementById("verity-chat-modal");
-            modal.classList.remove("flex");
-            modal.classList.add("hidden");
-        }
-
-        function addVerityMessage(text, options) {
-            const opts = options || {};
-            const shouldSpeak = opts.speak !== false;
-            verityChatHistory.push({ role: "verity", content: text });
-            hideVerityThinking();
-            renderVerityChat();
-
-            const orb = document.getElementById("floating-verity");
-            if (orb) {
-                orb.style.transition = "transform 0.2s ease, box-shadow 0.3s ease";
-                orb.style.transform = "scale(1.08)";
-                window.setTimeout(function () {
-                    if (orb) orb.style.transform = "";
-                }, 500);
-            }
-
-            if (shouldSpeak && verityVoiceEnabled) {
-                const startTour = verityStartTourAfterSpeech;
-                verityStartTourAfterSpeech = false;
-                speakVerity(text).then(function () {
-                    if (!startTour) return;
-                    return waitForVeritySpeech().then(startWebsiteTour);
-                });
-            } else if (verityStartTourAfterSpeech) {
-                verityStartTourAfterSpeech = false;
-                window.setTimeout(startWebsiteTour, 600);
-            }
-        }
-
+        function escapeVerityHtml(text) { return String(text).replace(/&/g,"&").replace(/</g,"<").replace(/>/g,">"); }
         function renderVerityChat() {
             const container = document.getElementById("chat-messages");
-            if (!container) return;
-            container.innerHTML = "";
-            verityChatHistory.forEach(function (msg) {
-                const wrap = document.createElement("div");
-                if (msg.role === "user") {
-                    wrap.innerHTML = '<div class="chat-bubble-user">' + escapeVerityHtml(msg.content) + "</div>";
-                } else {
-                    wrap.innerHTML =
-                        '<div class="flex gap-x-3 items-end">' +
-                        '<div class="verity-orb flex-shrink-0" style="width:28px;height:28px;animation:none;">' +
-                        '<img src="' + (verityIsTalking ? VERITY_TALKING_SRC : VERITY_IDLE_SRC) + '" class="verity-avatar-img" alt="Verity">' +
-                        "</div>" +
-                        '<div class="chat-bubble-verity">' + escapeVerityHtml(msg.content) + "</div>" +
-                        "</div>";
-                }
-                container.appendChild(wrap);
-            });
-
-            if (verityThinking) {
-                const thinking = document.createElement("div");
-                thinking.id = "verity-thinking";
-                thinking.innerHTML =
-                    '<div class="flex gap-x-3 items-center">' +
-                    '<div class="verity-orb flex-shrink-0" style="width:28px;height:28px;animation:none;">' +
-                    '<img src="' + VERITY_IDLE_SRC + '" class="verity-avatar-img" alt="Verity thinking">' +
-                    "</div>" +
-                    '<div class="chat-bubble-verity">' +
-                    '<div class="text-xs text-white/60 mb-1">Verity is thinking...</div>' +
-                    '<div class="typing-indicator" aria-hidden="true"><span></span><span></span><span></span></div>' +
-                    "</div></div>";
-                container.appendChild(thinking);
-            }
-
+            container.innerHTML = verityChatHistory.map(msg => msg.role === "user"
+                ? `<div class="chat-bubble-user">${escapeVerityHtml(msg.content)}</div>`
+                : `<div class="flex gap-3 items-end"><div class="verity-orb" style="width:28px;height:28px;animation:none;"><img src="${verityImageForState()}" class="verity-avatar-img" alt="Verity"></div><div class="chat-bubble-verity">${escapeVerityHtml(msg.content)}</div></div>`
+            ).join("");
             container.scrollTop = container.scrollHeight;
         }
-
-        function escapeVerityHtml(text) {
-            return String(text)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;");
+        function addVerityMessage(text, options) {
+            const speak = !options || options.speak !== false;
+            verityChatHistory.push({ role: "verity", content: text });
+            renderVerityChat();
+            showVerityOrbBubble(text);
+            if (speak && verityVoiceEnabled) speakVerity(text);
+            else if (verityMood !== "idle") setTimeout(() => setVerityMood("idle"), 2500);
         }
-
+        function showVerityChat() {
+            const modal = document.getElementById("verity-chat-modal");
+            modal.classList.remove("hidden"); modal.classList.add("flex");
+            if (!verityChatHistory.length) addVerityMessage("Hellooo, I'm Verity, your personal assistant. Ask me to show you around by clicking the Show me around button.", { speak: false });
+            renderVerityChat();
+        }
+        function hideVerityChat() {
+            const modal = document.getElementById("verity-chat-modal");
+            modal.classList.add("hidden"); modal.classList.remove("flex");
+        }
+        function isInappropriateMessage(q) {
+            return ["fuck", "shit", "bitch", "asshole", "damn"].some(word => q.includes(word));
+        }
+        function getVerityResponse(q) {
+            q = (q || "").toLowerCase().trim();
+            if (/^(hi|hello|hey|yo)( verity)?[!?. ]*$/.test(q) || q.includes("hello verity") || q.includes("hi verity")) return Math.random() < 0.5 ? "Whatssup?" : "Yes?";
+            if (q.includes("tour") || q.includes("show me around")) { verityStartTourAfterSpeech = true; return "Sure. I will show you around."; }
+            if (q.includes("event")) return "Events are listed in the Events section.";
+            if (q.includes("announcement")) return "Announcements are listed in the School Announcements section.";
+            if (q.includes("join") || q.includes("register")) return "Use the registration passcode MULTIMEDIA2026 to create an account.";
+            if (q.includes("role")) return "The club has Member, Editor, Photographer, and Admin roles.";
+            return "I can help with events, announcements, or a tour of the website.";
+        }
         function sendChatMessage() {
             const input = document.getElementById("chat-input");
-            if (!input.value.trim()) return;
-
-            let message = input.value.trim();
-            const badWords = ["fuck", "shit", "bitch", "asshole", "damn"];
+            const message = input.value.trim();
+            if (!message) return;
             const lowerMsg = message.toLowerCase();
-            for (let i = 0; i < badWords.length; i++) {
-                if (lowerMsg.includes(badWords[i])) {
-                    showToast("Please keep the chat appropriate.", "error");
-                    input.value = "";
-                    return;
-                }
-            }
-
-            verityChatHistory.push({ role: "user", content: message });
             input.value = "";
-            showVerityThinking();
-
-            window.setTimeout(function () {
-                const response = getVerityResponse(message);
-                addVerityMessage(response);
-            }, 40);
-        }
-
-        function getVerityResponse(q) {
-            q = (q || "").toLowerCase();
-            const lastVerity = [...verityChatHistory].reverse().find(function (m) { return m.role === "verity"; });
-            const offeredTour = lastVerity && /tour of the website/i.test(lastVerity.content || "");
-            if (q.includes("tour") || q.includes("show me around") || (offeredTour && (q === "yes" || q.startsWith("yes")))) {
-                verityStartTourAfterSpeech = true;
-                return "Sure. Click Show me around, and I will walk you through the website.";
+            if (isInappropriateMessage(lowerMsg)) {
+                veritySwearStrikes += 1;
+                verityChatHistory.push({ role: "user", content: "..." });
+                if (veritySwearStrikes >= 2) { setVerityMood("angry"); addVerityMessage("Stop.."); }
+                else { setVerityMood("sad"); addVerityMessage("Please don't say that."); }
+                return;
             }
-            if (q.includes("event")) return "We have exciting events coming up with live countdowns! Check the Events section.";
-            if (q.includes("announcement")) return "You can find all official updates in the Announcements board above.";
-            if (q.includes("register") || q.includes("join")) return "Use the registration passcode MULTIMEDIA2026 to create an account.";
-            if (q.includes("role")) return "We have Member, Editor, and Photographer roles available.";
-            return "I'm here to help! Feel free to ask about events, announcements, or how to get involved.";
+            veritySwearStrikes = 0;
+            verityChatHistory.push({ role: "user", content: message });
+            renderVerityChat();
+            const response = getVerityResponse(message);
+            addVerityMessage(response);
+            if (verityStartTourAfterSpeech) { verityStartTourAfterSpeech = false; setTimeout(startWebsiteTour, 900); }
         }
-
-        function waitForVeritySpeech() {
-            return new Promise(function (resolve) {
-                const started = Date.now();
-                const timer = window.setInterval(function () {
-                    const audio = verityAudio;
-                    const stillTalking = audio && !audio.ended && !audio.paused && audio.currentTime >= 0;
-                    if (!stillTalking || Date.now() - started > 25000) {
-                        window.clearInterval(timer);
-                        resolve();
-                    }
-                }, 250);
-            });
-        }
-
-        function showVerityOrbBubble(text) {
-            const bubble = document.getElementById("verity-orb-bubble");
-            if (!bubble) return;
-            bubble.textContent = text;
-            bubble.classList.add("is-visible");
-        }
-
-        function hideVerityOrbBubble() {
-            const bubble = document.getElementById("verity-orb-bubble");
-            if (!bubble) return;
-            bubble.classList.remove("is-visible");
-            bubble.textContent = "";
-        }
-
         function scrollToTourSection(id) {
-            return new Promise(function (resolve) {
-                const target = document.getElementById(id);
-                if (!target) {
-                    resolve();
-                    return;
-                }
-                target.scrollIntoView({ behavior: "smooth", block: "start" });
-                target.style.transition = "box-shadow 0.3s ease";
-                target.style.boxShadow = "0 0 0 2px rgba(255, 215, 0, 0.7)";
-                window.setTimeout(function () {
-                    target.style.boxShadow = "";
-                    resolve();
-                }, 280);
-            });
+            const target = document.getElementById(id);
+            if (!target) return;
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+            target.style.boxShadow = "0 0 0 2px rgba(255,215,0,0.7)";
+            setTimeout(() => { target.style.boxShadow = ""; }, 500);
         }
-
         async function startWebsiteTour() {
             hideVerityChat();
             const steps = [
@@ -2457,291 +417,39 @@
                 { el: "about", text: "Here is the About section." },
                 { el: "home", text: "And this is the home page." }
             ];
-
-            for (let i = 0; i < steps.length; i++) {
-                const step = steps[i];
+            for (const step of steps) {
                 showVerityOrbBubble(step.text);
-                const scrollPromise = step.el ? scrollToTourSection(step.el) : Promise.resolve();
-                const speakPromise = verityVoiceEnabled ? speakVerity(step.text) : Promise.resolve();
-                await Promise.all([scrollPromise, speakPromise]);
-                if (verityVoiceEnabled) {
-                    await Promise.race([
-                        waitForVeritySpeech(),
-                        new Promise(function (resolve) { window.setTimeout(resolve, 2200); })
-                    ]);
-                }
+                scrollToTourSection(step.el);
+                if (verityVoiceEnabled) await speakVerity(step.text);
+                await new Promise(resolve => setTimeout(resolve, verityVoiceEnabled ? 1800 : 900));
             }
             hideVerityOrbBubble();
         }
-
-        // Dashboard
-        function showDashboard() {
-            if (!currentUser) { showLoginModal(); return; }
-            document.getElementById('dashboard-overlay').classList.remove('hidden');
-            document.getElementById('dashboard-overlay').classList.add('flex');
-            document.getElementById('dashboard-role-badge').textContent = currentUser.role.toUpperCase();
-            switchDashboardTab('overview'); // Default to overview with button for members
-        }
-
-        function hideDashboard() {
-            document.getElementById('dashboard-overlay').classList.remove('flex');
-            document.getElementById('dashboard-overlay').classList.add('hidden');
-        }
-
-        function changeAvatar() {
-            const newAvatar = prompt("Enter new avatar image URL (leave empty for default pfp.jpg):", currentUser.avatar || "pfp.jpg");
-            
-            if (newAvatar !== null) {
-                currentUser.avatar = newAvatar.trim() || "pfp.jpg";
-                safeStorage.setItem("mm_currentUser", JSON.stringify(currentUser));
-                
-                const idx = users.findIndex(u => u.id === currentUser.id);
-                if (idx !== -1) {
-                    users[idx].avatar = currentUser.avatar;
-                    safeStorage.setItem("mm_users", JSON.stringify(users));
-                }
-                
-                updateNavUser();
-                showToast("Avatar updated successfully!");
-            }
-        }
-
-        function switchDashboardTab(tab) {
-            const content = document.getElementById('dashboard-content');
-            content.innerHTML = '';
-            
-            if (tab === 'overview') {
-                // Overview with button to view members
-                content.innerHTML = `
-                    <h3 class="text-2xl font-semibold mb-4">Welcome back, ${currentUser.username}!</h3>
-                    
-                    <div class="glass p-8 rounded-3xl mb-6 text-center">
-                        <div class="text-6xl mb-4">👥</div>
-                        <h4 class="text-xl font-semibold mb-2">Member Directory</h4>
-                        <p class="text-[#B8B8D0] mb-6">See all active members and their status</p>
-                        
-                        <button onclick="switchDashboardTab('members')" 
-                                class="btn-gold px-8 py-3 rounded-2xl font-semibold flex items-center gap-x-2 mx-auto">
-                            <i class="fa-solid fa-users"></i>
-                            <span>View All Members</span>
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="glass p-5 rounded-3xl">
-                            <div class="text-xs text-white/50">YOUR ROLE</div>
-                            <div class="text-3xl font-bold mt-1">${currentUser.role}</div>
-                        </div>
-                        <div class="glass p-5 rounded-3xl">
-                            <div class="text-xs text-white/50">OFFICER POSITION</div>
-                            <div class="text-3xl font-bold mt-1">${currentUser.officerRole || 'Member'}</div>
-                        </div>
-                        <div class="glass p-5 rounded-3xl">
-                            <div class="text-xs text-white/50">STATUS</div>
-                            <div class="text-3xl font-bold mt-1 text-emerald-400">Active</div>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-            
-            if (tab === 'members') {
-                // Member Directory
-                let html = `
-                    <div class="flex justify-between items-center mb-6">
-                        <div>
-                            <h3 class="text-2xl font-semibold">Member Directory</h3>
-                            <p class="text-sm text-white/50">All active members of Multi Media</p>
-                        </div>
-                        <div class="text-sm px-4 py-1.5 rounded-2xl bg-white/5">
-                            ${users.filter(u => u.active !== false).length} Members
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                `;
-                
-                const activeUsers = users.filter(u => u.active !== false);
-                
-                activeUsers.forEach(member => {
-                    const isOnline = member.online;
-                    const officerBadge = member.officerRole 
-                        ? `<span class="px-2.5 py-px text-[10px] rounded bg-[#FFD700] text-[#0A0A1F] font-bold">${member.officerRole}</span>` 
-                        : '';
-                    
-                    html += `
-                        <div class="glass p-5 rounded-3xl flex gap-x-4">
-                            <img src="https://i.pravatar.cc/48?u=${member.id}" class="w-12 h-12 rounded-2xl flex-shrink-0 ring-1 ring-white/20">
-                            
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-x-2">
-                                    <span class="font-semibold">${member.username}</span>
-                                    ${officerBadge}
-                                </div>
-                                <div class="text-sm text-white/60">${member.role}</div>
-                                
-                                <div class="mt-3 flex items-center gap-x-2">
-                                    <span class="inline-block w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-400' : 'bg-gray-500'}"></span>
-                                    <span class="text-xs ${isOnline ? 'text-emerald-400' : 'text-gray-400'}">
-                                        ${isOnline ? 'Active Now' : 'Offline'}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                html += `</div>`;
-                content.innerHTML = html;
-                
-            } else if (tab === 'media') {
-                content.innerHTML = `<h4 class="font-semibold mb-4">Media Gallery</h4><div class="text-sm text-white/60">Upload feature available in full version. (Demo)</div>`;
-            } else {
-                content.innerHTML = `<div class="text-white/60">This section is available in the full dashboard.</div>`;
-            }
-        }
-
-        // Modals
-        function showLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); document.getElementById('login-modal').classList.add('flex'); }
-        function hideLoginModal() { document.getElementById('login-modal').classList.remove('flex'); document.getElementById('login-modal').classList.add('hidden'); }
-        function showRegisterModal() { document.getElementById('register-modal').classList.remove('hidden'); document.getElementById('register-modal').classList.add('flex'); }
-        function hideRegisterModal() { document.getElementById('register-modal').classList.remove('flex'); document.getElementById('register-modal').classList.add('hidden'); }
-
-        function filterAnnouncementsInit() {
-            const container = document.getElementById('announcement-filters');
-            const cats = ['all','General','Event'];
-            container.innerHTML = cats.map(c => `<button onclick="setFilter('${c}', this)" class="filter-chip text-xs ${c==='all'?'active':''}">${c}</button>`).join('');
-        }
-        
-        function setFilter(f, el) {
-            currentFilter = f;
-            document.querySelectorAll('#announcement-filters .filter-chip').forEach(e => e.classList.remove('active'));
-            el.classList.add('active');
-            filterAnnouncements();
-        }
-
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.getElementById('theme-icon');
-            
-            if (body.classList.contains('light-mode')) {
-                body.classList.remove('light-mode');
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-adjust');
-                localStorage.setItem('mm_theme', 'dark');
-            } else {
-                body.classList.add('light-mode');
-                icon.classList.remove('fa-adjust');
-                icon.classList.add('fa-sun');
-                localStorage.setItem('mm_theme', 'light');
-            }
-        }
-
-        // Load saved theme
-        function loadTheme() {
-            if (localStorage.getItem('mm_theme') === 'light') {
-                document.body.classList.add('light-mode');
-                const icon = document.getElementById('theme-icon');
-                if (icon) {
-                    icon.classList.remove('fa-adjust');
-                    icon.classList.add('fa-sun');
-                }
-            }
-        }
-
         function initEverything() {
-            // Hide unique loading screen
-            const loadingScreen = document.getElementById('loading-screen');
-            if (loadingScreen) {
-                setTimeout(() => {
-                    loadingScreen.style.transition = 'opacity 0.6s ease';
-                    loadingScreen.style.opacity = '0';
-                    setTimeout(() => {
-                        loadingScreen.remove();
-                        
-                        // After loading, greet with Verity + offer tour (text only until user interacts)
-                        setTimeout(() => {
-                            const greeting = "Hellooo, I'm Verity, your personal assistant. Ask me to show you around by clicking the Show me around button.";
-                            showVerityChat();
-                            if (verityChatHistory.length === 1 && verityChatHistory[0].content.indexOf("Hellooo") === 0) {
-                                verityChatHistory = [];
-                            }
-                            addVerityMessage(greeting, { speak: true });
-                            const chatContainer = document.getElementById('chat-messages');
-                            const replyDiv = document.createElement('div');
-                            replyDiv.className = 'flex gap-2 mt-2';
-                            replyDiv.innerHTML = `
-                                <button onclick="startWebsiteTour();" 
-                                        class="px-4 py-1.5 text-sm rounded-2xl bg-[#FFD700] text-[#0A0A1F] font-medium">
-                                    Show me around
-                                </button>
-                                <button onclick="hideVerityChat()" 
-                                        class="px-4 py-1.5 text-sm rounded-2xl border border-white/30">
-                                    No thanks
-                                </button>
-                            `;
-                            chatContainer.appendChild(replyDiv);
-                            chatContainer.scrollTop = chatContainer.scrollHeight;
-                        }, 400);
-                    }, 600);
-                }, 1600);
-            }
-
-            initTailwind();
-            initAudio();
-            initKonami();
-            loadTheme();
-            loadData();
-            loadVerityVoicePreference();
-            updateNavUser();
-            renderEvents();
-            renderAnnouncements();
-            filterAnnouncementsInit();
-            
-            // Welcome toast removed so Verity's greeting stays in the chat bubble.
-            
-            // Ctrl + A for Admin Panel
-            document.addEventListener("keydown", function(e) {
-                if (e.ctrlKey && e.key.toLowerCase() === "a") {
-                    e.preventDefault();
-                    if (currentUser && currentUser.role === "Admin") {
-                        showAdminPanel();
-                    } else {
-                        showToast("Admin access required.", "info");
-                    }
-                }
-            });
-            
-            console.log('%c[Multi Media Final] Loaded successfully with all features!', 'color:#FFD700');
-
-            // === Web Vitals Measurement ===
-            if (typeof webVitals !== 'undefined') {
-                console.log('%c[Web Vitals] Performance monitoring enabled. Check console for metrics.', 'color:#4ade80');
-                webVitals.onCLS(console.log);
-                webVitals.onFID(console.log);
-                webVitals.onLCP(console.log);
-                webVitals.onFCP(console.log);
-                webVitals.onTTFB(console.log);
-                
-                if (webVitals.onINP) webVitals.onINP(console.log);
-            } else {
-                console.log('%c[Web Vitals] Library not available.', 'color:#f87171');
-            }
+            setTimeout(() => {
+                const loading = document.getElementById("loading-screen");
+                loading.style.transition = "opacity 0.5s"; loading.style.opacity = "0";
+                setTimeout(() => loading.remove(), 500);
+                showVerityChat();
+                const greeting = "Hellooo, I'm Verity, your personal assistant. Ask me to show you around by clicking the Show me around button.";
+                verityChatHistory = [];
+                addVerityMessage(greeting, { speak: true });
+                const buttons = document.createElement("div");
+                buttons.className = "flex gap-2 mt-2";
+                buttons.innerHTML = `<button onclick="startWebsiteTour()" class="px-4 py-1.5 text-sm rounded-2xl bg-[#FFD700] text-[#0A0A1F]">Show me around</button><button onclick="hideVerityChat()" class="px-4 py-1.5 text-sm rounded-2xl border border-white/30">No thanks</button>`;
+                document.getElementById("chat-messages").appendChild(buttons);
+            }, 900);
+            loadData(); loadVerityVoicePreference(); renderEvents(); renderAnnouncements();
         }
-
-        window.onload = initEverything;
-        
-        // Make functions global
         window.showVerityChat = showVerityChat;
         window.hideVerityChat = hideVerityChat;
         window.toggleVerityVoice = toggleVerityVoice;
-        window.speakVerity = speakVerity;
-        window.stopVeritySpeaking = stopVeritySpeaking;
-        window.setVerityTalking = setVerityTalking;
+        window.startWebsiteTour = startWebsiteTour;
         window.showLoginModal = showLoginModal;
         window.showRegisterModal = showRegisterModal;
         window.showDashboard = showDashboard;
-        window.toggleMusic = toggleMusic;
+        window.hideDashboard = hideDashboard;
+        window.onload = initEverything;
     </script>
 </body>
 </html>
