@@ -2119,6 +2119,9 @@
             }
         }
 
+        let verityStartTourAfterSpeech = false;
+        let veritySpeechToken = 0;
+
         function stopVeritySpeaking() {
             if (verityAudio) {
                 try {
@@ -2126,7 +2129,8 @@
                     verityAudio.onerror = null;
                     verityAudio.onplay = null;
                     verityAudio.pause();
-                    verityAudio.src = "";
+                    verityAudio.removeAttribute("src");
+                    verityAudio.load();
                 } catch (err) {}
                 verityAudio = null;
             }
@@ -2134,25 +2138,26 @@
             setVerityTalking(false);
         }
 
-        function showVerityPlayVoiceButton(show) {
-            const btn = document.getElementById("verity-play-voice-btn");
-            if (!btn) return;
-            btn.style.display = show ? "inline-flex" : "none";
-        }
-
-        function replayLastVerityVoice() {
-            if (lastVeritySpokenText) speakVerity(lastVeritySpokenText);
+        function finishVeritySpeech(audio, url) {
+            if (verityAudio !== audio) return;
+            setVerityTalking(false);
+            verityAudio = null;
+            if (url) {
+                window.setTimeout(function () {
+                    URL.revokeObjectURL(url);
+                }, 1500);
+            }
+            if (verityObjectUrl === url) verityObjectUrl = null;
         }
 
         // TTS: frontend sends text only. The key stays on the server.
         async function speakVerity(text) {
             if (!verityVoiceEnabled || !text) {
-                setVerityTalking(false);
                 return;
             }
 
+            const token = ++veritySpeechToken;
             lastVeritySpokenText = text;
-            stopVeritySpeaking();
 
             try {
                 const response = await fetch(VERITY_TTS_ENDPOINT, {
@@ -2164,32 +2169,47 @@
                     })
                 });
 
+                if (token !== veritySpeechToken) return;
                 if (!response.ok) {
                     throw new Error("TTS request failed (" + response.status + ")");
                 }
 
-                const blob = await response.blob();
-                cleanupVerityAudioUrl();
-                verityObjectUrl = URL.createObjectURL(blob);
-                verityAudio = new Audio(verityObjectUrl);
+                const bytes = await response.arrayBuffer();
+                if (token !== veritySpeechToken) return;
+                if (!bytes || bytes.byteLength < 128) {
+                    throw new Error("TTS returned empty audio");
+                }
 
-                verityAudio.onplay = function () {
+                stopVeritySpeaking();
+                const blob = new Blob([bytes], { type: "audio/mpeg" });
+                verityObjectUrl = URL.createObjectURL(blob);
+                const url = verityObjectUrl;
+                verityAudio = new Audio(url);
+                verityAudio.preload = "auto";
+                const audio = verityAudio;
+
+                audio.onplay = function () {
+                    if (token !== veritySpeechToken) return;
                     setVerityTalking(true);
                     showVerityPlayVoiceButton(false);
                 };
-                verityAudio.onended = function () {
-                    setVerityTalking(false);
-                    cleanupVerityAudioUrl();
+                audio.onended = function () {
+                    const duration = audio.duration;
+                    if (isFinite(duration) && duration - audio.currentTime > 0.4) {
+                        audio.play().catch(function () {});
+                        return;
+                    }
+                    finishVeritySpeech(audio, url);
                 };
-                verityAudio.onerror = function () {
+                audio.onerror = function () {
                     console.warn("Verity voice unavailable:", "audio element error");
-                    setVerityTalking(false);
-                    cleanupVerityAudioUrl();
+                    finishVeritySpeech(audio, url);
                 };
 
-                const playPromise = verityAudio.play();
+                const playPromise = audio.play();
                 if (playPromise && typeof playPromise.then === "function") {
                     playPromise.catch(function (error) {
+                        if (token !== veritySpeechToken) return;
                         console.warn("Verity voice unavailable:", error);
                         setVerityTalking(false);
                         showVerityPlayVoiceButton(true);
@@ -2197,9 +2217,20 @@
                     });
                 }
             } catch (error) {
+                if (token !== veritySpeechToken) return;
                 console.warn("Verity voice unavailable:", error);
                 setVerityTalking(false);
             }
+        }
+
+        function showVerityPlayVoiceButton(show) {
+            const btn = document.getElementById("verity-play-voice-btn");
+            if (!btn) return;
+            btn.style.display = show ? "inline-flex" : "none";
+        }
+
+        function replayLastVerityVoice() {
+            if (lastVeritySpokenText) speakVerity(lastVeritySpokenText);
         }
 
         function showVerityThinking() {
@@ -2247,7 +2278,15 @@
             }
 
             if (shouldSpeak && verityVoiceEnabled) {
-                speakVerity(text);
+                const startTour = verityStartTourAfterSpeech;
+                verityStartTourAfterSpeech = false;
+                speakVerity(text).then(function () {
+                    if (!startTour) return;
+                    return waitForVeritySpeech().then(startWebsiteTour);
+                });
+            } else if (verityStartTourAfterSpeech) {
+                verityStartTourAfterSpeech = false;
+                window.setTimeout(startWebsiteTour, 600);
             }
         }
 
@@ -2319,7 +2358,7 @@
             window.setTimeout(function () {
                 const response = getVerityResponse(message);
                 addVerityMessage(response);
-            }, 700);
+            }, 40);
         }
 
         function getVerityResponse(q) {
@@ -2327,7 +2366,7 @@
             const lastVerity = [...verityChatHistory].reverse().find(function (m) { return m.role === "verity"; });
             const offeredTour = lastVerity && /tour of the website/i.test(lastVerity.content || "");
             if (q.includes("tour") || q.includes("show me around") || (offeredTour && (q === "yes" || q.startsWith("yes")))) {
-                window.setTimeout(startWebsiteTour, 400);
+                verityStartTourAfterSpeech = true;
                 return "Sure. I'll give you a quick tour of the website.";
             }
             if (q.includes("event")) return "We have exciting events coming up with live countdowns! Check the Events section.";
@@ -2337,39 +2376,52 @@
             return "I'm here to help! Feel free to ask about events, announcements, or how to get involved.";
         }
 
-        function startWebsiteTour() {
+        function waitForVeritySpeech() {
+            return new Promise(function (resolve) {
+                const started = Date.now();
+                const timer = window.setInterval(function () {
+                    const audio = verityAudio;
+                    const stillTalking = audio && !audio.ended && !audio.paused && audio.currentTime >= 0;
+                    if (!stillTalking || Date.now() - started > 25000) {
+                        window.clearInterval(timer);
+                        resolve();
+                    }
+                }, 250);
+            });
+        }
+
+        async function startWebsiteTour() {
             hideVerityChat();
             const steps = [
-                { after: 800, el: "events", text: "This is the Events section with live countdown timers!" },
-                { after: 3800, el: "announcements", text: "Here you can find all school announcements and news." },
-                { after: 3800, el: null, text: "You can always chat with me (Verity) by clicking the floating orb!" },
-                { after: 3800, el: null, text: currentUser ? "Your Member Dashboard shows the full member list and your info." : "Use the secret key sequence to access login." },
-                { after: 3200, el: null, text: "That's the quick tour! Feel free to explore.", type: "success" }
+                { el: "events", text: "This is the Events section with live countdown timers!" },
+                { el: "announcements", text: "Here you can find all school announcements and news." },
+                { el: null, text: "You can always chat with me (Verity) by clicking the floating orb!" },
+                { el: null, text: currentUser ? "Your Member Dashboard shows the full member list and your info." : "Use the secret key sequence to access login." },
+                { el: null, text: "That's the quick tour! Feel free to explore.", type: "success" }
             ];
 
-            let delay = 0;
-            steps.forEach(function (step) {
-                delay += step.after;
-                window.setTimeout(function () {
-                    if (step.el) {
-                        const target = document.getElementById(step.el);
-                        if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
-                    }
-                    showToast(step.text, step.type || "info");
-                    if (verityVoiceEnabled) speakVerity(step.text);
-                }, delay);
-            });
+            for (let i = 0; i < steps.length; i++) {
+                const step = steps[i];
+                if (step.el) {
+                    const target = document.getElementById(step.el);
+                    if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+                showToast(step.text, step.type || "info");
+                if (verityVoiceEnabled) {
+                    await speakVerity(step.text);
+                    await waitForVeritySpeech();
+                }
+                await new Promise(function (resolve) { window.setTimeout(resolve, 700); });
+            }
 
+            const homeSection = document.getElementById("home");
+            if (!homeSection) return;
+            homeSection.style.transition = "opacity 0.9s ease";
+            homeSection.style.opacity = "0.2";
             window.setTimeout(function () {
-                const homeSection = document.getElementById("home");
-                if (!homeSection) return;
-                homeSection.style.transition = "opacity 0.9s ease";
-                homeSection.style.opacity = "0.2";
-                window.setTimeout(function () {
-                    homeSection.scrollIntoView({ behavior: "smooth", block: "start" });
-                    homeSection.style.opacity = "1";
-                }, 450);
-            }, delay + 2000);
+                homeSection.scrollIntoView({ behavior: "smooth", block: "start" });
+                homeSection.style.opacity = "1";
+            }, 450);
         }
 
         // Dashboard
