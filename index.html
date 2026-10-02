@@ -20,7 +20,18 @@
         }
         body { font-family: Inter, system-ui, sans-serif; background: var(--dark-bg); color: #F8F9FA; }
         .font-display { font-family: "Space Grotesk", Inter, sans-serif; }
-        .section-header { font-size: 2.25rem; line-height: 2.5rem; font-weight: 700; }
+        .section-header { font-size: clamp(1.8rem, 4vw, 2.4rem); line-height: 1.15; font-weight: 700; }
+        body { padding-bottom: 7rem; }
+        .portrait-frame { width: 220px; height: 220px; border-radius: 50%; object-fit: cover; object-position: center top; border: 4px solid #FFD700; box-shadow: 0 0 28px rgba(255,215,0,0.35); }
+        #floating-verity { bottom: 1.5rem; left: 1.25rem; right: auto; display: flex; align-items: flex-end; gap: 12px; z-index: 60; }
+        #verity-orb-bubble { display: none; max-width: min(280px, 68vw); background: #1A1A3A; border: 1px solid rgba(255,215,0,0.45); border-radius: 18px 18px 18px 6px; padding: 12px 14px; font-size: 0.9rem; line-height: 1.4; order: 2; }
+        #verity-orb-bubble.is-visible { display: block; }
+        @media (max-width: 768px) {
+            #floating-verity { bottom: 1rem; left: 0.8rem; }
+            .verity-orb { width: 56px; height: 56px; }
+            .portrait-frame { width: 150px; height: 150px; }
+            nav .nav-links { display: none; }
+        }
         .futuristic-grid {
             background-image: linear-gradient(rgba(255,215,0,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,215,0,0.07) 1px, transparent 1px);
             background-size: 60px 60px;
@@ -41,11 +52,11 @@
         .chat-bubble-verity { background: var(--dark-card); border: 1px solid var(--glass-border); border-radius: 20px 20px 20px 4px; padding: 12px 18px; max-width: 80%; }
         .input-gold { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,215,0,0.3); color: white; }
         .input-gold:focus { outline: none; border-color: var(--gold); }
-        #floating-verity { bottom: 1.5rem; right: 1.25rem; display: flex; align-items: flex-end; gap: 12px; z-index: 60; }
-        #verity-orb-bubble { display: none; max-width: min(280px, 70vw); background: #1A1A3A; border: 1px solid rgba(255,215,0,0.45); border-radius: 18px 18px 6px 18px; padding: 12px 14px; font-size: 0.9rem; line-height: 1.4; }
+        #floating-verity { bottom: 1.5rem; left: 1.25rem; right: auto; display: flex; align-items: flex-end; gap: 12px; z-index: 60; }
+        #verity-orb-bubble { display: none; max-width: min(280px, 68vw); background: #1A1A3A; border: 1px solid rgba(255,215,0,0.45); border-radius: 18px 18px 18px 6px; padding: 12px 14px; font-size: 0.9rem; line-height: 1.4; }
         #verity-orb-bubble.is-visible { display: block; }
         @media (max-width: 768px) {
-            #floating-verity { bottom: 5.5rem; right: 0.9rem; }
+            #floating-verity { bottom: 1rem; left: 0.8rem; right: auto; }
             .verity-orb { width: 56px; height: 56px; }
         }
     </style>
@@ -59,7 +70,7 @@
     </div>
 
     <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/10">
-        <div class="max-w-screen-2xl mx-auto px-8 py-4 flex items-center justify-between">
+        <div class="max-w-screen-2xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between gap-4">
             <div class="font-display text-3xl font-bold">Multi<span class="text-[#FFD700]">Media</span></div>
             <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
                 <a href="#home" class="hover:text-[#FFD700]">Home</a>
@@ -76,14 +87,14 @@
         <div class="absolute inset-0 futuristic-grid opacity-40"></div>
         <div class="max-w-screen-2xl mx-auto px-6 relative z-10">
             <div class="text-sm tracking-[2px] text-[#FFD700] mb-4">SCHOOL YEAR 2026-2027</div>
-            <h1 class="font-display text-6xl md:text-8xl font-bold tracking-tighter">Where <span class="text-[#FFD700]">Creativity</span><br>Meets Collaboration</h1>
+            <h1 class="font-display text-5xl md:text-7xl font-bold tracking-tighter leading-none">Where <span class="text-[#FFD700]">Creativity</span><br>Meets Collaboration</h1>
             <p class="max-w-lg text-xl text-[#B8B8D0] mt-6">The official portal for the Multi Media Club. Collaborate on creative projects, stay updated with events, and grow your skills.</p>
             <button onclick="document.getElementById('events').scrollIntoView({behavior:'smooth'})" class="btn-gold mt-8 px-8 py-4 rounded-3xl">Explore Events</button>
         </div>
     </section>
 
     <section class="max-w-screen-2xl mx-auto px-6 py-16">
-        <div class="glass rounded-3xl p-8 border border-[#FFD700]/20 max-w-xl ml-auto">
+        <div class="glass rounded-3xl p-8 border border-[#FFD700]/20 max-w-xl">
             <div class="flex items-start gap-5">
                 <div onclick="showVerityChat()" class="verity-orb" role="button" aria-label="Open Verity chat">
                     <img src="images/idle.jpg" class="verity-avatar-img" alt="Verity, Multimedia Club AI guide">
@@ -114,10 +125,29 @@
     </section>
 
     <section id="about" class="max-w-screen-2xl mx-auto px-6 py-20 border-t border-white/10">
-        <h2 class="section-header text-center mb-8">About the Developer</h2>
-        <div class="max-w-3xl mx-auto glass rounded-3xl p-8">
-            <h3 class="font-display text-3xl mb-3">Ron Matthew Ferreras</h3>
-            <p class="text-[#B8B8D0]">I made this website so that students can have a centralized hub for all multimedia activities.</p>
+        <h2 class="section-header text-center mb-12">About the Developer</h2>
+        <div class="max-w-5xl mx-auto glass rounded-3xl p-8 md:p-10">
+            <div class="flex flex-col md:flex-row items-center justify-center gap-8 mb-8">
+                <figure class="text-center">
+                    <img src="images/developer.jpg" alt="Ron Matthew Ferreras" class="portrait-frame mx-auto" onerror="this.src='images/idle.jpg'">
+                    <figcaption class="mt-3 font-semibold">Ron Matthew Ferreras</figcaption>
+                    <p class="text-xs text-[#B8B8D0]">Developer</p>
+                </figure>
+                <figure class="text-center">
+                    <img src="images/idle.jpg" alt="Verity, Multimedia Club assistant" class="portrait-frame mx-auto">
+                    <figcaption class="mt-3 font-semibold">Verity</figcaption>
+                    <p class="text-xs text-[#B8B8D0]">Club assistant</p>
+                </figure>
+            </div>
+            <div class="max-w-3xl mx-auto text-center">
+                <h3 class="font-display text-3xl font-semibold mb-3">Ron Matthew Ferreras</h3>
+                <p class="text-[#B8B8D0] mb-6">I made this website so that students can have a centralized hub for all multimedia activities. As a passionate developer and designer, I wanted to create an interactive and engaging platform that fosters creativity and collaboration among students. This project is a testament to the power of technology in enhancing educational experiences.</p>
+                <div class="flex gap-4 flex-wrap justify-center">
+                    <a href="#" class="glass px-5 py-2.5 rounded-2xl border border-white/10 hover:border-[#FFD700] inline-flex items-center"><i class="fa-solid fa-globe mr-2"></i> Portfolio</a>
+                    <a href="#" class="glass px-5 py-2.5 rounded-2xl border border-white/10 hover:border-[#FFD700] inline-flex items-center"><i class="fa-brands fa-github mr-2"></i> GitHub</a>
+                    <a href="#" class="glass px-5 py-2.5 rounded-2xl border border-white/10 hover:border-[#FFD700] inline-flex items-center"><i class="fa-solid fa-envelope mr-2"></i> Contact</a>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -307,24 +337,33 @@
             verityAudio = null;
             if (url) setTimeout(() => URL.revokeObjectURL(url), 1200);
         }
+        function escapeVerityHtml(text) { return String(text).replace(/&/g,"&").replace(/</g,"<").replace(/>/g,">"); }
         async function speakVerity(text) {
             if (!verityVoiceEnabled || !text) return;
             const token = ++veritySpeechToken;
+            showVerityOrbBubble(text);
             try {
-                const response = await fetch("/api/tts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
-                if (!response.ok || token !== veritySpeechToken) throw new Error("TTS request failed");
-                const bytes = await response.arrayBuffer();
+                const response = await fetch("/api/tts", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text })
+                });
                 if (token !== veritySpeechToken) return;
-                stopVeritySpeaking();
+                if (!response.ok) throw new Error("TTS request failed (" + response.status + ")");
+                const bytes = await response.arrayBuffer();
+                if (token !== veritySpeechToken || !bytes || bytes.byteLength < 128) throw new Error("TTS returned empty audio");
+                if (verityAudio) { verityAudio.pause(); verityAudio = null; }
+                if (verityObjectUrl) URL.revokeObjectURL(verityObjectUrl);
                 const url = URL.createObjectURL(new Blob([bytes], { type: "audio/mpeg" }));
                 verityObjectUrl = url;
                 const audio = new Audio(url);
                 verityAudio = audio;
-                audio.onplay = () => { if (token === veritySpeechToken) { setVerityTalking(true); showVerityOrbBubble(text); } };
+                audio.onplay = () => { if (token === veritySpeechToken) setVerityTalking(true); };
                 audio.onended = () => finishVeritySpeech(audio, url);
                 audio.onerror = () => finishVeritySpeech(audio, url);
                 await audio.play();
             } catch (error) {
+                if (token !== veritySpeechToken) return;
                 console.warn("Verity voice unavailable:", error);
                 setVerityTalking(false);
             }
