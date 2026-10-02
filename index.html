@@ -22,7 +22,8 @@
         .font-display { font-family: "Space Grotesk", Inter, sans-serif; }
         .section-header { font-size: clamp(1.8rem, 4vw, 2.4rem); line-height: 1.15; font-weight: 700; }
         body { padding-bottom: 7rem; }
-        .portrait-frame { width: 220px; height: 220px; border-radius: 50%; object-fit: cover; object-position: center top; border: 4px solid #FFD700; box-shadow: 0 0 28px rgba(255,215,0,0.35); }
+        .portrait-frame { width: 220px; height: 220px; border-radius: 50%; object-fit: cover; object-position: center 30%; border: 4px solid #FFD700; box-shadow: 0 0 28px rgba(255,215,0,0.35); }
+        .verity-about-face { object-position: center 22%; transform: scale(1.12); }
         #floating-verity { bottom: 1.5rem; left: 1.25rem; right: auto; display: flex; align-items: flex-end; gap: 12px; z-index: 60; }
         #verity-orb-bubble { display: none; max-width: min(280px, 68vw); background: #1A1A3A; border: 1px solid rgba(255,215,0,0.45); border-radius: 18px 18px 18px 6px; padding: 12px 14px; font-size: 0.9rem; line-height: 1.4; order: 2; }
         #verity-orb-bubble.is-visible { display: block; }
@@ -111,7 +112,7 @@
     <section id="events" class="max-w-screen-2xl mx-auto px-6 pb-20 border-t border-white/10 pt-10">
         <div class="flex justify-between items-end mb-6">
             <h2 class="section-header">Events Countdown</h2>
-            <button onclick="if (currentUser && (currentUser.role === 'Editor' || currentUser.role === 'Admin')) showCreateEventModal(); else alert('Editor/Admin only')" class="px-5 py-2 rounded-2xl border border-[#FFD700]/60 text-sm">Add Event</button>
+            <button id="add-event-btn" onclick="showCreateEventModal()" class="hidden px-5 py-2 rounded-2xl border border-[#FFD700]/60 text-sm">Add Event</button>
         </div>
         <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </section>
@@ -119,7 +120,7 @@
     <section id="announcements" class="max-w-screen-2xl mx-auto px-6 pb-20 border-t border-white/10 pt-10">
         <div class="flex justify-between items-end mb-6">
             <h2 class="section-header">School Announcements</h2>
-            <button onclick="if (currentUser && (currentUser.role === 'Editor' || currentUser.role === 'Admin')) showCreateAnnouncementModal(); else alert('Editor/Admin only')" class="px-5 py-2 rounded-2xl bg-[#FFD700] text-[#0A0A1F] text-sm font-semibold">Publish</button>
+            <button id="publish-btn" onclick="showCreateAnnouncementModal()" class="hidden px-5 py-2 rounded-2xl bg-[#FFD700] text-[#0A0A1F] text-sm font-semibold">Publish</button>
         </div>
         <div id="announcements-list" class="space-y-4"></div>
     </section>
@@ -134,7 +135,7 @@
                     <p class="text-xs text-[#B8B8D0]">Developer</p>
                 </figure>
                 <figure class="text-center">
-                    <img src="images/idle.jpg" alt="Verity, Multimedia Club assistant" class="portrait-frame mx-auto">
+                    <img src="images/idle.jpg" alt="Verity, Multimedia Club assistant" class="portrait-frame verity-about-face mx-auto">
                     <figcaption class="mt-3 font-semibold">Verity</figcaption>
                     <p class="text-xs text-[#B8B8D0]">Club assistant</p>
                 </figure>
@@ -164,6 +165,7 @@
             <form onsubmit="handleLogin(event)">
                 <input id="login-email" placeholder="Email or Username" class="input-gold w-full px-5 py-3 rounded-2xl mb-4" required>
                 <input id="login-password" type="password" placeholder="Password" class="input-gold w-full px-5 py-3 rounded-2xl mb-4" required>
+                <input id="login-access-code" type="password" placeholder="Admin or Developer access code, if needed" class="input-gold w-full px-5 py-3 rounded-2xl mb-4">
                 <button class="btn-gold w-full py-4 rounded-2xl">Sign In</button>
             </form>
             <button onclick="hideLoginModal(); showRegisterModal()" class="mt-4 text-[#FFD700]">Join now</button>
@@ -178,9 +180,10 @@
                 <input id="reg-email" type="email" placeholder="Email" class="input-gold w-full px-5 py-3 rounded-2xl mb-3" required>
                 <input id="reg-password" type="password" placeholder="Password" class="input-gold w-full px-5 py-3 rounded-2xl mb-3" required>
                 <select id="reg-role" class="input-gold w-full px-5 py-3 rounded-2xl mb-3">
-                    <option>Member</option><option>Editor</option><option>Photographer</option><option>Admin</option>
+                    <option>Member</option><option>Photographer</option><option>Editor</option><option>Developer</option><option>Admin</option>
                 </select>
-                <input id="reg-passcode" placeholder="Registration Passcode" class="input-gold w-full px-5 py-3 rounded-2xl mb-4" required>
+                <input id="reg-passcode" placeholder="Club registration code" class="input-gold w-full px-5 py-3 rounded-2xl mb-3" required>
+                <input id="reg-access-code" type="password" placeholder="Admin or Developer code, only for those roles" class="input-gold w-full px-5 py-3 rounded-2xl mb-4">
                 <button class="btn-gold w-full py-4 rounded-2xl">Create Account</button>
             </form>
         </div>
@@ -217,7 +220,10 @@
     </div>
 
     <script>
-        let currentUser = null, users = [], events = [], announcements = [];
+        let currentUser = null, users = [], events = [], announcements = [], mediaItems = [];
+        const CLUB_JOIN_CODE = "MMC-JOIN-4821";
+        const ADMIN_ACCESS_CODE = "MMC-ADMIN-7394";
+        const DEVELOPER_ACCESS_CODE = "MMC-DEV-1560";
         let verityChatHistory = [], verityVoiceEnabled = true, verityAudio = null, verityObjectUrl = null;
         let verityIsTalking = false, verityMood = "idle", veritySwearStrikes = 0, veritySpeechToken = 0, verityStartTourAfterSpeech = false;
         const VERITY_IDLE_SRC = "images/idle.jpg";
@@ -240,6 +246,7 @@
             users = JSON.parse(safeStorage.getItem("mm_users") || "[]");
             events = JSON.parse(safeStorage.getItem("mm_events") || "[]").filter(item => DEMO_EVENT_NAMES.indexOf(item.name) === -1);
             announcements = JSON.parse(safeStorage.getItem("mm_announcements") || "[]").filter(item => DEMO_ANNOUNCEMENT_TITLES.indexOf(item.title) === -1);
+            mediaItems = JSON.parse(safeStorage.getItem("mm_media") || "[]");
             const saved = safeStorage.getItem("mm_currentUser");
             if (saved) currentUser = JSON.parse(saved);
             saveData();
@@ -249,6 +256,16 @@
             safeStorage.setItem("mm_users", JSON.stringify(users));
             safeStorage.setItem("mm_events", JSON.stringify(events));
             safeStorage.setItem("mm_announcements", JSON.stringify(announcements));
+            safeStorage.setItem("mm_media", JSON.stringify(mediaItems));
+            updateRoleControls();
+        }
+        function hasRole(roles) { return !!(currentUser && roles.indexOf(currentUser.role) !== -1); }
+        function updateRoleControls() {
+            const canPublish = hasRole(["Editor", "Developer", "Admin"]);
+            const eventBtn = document.getElementById("add-event-btn");
+            const publishBtn = document.getElementById("publish-btn");
+            if (eventBtn) eventBtn.classList.toggle("hidden", !canPublish);
+            if (publishBtn) publishBtn.classList.toggle("hidden", !canPublish);
         }
         function updateNavUser() {
             const el = document.getElementById("nav-user-section");
@@ -268,14 +285,21 @@
             const hash = await hashPassword(pass);
             const user = users.find(u => (u.email === email || u.username === email) && (u.passwordHash === hash || u.passwordHash === btoa(pass)));
             if (!user) return showToast("Invalid credentials");
+            const accessCode = document.getElementById("login-access-code").value.trim();
+            if (user.role === "Admin" && accessCode !== ADMIN_ACCESS_CODE) return showToast("Admin access code required");
+            if (user.role === "Developer" && accessCode !== DEVELOPER_ACCESS_CODE) return showToast("Developer access code required");
             currentUser = user;
             safeStorage.setItem("mm_currentUser", JSON.stringify(user));
             hideLoginModal(); updateNavUser(); showToast("Welcome back");
         }
         async function handleRegister(e) {
             e.preventDefault();
-            if (document.getElementById("reg-passcode").value !== "MULTIMEDIA2026") return showToast("Invalid club registration code");
-            const user = { id: Date.now(), username: document.getElementById("reg-username").value, email: document.getElementById("reg-email").value, passwordHash: await hashPassword(document.getElementById("reg-password").value), role: document.getElementById("reg-role").value, active: true };
+            if (document.getElementById("reg-passcode").value !== CLUB_JOIN_CODE) return showToast("Invalid club registration code");
+            const role = document.getElementById("reg-role").value;
+            const accessCode = document.getElementById("reg-access-code").value.trim();
+            if (role === "Admin" && accessCode !== ADMIN_ACCESS_CODE) return showToast("Admin code required");
+            if (role === "Developer" && accessCode !== DEVELOPER_ACCESS_CODE) return showToast("Developer code required");
+            const user = { id: Date.now(), username: document.getElementById("reg-username").value, email: document.getElementById("reg-email").value, passwordHash: await hashPassword(document.getElementById("reg-password").value), role: role, active: true };
             users.push(user); currentUser = user; saveData(); safeStorage.setItem("mm_currentUser", JSON.stringify(user));
             hideRegisterModal(); updateNavUser(); showToast("Account created");
         }
@@ -283,7 +307,17 @@
         function hideLoginModal(){ document.getElementById("login-modal").classList.add("hidden"); }
         function showRegisterModal(){ document.getElementById("register-modal").classList.remove("hidden"); document.getElementById("register-modal").classList.add("flex"); }
         function hideRegisterModal(){ document.getElementById("register-modal").classList.add("hidden"); }
-        function showDashboard(){ document.getElementById("dashboard-overlay").classList.remove("hidden"); document.getElementById("dashboard-content").textContent = currentUser ? `Signed in as ${currentUser.username} (${currentUser.role})` : ""; }
+        function showDashboard(){
+            if (!currentUser) return showLoginModal();
+            document.getElementById("dashboard-overlay").classList.remove("hidden");
+            const role = currentUser.role;
+            let tools = "<p class='text-[#B8B8D0]'>You can view events, announcements, and your own profile.</p>";
+            if (role === "Photographer") tools = "<p class='text-[#B8B8D0]'>You can view the club pages and add photo uploads.</p><button onclick=\"addMediaItem()\" class='btn-gold mt-4 px-4 py-2 rounded-2xl'>Add photo</button>";
+            if (role === "Editor") tools = "<p class='text-[#B8B8D0]'>You can publish announcements and add events.</p><div class='flex gap-3 mt-4'><button onclick=\"showCreateEventModal()\" class='btn-gold px-4 py-2 rounded-2xl'>Add event</button><button onclick=\"showCreateAnnouncementModal()\" class='btn-gold px-4 py-2 rounded-2xl'>Publish</button></div>";
+            if (role === "Developer") tools = "<p class='text-[#B8B8D0]'>You can publish club content and review site accounts.</p><div class='flex gap-3 mt-4'><button onclick=\"showCreateEventModal()\" class='btn-gold px-4 py-2 rounded-2xl'>Add event</button><button onclick=\"showCreateAnnouncementModal()\" class='btn-gold px-4 py-2 rounded-2xl'>Publish</button></div><div class='mt-6 space-y-2'>" + users.map(u => `<div class='glass rounded-2xl px-4 py-3 flex justify-between'><span>${u.username}</span><span>${u.role}</span></div>`).join("") + "</div>";
+            if (role === "Admin") tools = "<p class='text-[#B8B8D0]'>You have access to every club tool, including accounts, events, announcements, and uploads.</p><div class='flex gap-3 mt-4 flex-wrap'><button onclick=\"showCreateEventModal()\" class='btn-gold px-4 py-2 rounded-2xl'>Add event</button><button onclick=\"showCreateAnnouncementModal()\" class='btn-gold px-4 py-2 rounded-2xl'>Publish</button><button onclick=\"addMediaItem()\" class='btn-gold px-4 py-2 rounded-2xl'>Add photo</button></div><div class='mt-6 space-y-2'>" + users.map(u => `<div class='glass rounded-2xl px-4 py-3 flex justify-between'><span>${u.username}</span><span>${u.role}</span></div>`).join("") + "</div>";
+            document.getElementById("dashboard-content").innerHTML = `<h4 class='text-xl font-semibold mb-2'>${currentUser.username}</h4><p class='mb-4 text-[#FFD700]'>${role}</p>${tools}`;
+        }
         function hideDashboard(){ document.getElementById("dashboard-overlay").classList.add("hidden"); }
         function renderEvents() {
             const grid = document.getElementById("events-grid");
@@ -296,14 +330,21 @@
             container.innerHTML = announcements.map(ann => `<div class="glass rounded-3xl p-6"><h4 class="font-semibold text-xl">${ann.title}</h4><p class="text-[#B8B8D0] mt-1">${ann.content}</p></div>`).join("");
         }
         function showCreateEventModal() {
+            if (!hasRole(["Editor", "Developer", "Admin"])) return showToast("Editor, Developer, or Admin only");
             const name = prompt("Event name:"); if (!name) return;
             const description = prompt("Description:") || "";
             events.push({ id: Date.now(), name, description }); saveData(); renderEvents();
         }
         function showCreateAnnouncementModal() {
+            if (!hasRole(["Editor", "Developer", "Admin"])) return showToast("Editor, Developer, or Admin only");
             const title = prompt("Announcement title:"); if (!title) return;
             const content = prompt("Content:") || "";
             announcements.unshift({ id: Date.now(), title, content, date: new Date().toISOString().slice(0,10) }); saveData(); renderAnnouncements();
+        }
+        function addMediaItem() {
+            if (!hasRole(["Photographer", "Admin"])) return showToast("Photographer or Admin only");
+            const caption = prompt("Photo caption:"); if (!caption) return;
+            mediaItems.unshift({ id: Date.now(), caption }); saveData(); showToast("Photo added");
         }
 
         function verityImageForState() {
@@ -417,8 +458,15 @@
             if (q.includes("tour") || q.includes("show me around")) { verityStartTourAfterSpeech = true; return "Sure. I will show you around."; }
             if (q.includes("event")) return "Events are listed in the Events section.";
             if (q.includes("announcement")) return "Announcements are listed in the School Announcements section.";
-            if (q.includes("join") || q.includes("register")) return "Use the registration passcode MULTIMEDIA2026 to create an account.";
-            if (q.includes("role")) return "The club has Member, Editor, Photographer, and Admin roles.";
+            if (q.includes("role") || q.includes("what am i") || q.includes("my account")) {
+                if (!currentUser) return "You are not signed in, so I cannot see a role yet.";
+                if (currentUser.role === "Admin") return currentUser.username + " is signed in as Admin. This account can use every club tool.";
+                if (currentUser.role === "Developer") return currentUser.username + " is signed in as Developer. This account can publish content and review site accounts.";
+                if (currentUser.role === "Editor") return currentUser.username + " is signed in as Editor. This account can add events and announcements.";
+                if (currentUser.role === "Photographer") return currentUser.username + " is signed in as Photographer. This account can add photo uploads.";
+                return currentUser.username + " is signed in as Member. This account can view events, announcements, and the personal dashboard.";
+            }
+            if (q.includes("join") || q.includes("register")) return "Ask a club officer for the registration code. Admin and Developer also need their own access code.";
             return "I can help with events, announcements, or a tour of the website.";
         }
         function sendChatMessage() {
