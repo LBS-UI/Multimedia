@@ -98,7 +98,9 @@ exports.handler = async (event) => {
   const requestBody = {
     text,
     format: "mp3",
-    latency: "normal",
+    mp3_bitrate: 128,
+    latency: "low",
+    chunk_length: 100,
   };
 
   if (referenceId) {
