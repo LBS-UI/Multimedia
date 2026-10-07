@@ -257,11 +257,13 @@
             font-size: 0.9rem;
             line-height: 1.4;
         }
-        @keyframes verity-drop { from { transform: translateY(-70vh); } to { transform: translateY(0); } }
-        @keyframes verity-bounce { 0% { transform: translateY(0) scale(1,1); } 30% { transform: translateY(-18px) scale(0.96,1.06); } 55% { transform: translateY(0) scale(1.08,0.92); } 100% { transform: translateY(0) scale(1,1); } }
-        .welcome-verity { transform: translateY(-70vh); }
-        .welcome-verity.is-dropping { animation: verity-drop 0.55s cubic-bezier(0.55, 0, 1, 0.45) forwards; }
-        .welcome-verity.is-bouncing { animation: verity-bounce 0.55s ease forwards; }
+        @keyframes verity-struggle { 0%, 100% { transform: translateY(0) rotate(-8deg); } 50% { transform: translateY(10px) rotate(8deg); } }
+        @keyframes verity-drop { from { opacity: 0.35; transform: translateY(-80px) rotate(-8deg); } to { opacity: 1; transform: translateY(36px) rotate(0); } }
+        @keyframes verity-bounce { 0% { transform: translateY(36px) scale(1,1); } 40% { transform: translateY(8px) scale(0.96,1.08); } 100% { transform: translateY(36px) scale(1.06,0.94); } }
+        .welcome-verity { margin-top: 8vh; opacity: 1; animation: verity-struggle 0.28s ease-in-out infinite; }
+        .welcome-verity.is-dropping { animation: verity-drop 0.7s ease-in forwards; }
+        .welcome-verity.is-waiting { animation: verity-bounce 0.45s ease-in-out infinite; }
+        .welcome-verity.is-landed { animation: none; transform: translateY(36px); }
         .welcome-hi, .welcome-log { opacity: 0; }
         .welcome-hi.is-on, .welcome-log.is-on { opacity: 1; transition: opacity 0.35s ease; }
         #welcome-swirl { position: fixed; inset: -20%; z-index: 89; pointer-events: none; background: radial-gradient(circle, rgba(255,215,0,0.35), #0A0A1F 55%); opacity: 0; }
@@ -996,10 +998,10 @@
     </div>
 
     <div id="welcome-swirl"></div>
-    <div id="welcome-window" class="hidden fixed inset-0 z-[88] flex items-center justify-center bg-[#0A0A1F] p-4">
+    <div id="welcome-window" class="hidden fixed inset-0 z-[88] flex items-start justify-center bg-[#0A0A1F] p-4 pt-16">
         <div class="w-full max-w-lg text-center">
             <img id="welcome-verity" src="images/idle.jpg" alt="Verity" class="welcome-verity portrait-frame mx-auto" style="width:150px;height:150px;min-width:150px;">
-            <div id="welcome-hi" class="welcome-hi mt-4 inline-block glass rounded-3xl px-5 py-3 text-lg">Whoa... whoa... I'm trying to get down.</div>
+            <div id="welcome-hi" class="welcome-hi mt-4 inline-block glass rounded-3xl px-5 py-3 text-lg">Ahhhhhhh</div>
             <div class="welcome-log">
                 <h2 class="font-display text-5xl font-bold leading-none tracking-tight mt-6">Multi <span class="bg-gradient-to-r from-[#FFD700] via-[#FFEA00] to-[#FFC107] bg-clip-text text-transparent">Media</span></h2>
                 <p class="mt-2 text-sm tracking-[0.28em] text-[#FFD700]">CREATE. CAPTURE. COLLABORATE.</p>
@@ -2453,7 +2455,7 @@
             });
             if (state === "generating" || state === "complete") showVerityOrbBubble(label);
         }
-        async function speakVerity(text) {
+        async function speakVerity(text, hooks) {
             if (!verityVoiceEnabled || !text) return;
             const token = ++veritySpeechToken;
             setVoiceStatus("generating");
@@ -2488,7 +2490,10 @@
                         finishVeritySpeech(audio, url);
                         resolve();
                     }
-                    audio.onplay = function () { if (token === veritySpeechToken) setVerityTalking(true); };
+                audio.onplay = function () {
+                    if (token === veritySpeechToken) setVerityTalking(true);
+                    if (hooks && hooks.onStart) hooks.onStart();
+                };
                     audio.onended = finish;
                     const watch = setInterval(function () {
                         if (settled) return clearInterval(watch);
@@ -2504,6 +2509,7 @@
                 setVoiceStatus("");
                 setVerityTalking(false);
                 showVerityOrbBubble(text);
+                if (hooks && hooks.onStart) hooks.onStart();
             }
         }
 
@@ -2531,23 +2537,23 @@
             if (!win) return;
             win.classList.remove("hidden");
             win.classList.add("flex");
-            if (verityVoiceEnabled) speakVerity("Whoa whoa I'm trying to get down");
-            setTimeout(function () {
-                if (face) face.classList.add("is-dropping");
-            }, 1600);
+            if (line) { line.textContent = "Ahhhhhhh"; line.classList.add("is-on"); }
+            if (verityVoiceEnabled) speakVerity("Ahhhhhhh");
+            setTimeout(function () { if (face) face.classList.add("is-dropping"); }, 700);
             setTimeout(function () {
                 playPlop();
                 if (face) {
                     face.classList.remove("is-dropping");
-                    face.classList.add("is-bouncing");
+                    face.classList.add("is-waiting");
                 }
-                if (line) {
-                    line.textContent = "Helloo";
-                    line.classList.add("is-on");
+                if (line) line.textContent = "Helloo";
+                function landed() {
+                    if (face) { face.classList.remove("is-waiting"); face.classList.add("is-landed"); }
                 }
-                if (verityVoiceEnabled) speakVerity("Helloo");
-            }, 2150);
-            setTimeout(function () { if (log) log.classList.add("is-on"); }, 2900);
+                if (verityVoiceEnabled) speakVerity("Helloo", { onStart: landed });
+                else setTimeout(landed, 700);
+                if (log) log.classList.add("is-on");
+            }, 1450);
         }
         function closeWelcomeWindow() {
             const swirl = document.getElementById("welcome-swirl");
