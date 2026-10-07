@@ -257,13 +257,15 @@
             font-size: 0.9rem;
             line-height: 1.4;
         }
-        @keyframes verity-pop { from { opacity: 0; transform: scale(0.4) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        @keyframes hi-pop { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes swirl-out { to { transform: scale(8) rotate(28deg); opacity: 0; } }
-        .welcome-verity { opacity: 0; animation: verity-pop 0.7s ease forwards; }
-        .welcome-hi { opacity: 0; animation: hi-pop 0.45s ease 0.7s forwards; }
-        .welcome-log { opacity: 0; animation: hi-pop 0.5s ease 1.2s forwards; }
+        @keyframes verity-drop { from { transform: translateY(-70vh); } to { transform: translateY(0); } }
+        @keyframes verity-bounce { 0% { transform: translateY(0) scale(1,1); } 30% { transform: translateY(-18px) scale(0.96,1.06); } 55% { transform: translateY(0) scale(1.08,0.92); } 100% { transform: translateY(0) scale(1,1); } }
+        .welcome-verity { transform: translateY(-70vh); }
+        .welcome-verity.is-dropping { animation: verity-drop 0.55s cubic-bezier(0.55, 0, 1, 0.45) forwards; }
+        .welcome-verity.is-bouncing { animation: verity-bounce 0.55s ease forwards; }
+        .welcome-hi, .welcome-log { opacity: 0; }
+        .welcome-hi.is-on, .welcome-log.is-on { opacity: 1; transition: opacity 0.35s ease; }
         #welcome-swirl { position: fixed; inset: -20%; z-index: 89; pointer-events: none; background: radial-gradient(circle, rgba(255,215,0,0.35), #0A0A1F 55%); opacity: 0; }
+        @keyframes swirl-out { to { transform: scale(8) rotate(28deg); opacity: 0; } }
         #welcome-swirl.is-on { opacity: 1; animation: swirl-out 0.9s ease forwards; }
         #verity-orb-status { display: none; padding: 0.3rem 0.7rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
         #verity-orb-status.is-visible { display: block; }
@@ -996,8 +998,8 @@
     <div id="welcome-swirl"></div>
     <div id="welcome-window" class="hidden fixed inset-0 z-[88] flex items-center justify-center bg-[#0A0A1F] p-4">
         <div class="w-full max-w-lg text-center">
-            <img src="images/idle.jpg" alt="Verity" class="welcome-verity portrait-frame mx-auto" style="width:150px;height:150px;min-width:150px;">
-            <div class="welcome-hi mt-4 inline-block glass rounded-3xl px-5 py-3 text-lg">Hi. I'm Verity.</div>
+            <img id="welcome-verity" src="images/idle.jpg" alt="Verity" class="welcome-verity portrait-frame mx-auto" style="width:150px;height:150px;min-width:150px;">
+            <div id="welcome-hi" class="welcome-hi mt-4 inline-block glass rounded-3xl px-5 py-3 text-lg">Whoa... whoa... I'm trying to get down.</div>
             <div class="welcome-log">
                 <h2 class="font-display text-5xl font-bold leading-none tracking-tight mt-6">Multi <span class="bg-gradient-to-r from-[#FFD700] via-[#FFEA00] to-[#FFC107] bg-clip-text text-transparent">Media</span></h2>
                 <p class="mt-2 text-sm tracking-[0.28em] text-[#FFD700]">CREATE. CAPTURE. COLLABORATE.</p>
@@ -2505,12 +2507,47 @@
             }
         }
 
+        function playPlop() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(220, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + 0.16);
+                gain.gain.setValueAtTime(0.35, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.22);
+            } catch (e) {}
+        }
         function showWelcomeWindow() {
             const win = document.getElementById("welcome-window");
+            const face = document.getElementById("welcome-verity");
+            const line = document.getElementById("welcome-hi");
+            const log = document.querySelector(".welcome-log");
             if (!win) return;
             win.classList.remove("hidden");
             win.classList.add("flex");
-            setTimeout(function () { if (verityVoiceEnabled) speakVerity("Hi. I'm Verity."); }, 700);
+            if (verityVoiceEnabled) speakVerity("Whoa whoa I'm trying to get down");
+            setTimeout(function () {
+                if (face) face.classList.add("is-dropping");
+            }, 1600);
+            setTimeout(function () {
+                playPlop();
+                if (face) {
+                    face.classList.remove("is-dropping");
+                    face.classList.add("is-bouncing");
+                }
+                if (line) {
+                    line.textContent = "Helloo";
+                    line.classList.add("is-on");
+                }
+                if (verityVoiceEnabled) speakVerity("Helloo");
+            }, 2150);
+            setTimeout(function () { if (log) log.classList.add("is-on"); }, 2900);
         }
         function closeWelcomeWindow() {
             const swirl = document.getElementById("welcome-swirl");
