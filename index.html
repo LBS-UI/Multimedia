@@ -257,13 +257,14 @@
             font-size: 0.9rem;
             line-height: 1.4;
         }
-        @keyframes verity-struggle { 0%, 100% { transform: translateY(0) rotate(-8deg); } 50% { transform: translateY(10px) rotate(8deg); } }
-        @keyframes verity-drop { from { opacity: 0.35; transform: translateY(-80px) rotate(-8deg); } to { opacity: 1; transform: translateY(36px) rotate(0); } }
-        @keyframes verity-bounce { 0% { transform: translateY(36px) scale(1,1); } 40% { transform: translateY(8px) scale(0.96,1.08); } 100% { transform: translateY(36px) scale(1.06,0.94); } }
-        .welcome-verity { margin-top: 8vh; opacity: 1; animation: verity-struggle 0.28s ease-in-out infinite; }
-        .welcome-verity.is-dropping { animation: verity-drop 0.7s ease-in forwards; }
-        .welcome-verity.is-waiting { animation: verity-bounce 0.45s ease-in-out infinite; }
-        .welcome-verity.is-landed { animation: none; transform: translateY(36px); }
+        .welcome-stage { position: relative; height: 280px; margin-top: 4vh; overflow: visible; }
+        .welcome-ground { position: absolute; left: 18%; right: 18%; bottom: 16px; height: 5px; border-radius: 999px; background: #FFD700; box-shadow: 0 0 18px rgba(255,215,0,0.7); }
+        @keyframes verity-drop { from { opacity: 0; transform: translateX(-50%) translateY(-110vh) rotate(-12deg); } to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.14, 0.78); } }
+        @keyframes verity-bounce { 0% { transform: translateX(-50%) translateY(0) scale(1.14, 0.78); } 18% { transform: translateX(-50%) translateY(-70px) scale(0.96, 1.06); } 36% { transform: translateX(-50%) translateY(0) scale(1.1, 0.86); } 52% { transform: translateX(-50%) translateY(-36px) scale(0.98, 1.04); } 68% { transform: translateX(-50%) translateY(0) scale(1.06, 0.92); } 82% { transform: translateX(-50%) translateY(-14px) scale(1, 1.02); } 100% { transform: translateX(-50%) translateY(0) scale(1); } }
+        .welcome-verity { position: absolute; left: 50%; bottom: 21px; margin: 0; opacity: 0; transform: translateX(-50%) translateY(-110vh); }
+        .welcome-verity.is-dropping { animation: verity-drop 0.7s cubic-bezier(0.45, 0, 1, 1) forwards; }
+        .welcome-verity.is-waiting { animation: verity-bounce 1.15s ease-out forwards; }
+        .welcome-verity.is-landed { animation: none; opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
         .welcome-hi, .welcome-log { opacity: 0; }
         .welcome-hi.is-on, .welcome-log.is-on { opacity: 1; transition: opacity 0.35s ease; }
         #welcome-swirl { position: fixed; inset: -20%; z-index: 89; pointer-events: none; background: radial-gradient(circle, rgba(255,215,0,0.35), #0A0A1F 55%); opacity: 0; }
@@ -1000,7 +1001,10 @@
     <div id="welcome-swirl"></div>
     <div id="welcome-window" class="hidden fixed inset-0 z-[88] flex items-start justify-center bg-[#0A0A1F] p-4 pt-16">
         <div class="w-full max-w-lg text-center">
-            <img id="welcome-verity" src="images/idle.jpg" alt="Verity" class="welcome-verity portrait-frame mx-auto" style="width:150px;height:150px;min-width:150px;">
+            <div class="welcome-stage">
+                <img id="welcome-verity" src="images/idle.jpg" alt="Verity" class="welcome-verity portrait-frame" style="width:150px;height:150px;min-width:150px;">
+                <div class="welcome-ground"></div>
+            </div>
             <div id="welcome-hi" class="welcome-hi mt-4 inline-block glass rounded-3xl px-5 py-3 text-lg">Ahhhhhhh</div>
             <div class="welcome-log">
                 <h2 class="font-display text-5xl font-bold leading-none tracking-tight mt-6">Multi <span class="bg-gradient-to-r from-[#FFD700] via-[#FFEA00] to-[#FFC107] bg-clip-text text-transparent">Media</span></h2>
@@ -2539,21 +2543,24 @@
             win.classList.add("flex");
             if (line) { line.textContent = "Ahhhhhhh"; line.classList.add("is-on"); }
             if (verityVoiceEnabled) speakVerity("Ahhhhhhh");
-            setTimeout(function () { if (face) face.classList.add("is-dropping"); }, 700);
             setTimeout(function () {
-                playPlop();
-                if (face) {
+                if (!face) return;
+                face.classList.add("is-dropping");
+                face.addEventListener("animationend", function land() {
+                    face.removeEventListener("animationend", land);
+                    playPlop();
                     face.classList.remove("is-dropping");
                     face.classList.add("is-waiting");
-                }
-                if (line) line.textContent = "Helloo";
-                function landed() {
-                    if (face) { face.classList.remove("is-waiting"); face.classList.add("is-landed"); }
-                }
-                if (verityVoiceEnabled) speakVerity("Helloo", { onStart: landed });
-                else setTimeout(landed, 700);
-                if (log) log.classList.add("is-on");
-            }, 1450);
+                    if (line) line.textContent = "Helloo";
+                    face.addEventListener("animationend", function settled() {
+                        face.removeEventListener("animationend", settled);
+                        face.classList.remove("is-waiting");
+                        face.classList.add("is-landed");
+                    });
+                    if (verityVoiceEnabled) speakVerity("Helloo");
+                    if (log) log.classList.add("is-on");
+                });
+            }, 400);
         }
         function closeWelcomeWindow() {
             const swirl = document.getElementById("welcome-swirl");
