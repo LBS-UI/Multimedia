@@ -257,7 +257,11 @@
             font-size: 0.9rem;
             line-height: 1.4;
         }
-        #verity-voice-status { display: none; margin: 0 1.25rem; padding: 0.45rem 0.8rem; border-radius: 999px; width: fit-content; font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }
+        #verity-bubble-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+        #verity-orb-status { display: none; padding: 0.3rem 0.7rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+        #verity-orb-status.is-visible { display: block; }
+        #verity-orb-status.is-generating { color: #0A0A1F; background: #FFD700; }
+        #verity-orb-status.is-complete { color: #052e1b; background: #34d399; }
         #verity-voice-status.is-visible { display: block; }
         #verity-voice-status.is-generating { color: #FFD700; background: rgba(255,215,0,0.12); }
         #verity-voice-status.is-complete { color: #34d399; background: rgba(52,211,153,0.12); }
@@ -987,7 +991,10 @@
         <div onclick="showVerityChat()" class="verity-orb" role="button" aria-label="Open Verity chat">
             <img src="images/idle.jpg" class="verity-avatar-img" alt="Verity, Multimedia Club AI guide">
         </div>
-        <div id="verity-orb-bubble" role="status" aria-live="polite"></div>
+        <div id="verity-bubble-wrap">
+            <div id="verity-orb-status" aria-live="polite"></div>
+            <div id="verity-orb-bubble" role="status" aria-live="polite"></div>
+        </div>
     </div>
 
     <div id="login-modal" onclick="if (event.target.id === 'login-modal') hideLoginModal()" class="hidden fixed inset-0 z-[70] flex items-center justify-center bg-black/75 p-4">
@@ -2405,32 +2412,21 @@
             if (verityAudio !== audio) return;
             verityMood = "idle";
             setVerityTalking(false);
+            setVoiceStatus("");
             hideVerityOrbBubble();
             verityAudio = null;
             if (url) setTimeout(function () { URL.revokeObjectURL(url); }, 800);
         }
         function setVoiceStatus(state) {
             const status = document.getElementById("verity-voice-status");
-            if (state === "generating") {
-                showVerityOrbBubble("Generating...");
-                if (status) {
-                    status.textContent = "Generating...";
-                    status.className = "is-visible is-generating";
-                }
-                return;
-            }
-            if (state === "complete") {
-                showVerityOrbBubble("Complete");
-                if (status) {
-                    status.textContent = "Complete";
-                    status.className = "is-visible is-complete";
-                }
-                return;
-            }
-            if (status) {
-                status.textContent = "";
-                status.className = "";
-            }
+            const orbStatus = document.getElementById("verity-orb-status");
+            const label = state === "generating" ? "Generating..." : state === "complete" ? "Complete" : "";
+            [status, orbStatus].forEach(function (el) {
+                if (!el) return;
+                el.textContent = label;
+                el.className = label ? "is-visible " + (state === "complete" ? "is-complete" : "is-generating") : "";
+            });
+            if (state === "generating" || state === "complete") showVerityOrbBubble(label);
         }
         async function speakVerity(text) {
             if (!verityVoiceEnabled || !text) return;
