@@ -257,7 +257,10 @@
             font-size: 0.9rem;
             line-height: 1.4;
         }
-        #verity-orb-bubble.is-visible { display: block; }
+        #verity-voice-status { display: none; margin: 0 1.25rem; padding: 0.45rem 0.8rem; border-radius: 999px; width: fit-content; font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }
+        #verity-voice-status.is-visible { display: block; }
+        #verity-voice-status.is-generating { color: #FFD700; background: rgba(255,215,0,0.12); }
+        #verity-voice-status.is-complete { color: #34d399; background: rgba(52,211,153,0.12); }
 
         #verity-orb:hover {
             transform: scale(1.1) rotate(5deg);
@@ -1057,6 +1060,7 @@
             </div>
             
             <div id="chat-messages" class="flex-1 p-5 overflow-y-auto space-y-4"></div>
+            <div id="verity-voice-status" aria-live="polite"></div>
             
             <div class="p-4 border-t border-white/10">
                 <div class="flex gap-x-3">
@@ -2405,10 +2409,33 @@
             verityAudio = null;
             if (url) setTimeout(function () { URL.revokeObjectURL(url); }, 800);
         }
+        function setVoiceStatus(state) {
+            const status = document.getElementById("verity-voice-status");
+            if (state === "generating") {
+                showVerityOrbBubble("Generating...");
+                if (status) {
+                    status.textContent = "Generating...";
+                    status.className = "is-visible is-generating";
+                }
+                return;
+            }
+            if (state === "complete") {
+                showVerityOrbBubble("Complete");
+                if (status) {
+                    status.textContent = "Complete";
+                    status.className = "is-visible is-complete";
+                }
+                return;
+            }
+            if (status) {
+                status.textContent = "";
+                status.className = "";
+            }
+        }
         async function speakVerity(text) {
             if (!verityVoiceEnabled || !text) return;
             const token = ++veritySpeechToken;
-            showVerityOrbBubble(text);
+            setVoiceStatus("generating");
             try {
                 const response = await fetch("/api/tts", {
                     method: "POST",
@@ -2419,6 +2446,11 @@
                 if (!response.ok) throw new Error("TTS failed");
                 const bytes = await response.arrayBuffer();
                 if (token !== veritySpeechToken || !bytes || bytes.byteLength < 128) throw new Error("empty audio");
+                setVoiceStatus("complete");
+                await new Promise(function (resolve) { setTimeout(resolve, 450); });
+                if (token !== veritySpeechToken) return;
+                setVoiceStatus("");
+                showVerityOrbBubble(text);
                 if (verityAudio) { try { verityAudio.pause(); } catch (e) {} }
                 if (verityObjectUrl) URL.revokeObjectURL(verityObjectUrl);
                 const url = URL.createObjectURL(new Blob([bytes], { type: "audio/mpeg" }));
@@ -2436,7 +2468,9 @@
             } catch (error) {
                 if (token !== veritySpeechToken) return;
                 console.warn("Verity voice unavailable:", error);
+                setVoiceStatus("");
                 setVerityTalking(false);
+                showVerityOrbBubble(text);
             }
         }
 
@@ -2563,8 +2597,8 @@
                     if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
                     if (step.highlight) highlightPortrait(step.highlight);
                     else clearPortraitHighlight();
-                    showVerityOrbBubble(step.text);
                     if (verityVoiceEnabled) await speakVerity(step.text);
+                    else showVerityOrbBubble(step.text);
                     await new Promise(function (resolve) { setTimeout(resolve, 350); });
                 }
                 clearPortraitHighlight();
