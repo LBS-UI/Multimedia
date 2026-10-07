@@ -477,7 +477,7 @@
 
         #floating-verity { left: 1.25rem; right: auto; bottom: 1.5rem; flex-direction: row; align-items: flex-end; }
         #floating-verity .verity-orb { order: 1; }
-        #verity-orb-bubble { order: 2; margin-left: 12px; }
+        #verity-bubble-wrap { order: 2; margin-left: 12px; align-items: flex-start; }
         .field-error { color: #fca5a5; font-size: 0.8rem; margin: 0.25rem 0 0.75rem; }
         .login-card { position: relative; overflow: hidden; background: linear-gradient(180deg, rgba(26,26,58,0.96), rgba(10,10,31,0.94)); }
         .login-card::before { content: ""; position: absolute; inset: 0 auto auto 0; height: 4px; width: 100%; background: linear-gradient(90deg, #FFD700, #FFEA00, #FFD700); }
@@ -986,7 +986,23 @@
         </div>
     </div>
 
-    <!-- FLOATING VERITY (with PFP) -->
+    <div id="welcome-window" class="hidden fixed inset-0 z-[88] flex items-center justify-center bg-black/75 p-4">
+        <div class="glass w-full max-w-lg rounded-3xl p-7 text-center">
+            <div class="mx-auto mb-4 w-16 h-16 rounded-full border-2 border-[#FFD700] flex items-center justify-center">
+                <i class="fa-solid fa-clapperboard text-[#FFD700] text-2xl"></i>
+            </div>
+            <h2 class="font-display text-4xl font-bold">Multi Media Club</h2>
+            <p class="text-[#B8B8D0] mt-2">Welcome to the official school portal.</p>
+            <img src="images/idle.jpg" alt="Verity" class="portrait-frame mx-auto mt-5" style="width:120px;height:120px;min-width:120px;">
+            <p class="mt-3 text-sm text-[#FFD700]">Collaborated by Verity</p>
+            <div class="text-left glass rounded-2xl p-4 mt-5">
+                <div class="text-xs tracking-wide text-[#FFD700] mb-2">UPDATE LOG</div>
+                <p class="text-sm text-[#B8B8D0]">Helloo im Verity your personal hover friend. Ask me anything. I know everything. Well except for everything. Hahaha.</p>
+                <p class="text-sm text-[#B8B8D0] mt-2">Voice tour, requests, and file uploads are ready for members.</p>
+            </div>
+            <button onclick="closeWelcomeWindow()" class="btn-gold w-full py-3 rounded-2xl mt-5 font-semibold">Enter the site</button>
+        </div>
+    </div>
     <div id="floating-verity" class="fixed z-[60]">
         <div onclick="showVerityChat()" class="verity-orb" role="button" aria-label="Open Verity chat">
             <img src="images/idle.jpg" class="verity-avatar-img" alt="Verity, Multimedia Club AI guide">
@@ -2452,15 +2468,27 @@
                 const url = URL.createObjectURL(new Blob([bytes], { type: "audio/mpeg" }));
                 verityObjectUrl = url;
                 const audio = new Audio(url);
+                audio.preload = "auto";
                 audio.playbackRate = 1.45;
                 verityAudio = audio;
-                audio.onplay = function () { if (token === veritySpeechToken) setVerityTalking(true); };
                 const done = new Promise(function (resolve) {
-                    audio.onended = function () { finishVeritySpeech(audio, url); resolve(); };
-                    audio.onerror = function () { finishVeritySpeech(audio, url); resolve(); };
+                    let settled = false;
+                    function finish() {
+                        if (settled || token !== veritySpeechToken) return;
+                        settled = true;
+                        finishVeritySpeech(audio, url);
+                        resolve();
+                    }
+                    audio.onplay = function () { if (token === veritySpeechToken) setVerityTalking(true); };
+                    audio.onended = finish;
+                    const watch = setInterval(function () {
+                        if (settled) return clearInterval(watch);
+                        if (audio.ended || (audio.duration && audio.currentTime >= audio.duration - 0.08)) finish();
+                    }, 150);
                 });
                 await audio.play();
-                return done;
+                await done;
+                return;
             } catch (error) {
                 if (token !== veritySpeechToken) return;
                 console.warn("Verity voice unavailable:", error);
@@ -2470,6 +2498,29 @@
             }
         }
 
+        function showWelcomeWindow() {
+            const win = document.getElementById("welcome-window");
+            if (!win) return;
+            win.classList.remove("hidden");
+            win.classList.add("flex");
+        }
+        function closeWelcomeWindow() {
+            const win = document.getElementById("welcome-window");
+            if (win) {
+                win.classList.add("hidden");
+                win.classList.remove("flex");
+            }
+            if (!verityGreetingAdded) {
+                verityGreetingAdded = true;
+                addVerityMessage("Helloo im Verity your personal hover friend. Ask me anything. I know everything. Well except for everything. Hahaha.", { speak: true });
+                const chatContainer = document.getElementById("chat-messages");
+                const replyDiv = document.createElement("div");
+                replyDiv.className = "flex gap-2 mt-2 verity-quick-replies";
+                replyDiv.innerHTML = '<button onclick="startWebsiteTour();" class="px-4 py-1.5 text-sm rounded-2xl bg-[#FFD700] text-[#0A0A1F] font-medium">Show me around</button><button onclick="hideVerityChat()" class="px-4 py-1.5 text-sm rounded-2xl border border-white/30">No thanks</button>';
+                if (chatContainer) chatContainer.appendChild(replyDiv);
+            }
+            showVerityChat();
+        }
         function showVerityChat() {
             const modal = document.getElementById("verity-chat-modal");
             modal.classList.remove("hidden");
@@ -2594,8 +2645,11 @@
                     if (step.highlight) highlightPortrait(step.highlight);
                     else clearPortraitHighlight();
                     if (verityVoiceEnabled) await speakVerity(step.text);
-                    else showVerityOrbBubble(step.text);
-                    await new Promise(function (resolve) { setTimeout(resolve, 350); });
+                    else {
+                        showVerityOrbBubble(step.text);
+                        await new Promise(function (resolve) { setTimeout(resolve, Math.max(1800, step.text.length * 45)); });
+                    }
+                    await new Promise(function (resolve) { setTimeout(resolve, 500); });
                 }
                 clearPortraitHighlight();
                 hideVerityOrbBubble();
@@ -2798,25 +2852,7 @@
                         loadingScreen.remove();
                         
                         setTimeout(() => {
-                            if (!verityGreetingAdded) {
-                                verityGreetingAdded = true;
-                                addVerityMessage("Helloo im Verity your personal hover friend. Ask me anything. I know everything. Well except for everything. Hahaha.", { speak: true });
-                                const chatContainer = document.getElementById('chat-messages');
-                                const replyDiv = document.createElement('div');
-                                replyDiv.className = 'flex gap-2 mt-2 verity-quick-replies';
-                                replyDiv.innerHTML = `
-                                    <button onclick="startWebsiteTour();" 
-                                            class="px-4 py-1.5 text-sm rounded-2xl bg-[#FFD700] text-[#0A0A1F] font-medium">
-                                        Show me around
-                                    </button>
-                                    <button onclick="hideVerityChat()" 
-                                            class="px-4 py-1.5 text-sm rounded-2xl border border-white/30">
-                                        No thanks
-                                    </button>
-                                `;
-                                chatContainer.appendChild(replyDiv);
-                            }
-                            showVerityChat();
+                            showWelcomeWindow();
                         }, 200);
                     }, 600);
                 }, 1600);
