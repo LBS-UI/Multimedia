@@ -752,7 +752,7 @@
                                 <span class="font-semibold text-xl">Verity</span>
                                 <span class="px-2.5 py-px text-[10px] font-mono tracking-widest bg-[#FFD700] text-[#0A0A1F] rounded">AI GUIDE</span>
                             </div>
-                            <p class="text-[#B8B8D0] text-sm">Hellooo, I'm Verity, your personal assistant. Ask me to show you around by clicking the Show me around button.</p>
+                            <p class="text-[#B8B8D0] text-sm">Helloo, I'm Verity, your personal hover friend. Ask me anything. I know everything. Well, except for everything. Hahaha.</p>
                             <button onclick="showVerityChat()" class="mt-3 text-sm text-[#FFD700] hover:text-[#FFEA00] font-medium flex items-center gap-x-1">
                                 CHAT WITH ME <i class="fa-solid fa-arrow-right ml-1"></i>
                             </button>
@@ -871,12 +871,12 @@
         <div class="max-w-5xl mx-auto">
             <div class="flex flex-col sm:flex-row items-center justify-center gap-10 mb-10">
                 <figure class="text-center">
-                    <img src="images/developer.jpg" alt="Ron Matthew Ferreras" class="portrait-frame mx-auto">
+                    <img id="developer-portrait" src="images/developer.jpg" alt="Ron Matthew Ferreras" class="portrait-frame mx-auto">
                     <figcaption class="mt-3 font-semibold">Ron Matthew Ferreras</figcaption>
                     <p class="text-xs text-[#B8B8D0]">Developer</p>
                 </figure>
                 <figure class="text-center">
-                    <img src="images/idle.jpg" alt="Verity, Multimedia Club assistant" class="portrait-frame mx-auto">
+                    <img id="verity-portrait" src="images/idle.jpg" alt="Verity, Multimedia Club assistant" class="portrait-frame mx-auto">
                     <figcaption class="mt-3 font-semibold">Verity</figcaption>
                     <p class="text-xs text-[#B8B8D0]">Club assistant</p>
                 </figure>
@@ -2532,23 +2532,38 @@
         }
 
         // Website Tour
+        function highlightPortrait(id) {
+            document.querySelectorAll(".portrait-frame").forEach(function (el) { el.style.boxShadow = ""; });
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.style.boxShadow = "0 0 0 5px #FFD700, 0 0 32px rgba(255,215,0,0.9)";
+            el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        function clearPortraitHighlight() {
+            document.querySelectorAll(".portrait-frame").forEach(function (el) { el.style.boxShadow = ""; });
+        }
         function startWebsiteTour() {
             hideVerityChat();
             const steps = [
-                { el: "events", text: "Here are the Events." },
-                { el: "announcements", text: "Here are the School Announcements." },
-                { el: "about", text: "Here is the About section." },
-                { el: "home", text: "And this is the home page." }
+                { el: "events", wait: 20000, text: "Here are the events. This is where the club events show up once a member posts them. You can read the event name, the date, the place, and what it is about. If the cards are empty, the real events have not been added yet. A member can request an event, and then the team can post it here for everyone at school to see. Take a look around this section before we move on." },
+                { el: "announcements", wait: 8000, text: "And here's the announcement post, where you can find either school suspensions or school events." },
+                { el: "about", wait: 7000, highlight: "developer-portrait", text: "And here's the about me section. This is the developer who made our website today." },
+                { el: "about", wait: 8000, highlight: "verity-portrait", text: "And that is me, your handsome assistant. Hehe... anyways, let's proceed to the homepage." },
+                { el: "home", wait: 7000, text: "And this is the home page. Nothing much, the ordinary here, just a simple homepage." },
+                { el: "home", wait: 12000, text: "Well, that's all for the tour of our multimedia website, collaborated by Verity. If you have any questions, feel free to ask me on my chat bubble. And if you want your events to be requested, feel free to submit a request form for our members to post. Enjoy your stay." }
             ];
             (async function runTour() {
                 for (let i = 0; i < steps.length; i++) {
                     const step = steps[i];
                     const target = document.getElementById(step.el);
                     if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+                    if (step.highlight) highlightPortrait(step.highlight);
+                    else clearPortraitHighlight();
                     showVerityOrbBubble(step.text);
                     if (verityVoiceEnabled) await speakVerity(step.text);
-                    await new Promise(function (resolve) { setTimeout(resolve, 1600); });
+                    await new Promise(function (resolve) { setTimeout(resolve, step.wait || 4000); });
                 }
+                clearPortraitHighlight();
                 hideVerityOrbBubble();
             })();
         }
@@ -2751,7 +2766,7 @@
                         setTimeout(() => {
                             if (!verityGreetingAdded) {
                                 verityGreetingAdded = true;
-                                addVerityMessage("Hellooo, I'm Verity, your personal assistant. Ask me to show you around by clicking the Show me around button.", { speak: true });
+                                addVerityMessage("Helloo, I'm Verity, your personal hover friend. Ask me anything. I know everything. Well, except for everything. Hahaha.", { speak: true });
                                 const chatContainer = document.getElementById('chat-messages');
                                 const replyDiv = document.createElement('div');
                                 replyDiv.className = 'flex gap-2 mt-2 verity-quick-replies';
