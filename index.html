@@ -2534,7 +2534,7 @@
                 verityObjectUrl = url;
                 const audio = new Audio(url);
                 audio.preload = "auto";
-                audio.playbackRate = 1.45;
+                audio.playbackRate = (hooks && hooks.rate) || 1.2;
                 verityAudio = audio;
                 const done = new Promise(function (resolve) {
                     let settled = false;
@@ -2639,6 +2639,18 @@
             modal.classList.remove("hidden");
             modal.classList.add("flex");
             renderChat();
+        }
+        function offerVerityTour() {
+            if (!verityGreetingAdded) {
+                verityGreetingAdded = true;
+                addVerityMessage("Want a tour of the multimedia club?", { speak: true });
+                const chatContainer = document.getElementById("chat-messages");
+                const replyDiv = document.createElement("div");
+                replyDiv.className = "flex gap-2 mt-2 verity-quick-replies";
+                replyDiv.innerHTML = '<button onclick="startWebsiteTour();" class="px-4 py-1.5 text-sm rounded-2xl bg-[#FFD700] text-[#0A0A1F] font-medium">Show me around</button><button onclick="hideVerityChat()" class="px-4 py-1.5 text-sm rounded-2xl border border-white/30">No thanks</button>';
+                if (chatContainer) chatContainer.appendChild(replyDiv);
+            }
+            showVerityChat();
         }
 
         function hideVerityChat() {
@@ -3034,6 +3046,7 @@
         window.logout = logout;
         window.showVerityChat = showVerityChat;
         window.speakVerity = speakVerity;
+        window.offerVerityTour = offerVerityTour;
         window.hideVerityChat = hideVerityChat;
         window.toggleVerityVoice = toggleVerityVoice;
         window.startWebsiteTour = startWebsiteTour;
@@ -3083,13 +3096,13 @@
     var img = logo.querySelector("img");
     if (img) img.src = talking ? "images/talking.jpg" : "images/idle.jpg";
   }
-  function playLine(text) {
+  function playLine(text, rate) {
     var startResolve, endResolve;
     var start = new Promise(function (r) { startResolve = r; });
     var end = new Promise(function (r) { endResolve = r; });
     if (!window.speakVerity) { startResolve(); endResolve(); return { start: start, end: end }; }
     gateHint.textContent = "Generating...";
-    window.speakVerity(text, { onStart: function () { setFace(true); gateHint.textContent = ""; startResolve(); } }).then(function () { setFace(false); startResolve(); endResolve(); }, function () { setFace(false); startResolve(); endResolve(); });
+    window.speakVerity(text, { rate: rate || 1, onStart: function () { setFace(true); gateHint.textContent = ""; startResolve(); } }).then(function () { setFace(false); startResolve(); endResolve(); }, function () { setFace(false); startResolve(); endResolve(); });
     return { start: start, end: end };
   }
   function playPlop() {
@@ -3128,13 +3141,13 @@
     el.style.animation = "ripple .7s ease both";
   }
   function onImpact() {
-    if (bounceCount === 0) { sx = 1.42; sy = 0.62; playPlop(); flash(0); playLine("oof"); }
+    if (bounceCount === 0) { sx = 1.42; sy = 0.62; playPlop(); flash(0); playLine("oof", 1); }
     else { sx = 1.24; sy = 0.8; if (bounceCount < 3) flash(bounceCount); }
   }
   function settle() {
     phase = "settled";
     vy = 0; y = 0; sx = 1; sy = 1; rot = 0;
-    var hello = playLine("helloo");
+    var hello = playLine("helloo", 1);
     hello.start.then(function () {
       root.classList.add("intro--text");
       var enter = document.getElementById("introEnter");
@@ -3142,7 +3155,10 @@
         enter.style.display = "inline-block";
         enter.onclick = function () {
           root.classList.add("intro--done");
-          setTimeout(function () { if (root.parentNode) root.remove(); }, 800);
+          setTimeout(function () {
+            if (root.parentNode) root.remove();
+            if (window.offerVerityTour) window.offerVerityTour();
+          }, 800);
         };
       }
     });
@@ -3180,7 +3196,7 @@
   function begin() {
     if (phase !== "idle") return;
     gate.classList.add("intro__gate--hidden");
-    var fall = playLine("ahhhhhhh");
+    var fall = playLine("AHHHHHH", 0.85);
     fall.start.then(function () {
       measure();
       logo.style.opacity = "1";
