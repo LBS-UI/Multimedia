@@ -562,8 +562,9 @@
     <p class="intro__welcome">Welcome to the Multimedia Club.</p>
     <p class="intro__name">Multi Media</p>
     <p class="intro__tagline">Create • Capture • Collaborate • Collaborated by Verity</p>
+    <button id="introEnter" type="button" class="intro__gate-label" style="display:none;margin-top:1.2rem;pointer-events:auto;border:1px solid rgba(253,224,71,.4);border-radius:999px;padding:12px 22px;background:#fbbf24;color:#0a0803;">Click to enter multimedia</button>
   </div>
-  <div class="intro__gate" id="introGate"><div class="intro__gate-inner"><p class="intro__gate-label">Click to enter</p><p class="intro__gate-hint" id="introGateHint">Click anywhere to start</p></div></div>
+  <div class="intro__gate" id="introGate"><div class="intro__gate-inner"><p class="intro__gate-label">Click to enter multimedia</p><p class="intro__gate-hint" id="introGateHint">Click anywhere to start</p></div></div>
 </div>
 
 
@@ -3078,13 +3079,17 @@
   if (!root || !logo) return;
   var loader = document.getElementById("loading-screen");
   if (loader) loader.style.display = "none";
+  function setFace(talking) {
+    var img = logo.querySelector("img");
+    if (img) img.src = talking ? "images/talking.jpg" : "images/idle.jpg";
+  }
   function playLine(text) {
     var startResolve, endResolve;
     var start = new Promise(function (r) { startResolve = r; });
     var end = new Promise(function (r) { endResolve = r; });
     if (!window.speakVerity) { startResolve(); endResolve(); return { start: start, end: end }; }
     gateHint.textContent = "Generating...";
-    window.speakVerity(text, { onStart: function () { gateHint.textContent = ""; startResolve(); } }).then(function () { startResolve(); endResolve(); }, function () { startResolve(); endResolve(); });
+    window.speakVerity(text, { onStart: function () { setFace(true); gateHint.textContent = ""; startResolve(); } }).then(function () { setFace(false); startResolve(); endResolve(); }, function () { setFace(false); startResolve(); endResolve(); });
     return { start: start, end: end };
   }
   function playPlop() {
@@ -3123,19 +3128,23 @@
     el.style.animation = "ripple .7s ease both";
   }
   function onImpact() {
-    if (bounceCount === 0) { sx = 1.42; sy = 0.62; playPlop(); flash(0); }
+    if (bounceCount === 0) { sx = 1.42; sy = 0.62; playPlop(); flash(0); playLine("oof"); }
     else { sx = 1.24; sy = 0.8; if (bounceCount < 3) flash(bounceCount); }
   }
   function settle() {
     phase = "settled";
     vy = 0; y = 0; sx = 1; sy = 1; rot = 0;
-    var hello = playLine("Helloo");
-    hello.start.then(function () { root.classList.add("intro--text"); });
-    hello.end.then(function () {
-      setTimeout(function () {
-        root.classList.add("intro--done");
-        setTimeout(function () { if (root.parentNode) root.remove(); }, 800);
-      }, 500);
+    var hello = playLine("helloo");
+    hello.start.then(function () {
+      root.classList.add("intro--text");
+      var enter = document.getElementById("introEnter");
+      if (enter) {
+        enter.style.display = "inline-block";
+        enter.onclick = function () {
+          root.classList.add("intro--done");
+          setTimeout(function () { if (root.parentNode) root.remove(); }, 800);
+        };
+      }
     });
   }
   function loop(now) {
@@ -3171,7 +3180,7 @@
   function begin() {
     if (phase !== "idle") return;
     gate.classList.add("intro__gate--hidden");
-    var fall = playLine("Ahhhhhhh");
+    var fall = playLine("ahhhhhhh");
     fall.start.then(function () {
       measure();
       logo.style.opacity = "1";
