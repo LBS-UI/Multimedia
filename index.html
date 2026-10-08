@@ -2731,33 +2731,62 @@
             addVerityMessage(response);
         }
 
-        function getVerityResponse(q) {
-            q = (q || "").toLowerCase().trim();
-            if (/^(hi|hello|hey|yo)( verity)?[!?. ]*$/.test(q) || q.indexOf("hello verity") !== -1 || q.indexOf("hi verity") !== -1) {
-                return Math.random() < 0.5 ? "Whatssup?" : "Yes?";
+        function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
+        function lastUserLine() {
+            let seen = 0;
+            for (let i = verityChatHistory.length - 1; i >= 0; i--) {
+                if (verityChatHistory[i].role !== "user" || verityChatHistory[i].content === "...") continue;
+                seen += 1;
+                if (seen === 2) return verityChatHistory[i].content;
             }
-            if (q.includes("role") || q.includes("what am i") || q.includes("my account")) {
-                if (!currentUser) return "You are not signed in, so I cannot see a role yet.";
-                if (currentUser.role === "Admin") return currentUser.username + " is signed in as Admin. This account can use every club tool.";
-                if (currentUser.role === "Developer") return currentUser.username + " is signed in as Developer. This account can publish content and review site accounts.";
-                if (currentUser.role === "Editor") return currentUser.username + " is signed in as Editor. This account can add events and announcements.";
-                if (currentUser.role === "Photographer") return currentUser.username + " is signed in as Photographer. This account can add photo uploads.";
-                return currentUser.username + " is signed in as Member. This account can view events, announcements, and the personal dashboard.";
-            }
-            if (q.includes("tour") || q.includes("show me around")) {
-                setTimeout(startWebsiteTour, 200);
-                return "Sure. I will show you around.";
-            }
-            if (q.includes("event")) return "Events are listed in the Events section.";
-            if (q.includes("announcement")) return "Announcements are listed in the School Announcements section.";
-            if (q.includes("admin code") || q.includes("developer code") || q.includes("dev code") || q.includes("admin") && q.includes("code") || q.includes("developer") && q.includes("code")) {
+            return "";
+        }
+        function getVerityResponse(raw) {
+            const q = (raw || "").toLowerCase().trim();
+            const previous = lastUserLine();
+            if (q.includes("admin code") || q.includes("developer code") || q.includes("dev code") || (q.includes("admin") && q.includes("code")) || (q.includes("developer") && q.includes("code"))) {
                 return "ooh sorry i cant give you that";
             }
             if (q.includes("member code") || q.includes("join code") || q.includes("registration code") || q.includes("club code")) {
                 return "The member join code is MMC-JOIN-4821.";
             }
+            if (/^(hi|hello|hey|yo+|sup|what's up|whats up)( verity)?[!?. ]*$/.test(q) || q.includes("hello verity") || q.includes("hi verity")) {
+                return pick(["Whatssup?", "Yes?", "Hey. What are you up to?", "Yo. Need something around the club site?"]);
+            }
+            if (q.includes("good morning")) return pick(["Good morning. Hope the day is going okay.", "Morning. What do you need?"]);
+            if (q.includes("kamusta") || q.includes("kumusta")) return pick(["Kamusta. All good on my side. How about you?", "Ayos naman. What can I help with?"]);
+            if (q.includes("bye") || q.includes("see you") || q.includes("goodnight") || q.includes("gotta go") || q.includes("heading out")) {
+                return pick(["See you. Take care.", "Alright, catch you later.", "Goodnight. Rest well."]);
+            }
+            if (q.includes("thank")) return pick(["You're welcome.", "No problem.", "Anytime.", "Glad I could help."]);
+            if (q.includes("you're helpful") || q.includes("youre helpful") || q.includes("you're cool") || q.includes("youre cool") || q.includes("verity is")) {
+                return pick(["Heh, I'll take that.", "Thanks. I try to keep it useful.", "Aw, thanks."]);
+            }
+            if (q.includes("sorry") || q.includes("my bad")) return pick(["You're good.", "No worries.", "It's okay. We can continue from here."]);
+            if (q.includes("that's not what i meant") || q.includes("thats not what i meant") || q.includes("not what i meant")) return "Ah, got it. I misunderstood you. Say it another way and I'll follow that.";
+            if (q === "what?" || q === "huh?" || q.includes("i don't get it") || q.includes("what do you mean")) return "Yeah, that was unclear. Basically, tell me the part that got confusing and I'll say it simpler.";
+            if (q.includes("which one") || q.includes("the second one")) return previous ? "You mean the thing from \"" + previous.slice(0, 80) + "\"? Tell me the two choices and I'll compare them." : "Which one? Send me the choices and I'll help you pick.";
+            if (q.includes("tour") || q.includes("show me around")) { setTimeout(startWebsiteTour, 200); return "Sure. I will show you around."; }
+            if (q.includes("role") || q.includes("what am i") || q.includes("my account")) {
+                if (!currentUser) return "You are not signed in, so I cannot see a role yet.";
+                return currentUser.username + " is signed in as " + currentUser.role + ".";
+            }
+            if (q.includes("are you human") || q.includes("are you real") || q.includes("are you ai")) return "I'm Verity, the club's AI assistant. I don't have a real day or memories, but I can talk and help around the site.";
+            if (q.includes("hot today") || q.includes("ang init")) return "Yeah, that heat is rough. Are you still at school?";
+            if (q.includes("finished") || q.includes("i did it")) return "Let's go. You finished it. What was it?";
+            if (q.includes("failed") || q.includes("so hard") || q.includes("stressed") || q.includes("frustrating")) return "That sounds rough. If you want, tell me what happened and we can sort out a next step.";
+            if (q.includes("😂") || q.includes("💀") || q.includes("lol") || q.includes("haha")) return pick(["Okay that got me.", "Ha. Fair.", "Alright, I'll allow it."]);
+            if (q.includes("🙄")) return "Wait, was that sarcasm?";
+            if (q.includes("event")) return "Events show up in the Events section once a member posts them.";
+            if (q.includes("announcement")) return "Announcements are in the School Announcements section.";
             if (q.includes("register") || q.includes("join")) return "The member join code is MMC-JOIN-4821. Admin and Developer still need their own private code.";
-            return "I'm here to help. Ask about events, announcements, or a tour of the website.";
+            if (q.includes("salamat")) return "Walang anuman.";
+            if (q.includes("pwede")) return "Oo, sige. What do you need?";
+            return pick([
+                "I'm here. Ask about events, announcements, a tour, or just tell me what's going on.",
+                "Say a bit more and I'll follow. Club stuff or just chatting both work.",
+                "Got it. What do you want to do with that?"
+            ]);
         }
 
         // Website Tour
