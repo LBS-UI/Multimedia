@@ -43,24 +43,40 @@
             color: #fffbea;
             overflow-x: hidden;
         }
-        body.light-mode { background: #fffbea; color: #1a1208; }
+        body.light-mode { background: #f7f1e4 !important; color: #2a2118 !important; }
         body.light-mode::before {
             background:
-                radial-gradient(closest-side at 28% 18%, rgba(251,191,36,.35), transparent 70%),
-                linear-gradient(rgba(120,70,5,.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(120,70,5,.06) 1px, transparent 1px);
-            background-size: auto, 46px 46px, 46px 46px;
+                radial-gradient(closest-side at 18% 10%, rgba(251,191,36,.22), transparent 68%),
+                radial-gradient(closest-side at 84% 80%, rgba(245,158,11,.12), transparent 70%),
+                linear-gradient(rgba(120,70,5,.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(120,70,5,.045) 1px, transparent 1px) !important;
+            background-size: auto, auto, 48px 48px, 48px 48px !important;
         }
+        body.light-mode nav,
         body.light-mode .glass,
         body.light-mode .card,
-        body.light-mode nav { background: rgba(255,251,234,.82); color: #1a1208; border-color: rgba(120,70,5,.16); }
-        body.light-mode .text-white,
-        body.light-mode .text-\[\#fffbea\],
+        body.light-mode .login-card,
+        body.light-mode .modal { background: rgba(255,252,246,.92) !important; color: #2a2118 !important; border-color: rgba(120,70,5,.14) !important; box-shadow: 0 10px 30px rgba(42,33,24,.08) !important; }
         body.light-mode h1,
         body.light-mode h2,
         body.light-mode h3,
-        body.light-mode p { color: #1a1208; }
-        body.light-mode .btn-gold { color: #1a1208; }
+        body.light-mode p,
+        body.light-mode li,
+        body.light-mode label { color: #2a2118; }
+        body.light-mode .text-white,
+        body.light-mode .text-\[\#fffbea\] { color: #3b2f24 !important; }
+        body.light-mode .text-\[\#FFD700\],
+        body.light-mode .text-\[\#fbbf24\] { color: #9a6700 !important; }
+        body.light-mode .input-gold,
+        body.light-mode input,
+        body.light-mode textarea,
+        body.light-mode select { background: #fff !important; color: #2a2118 !important; border-color: rgba(154,103,0,.35) !important; }
+        body.light-mode .btn-gold,
+        body.light-mode .btn-gold span,
+        body.light-mode .btn-gold i { color: #2a2118 !important; }
+        body.light-mode .chat-bubble-verity { background: #fff; color: #2a2118; border-color: rgba(154,103,0,.2); }
+        body.light-mode #verity-orb-bubble { background: #fff; color: #2a2118; }
+        body::before {
             content: "";
             position: fixed;
             inset: -20%;
@@ -3019,18 +3035,13 @@
         function toggleTheme() {
             const body = document.body;
             const icon = document.getElementById('theme-icon');
-            
-            if (body.classList.contains('light-mode')) {
-                body.classList.remove('light-mode');
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-adjust');
-                localStorage.setItem('mm_theme', 'dark');
-            } else {
-                body.classList.add('light-mode');
-                icon.classList.remove('fa-adjust');
-                icon.classList.add('fa-sun');
-                localStorage.setItem('mm_theme', 'light');
+            const light = !body.classList.contains('light-mode');
+            body.classList.toggle('light-mode', light);
+            if (icon) {
+                icon.classList.toggle('fa-sun', light);
+                icon.classList.toggle('fa-adjust', !light);
             }
+            localStorage.setItem('mm_theme', light ? 'light' : 'dark');
         }
 
         // Load saved theme
