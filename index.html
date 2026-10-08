@@ -559,9 +559,10 @@
   <div class="mm-intro__gate" id="mmGate">
     <div class="mm-intro__gate-inner">
       <p class="mm-intro__gate-label">Click to enter</p>
-      <p class="mm-intro__gate-hint" id="mmGateHint">Click anywhere to start</p>
+      <p class="mm-intro__gate-hint">Click anywhere to start</p>
     </div>
   </div>
+  <p id="mmStatus" class="mm-intro__gate-hint" style="position:absolute;left:50%;bottom:8vh;transform:translateX(-50%);z-index:12;"></p>
 </div>
 
 
@@ -3076,7 +3077,27 @@
   var last = 0;
   var bounces = 0;
   var running = false;
-  function say(text) { if (window.speakVerity) window.speakVerity(text); }
+  var status = document.getElementById("mmStatus");
+  function setStatus(text) { if (status) status.textContent = text || ""; }
+  function playLine(text) {
+    var startResolve, endResolve;
+    var start = new Promise(function (resolve) { startResolve = resolve; });
+    var end = new Promise(function (resolve) { endResolve = resolve; });
+    if (!window.speakVerity || window.verityVoiceEnabled === false) {
+      startResolve();
+      endResolve();
+      return { start: start, end: end };
+    }
+    setStatus("Generating...");
+    window.speakVerity(text, { onStart: function () { setStatus(""); startResolve(); } }).then(function () {
+      startResolve();
+      endResolve();
+    }, function () {
+      startResolve();
+      endResolve();
+    });
+    return { start: start, end: end };
+  }
   function render() {
     logo.style.transform = "translate(-50%, -100%) translateY(" + y + "px)";
     var prox = 1 - Math.min(1, Math.abs(y) / (window.innerHeight * 0.5));
@@ -3086,43 +3107,55 @@
   function loop(now) {
     if (!running) return;
     if (!start) { start = now; last = now; }
-    var elapsed = now - start;
     var dt = Math.min(0.05, (now - last) / 1000);
     last = now;
     if (phase === "trapped") {
-      var wobble = Math.sin(elapsed / 90) * 8;
+      var wobble = Math.sin(now / 90) * 8;
       y = -window.innerHeight * 0.42 + wobble;
       inner.style.transform = "rotate(" + wobble + "deg)";
-      if (elapsed > 1600) { phase = "fall"; vy = 420; say("Ahhhhhhh"); }
     } else if (phase === "fall") {
-      vy += 2800 * dt;
+      vy += 2200 * dt;
       y += vy * dt;
       if (y >= 0) {
         y = 0;
         bounces += 1;
         vy = -vy * 0.55;
         if (bounces === 1 && window.playPlop) window.playPlop();
-        if (Math.abs(vy) < 180 || bounces >= 4) {
-          phase = "settled";
-          y = 0;
-          say("Helloo");
-          root.classList.add("mm-intro--text");
-          setTimeout(function () {
-            root.classList.add("mm-intro--done");
-            setTimeout(function () { if (root.parentNode) root.remove(); }, 700);
-          }, 2200);
-        }
+        if (Math.abs(vy) < 160 || bounces >= 4) phase = "settled";
       }
     }
     render();
     if (phase !== "settled") requestAnimationFrame(loop);
+    else if (window.mmIntroLanded) window.mmIntroLanded();
   }
   render();
   function begin() {
     gate.classList.add("mm-intro__gate--hidden");
-    say("Whoa whoa I'm trying to get down");
-    running = true;
-    requestAnimationFrame(loop);
+    setStatus("Generating...");
+    var struggle = playLine("Whoa whoa I'm trying to get down");
+    struggle.start.then(function () {
+      phase = "trapped";
+      running = true;
+      requestAnimationFrame(loop);
+    });
+    struggle.end.then(function () {
+      var fall = playLine("Ahhhhhhh");
+      fall.start.then(function () { phase = "fall"; vy = 280; });
+      fall.end.then(function () {
+        var waitLand = function () {
+          if (phase !== "settled") return setTimeout(waitLand, 80);
+          var hello = playLine("Helloo");
+          hello.start.then(function () { root.classList.add("mm-intro--text"); });
+          hello.end.then(function () {
+            setTimeout(function () {
+              root.classList.add("mm-intro--done");
+              setTimeout(function () { if (root.parentNode) root.remove(); }, 700);
+            }, 600);
+          });
+        };
+        waitLand();
+      });
+    });
   }
   gate.addEventListener("click", begin);
   window.addEventListener("keydown", begin, { once: true });
