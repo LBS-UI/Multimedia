@@ -2750,7 +2750,13 @@
             }
             if (q.includes("event")) return "Events are listed in the Events section.";
             if (q.includes("announcement")) return "Announcements are listed in the School Announcements section.";
-            if (q.includes("register") || q.includes("join")) return "Ask a club officer for the registration code. Admin and Developer also need their own access code.";
+            if (q.includes("admin code") || q.includes("developer code") || q.includes("dev code")) {
+                return "I can only share the member join code. Admin and Developer codes stay private.";
+            }
+            if (q.includes("member code") || q.includes("join code") || q.includes("registration code") || q.includes("club code")) {
+                return "The member join code is MMC-JOIN-4821.";
+            }
+            if (q.includes("register") || q.includes("join")) return "The member join code is MMC-JOIN-4821. Admin and Developer still need their own private code.";
             return "I'm here to help. Ask about events, announcements, or a tour of the website.";
         }
 
