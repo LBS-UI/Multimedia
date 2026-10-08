@@ -43,7 +43,24 @@
             color: #fffbea;
             overflow-x: hidden;
         }
-        body::before {
+        body.light-mode { background: #fffbea; color: #1a1208; }
+        body.light-mode::before {
+            background:
+                radial-gradient(closest-side at 28% 18%, rgba(251,191,36,.35), transparent 70%),
+                linear-gradient(rgba(120,70,5,.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(120,70,5,.06) 1px, transparent 1px);
+            background-size: auto, 46px 46px, 46px 46px;
+        }
+        body.light-mode .glass,
+        body.light-mode .card,
+        body.light-mode nav { background: rgba(255,251,234,.82); color: #1a1208; border-color: rgba(120,70,5,.16); }
+        body.light-mode .text-white,
+        body.light-mode .text-\[\#fffbea\],
+        body.light-mode h1,
+        body.light-mode h2,
+        body.light-mode h3,
+        body.light-mode p { color: #1a1208; }
+        body.light-mode .btn-gold { color: #1a1208; }
             content: "";
             position: fixed;
             inset: -20%;
@@ -3106,7 +3123,7 @@
         window.removeUploadedFile = removeUploadedFile;
         window.forgotPassword = forgotPassword;
         window.logout = logout;
-        window.showVerityChat = showVerityChat;
+        window.toggleTheme = toggleTheme;
         window.speakVerity = speakVerity;
         window.offerVerityTour = offerVerityTour;
         window.hideVerityChat = hideVerityChat;
