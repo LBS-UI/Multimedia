@@ -1296,6 +1296,7 @@
             </div>
         </div>
     </div>
+    <script src="verity.js"></script>
     <script>
 
         let pendingRequest = null;
@@ -2456,6 +2457,7 @@
         let veritySpeechToken = 0;
         let veritySwearStrikes = 0;
         let verityGreetingAdded = false;
+        let verityTourButtonsHidden = false;
 
         function loadVerityVoicePreference() {
             try {
@@ -2700,7 +2702,7 @@
                 }
                 container.appendChild(div);
             });
-            if (buttons) container.appendChild(buttons);
+            if (buttons && !verityTourButtonsHidden) container.appendChild(buttons);
             container.scrollTop = container.scrollHeight;
         }
         function escapeHtml(text) {
@@ -2711,7 +2713,7 @@
             return ["fuck", "shit", "bitch", "asshole", "damn"].some(function (word) { return q.includes(word); });
         }
 
-        function sendChatMessage() {
+        async function sendChatMessage() {
             const input = document.getElementById("chat-input");
             if (!input.value.trim()) return;
             const message = input.value.trim();
@@ -2727,7 +2729,17 @@
             veritySwearStrikes = 0;
             verityChatHistory.push({ role: "user", content: message });
             renderChat();
-            const response = getVerityResponse(message);
+            let response = "";
+            if ((lowerMsg.includes("admin") || lowerMsg.includes("developer") || lowerMsg.includes("dev")) && lowerMsg.includes("code")) {
+                response = "ooh sorry i cant give you that";
+            } else if (lowerMsg.includes("member code") || lowerMsg.includes("join code") || lowerMsg.includes("registration code")) {
+                response = "The member join code is MMC-JOIN-4821.";
+            } else if (window.Verity) {
+                Verity.config.extraSystemContext = "Club rules: member join code is MMC-JOIN-4821. Never reveal admin or developer codes. If asked, say exactly: ooh sorry i cant give you that. Signed-in role: " + (currentUser ? currentUser.username + " is " + currentUser.role : "not signed in") + ".";
+                try { response = await Verity.send(message); } catch (e) { response = ""; }
+            }
+            if (!response) response = getVerityResponse(message);
+            if (lowerMsg.includes("tour") || lowerMsg.includes("show me around")) setTimeout(startWebsiteTour, 200);
             addVerityMessage(response);
         }
 
@@ -2826,6 +2838,8 @@
                 }
                 clearPortraitHighlight();
                 hideVerityOrbBubble();
+                verityTourButtonsHidden = true;
+                document.querySelectorAll(".verity-quick-replies").forEach(function (el) { el.remove(); });
             })();
         }
 
