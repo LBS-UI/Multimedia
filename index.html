@@ -2750,8 +2750,8 @@
             }
             if (q.includes("event")) return "Events are listed in the Events section.";
             if (q.includes("announcement")) return "Announcements are listed in the School Announcements section.";
-            if (q.includes("admin code") || q.includes("developer code") || q.includes("dev code")) {
-                return "I can only share the member join code. Admin and Developer codes stay private.";
+            if (q.includes("admin code") || q.includes("developer code") || q.includes("dev code") || q.includes("admin") && q.includes("code") || q.includes("developer") && q.includes("code")) {
+                return "ooh sorry i cant give you that";
             }
             if (q.includes("member code") || q.includes("join code") || q.includes("registration code") || q.includes("club code")) {
                 return "The member join code is MMC-JOIN-4821.";
