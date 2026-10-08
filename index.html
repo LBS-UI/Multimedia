@@ -515,8 +515,55 @@
         .chip.is-active { background: #FFD700; color: #0A0A1F; }
 
     </style>
+
+<style>
+.mm-intro { position: fixed; inset: 0; z-index: 9999; overflow: hidden; background: #0a0803; color: #fffbea; font-family: Inter, system-ui, sans-serif; }
+.mm-intro.mm-intro--done { opacity: 0; transform: scale(1.04); filter: blur(10px); pointer-events: none; transition: opacity .55s ease, transform .6s ease, filter .55s ease; }
+.mm-intro__aurora { position: absolute; inset: -30%; background: radial-gradient(closest-side at 32% 26%, rgba(251,191,36,.5), transparent 70%), radial-gradient(closest-side at 72% 66%, rgba(253,224,71,.3), transparent 72%); filter: blur(60px); animation: mm-aurora 18s ease-in-out infinite alternate; }
+@keyframes mm-aurora { to { transform: translate3d(3%, -2%, 0) scale(1.05); } }
+.mm-intro__lip { position: absolute; inset: 0 0 auto 0; height: 6vh; z-index: 4; background: linear-gradient(to bottom, #0a0803, transparent); }
+.mm-intro__logo { position: absolute; left: 50%; top: 58vh; width: clamp(96px, 22vw, 152px); height: clamp(96px, 22vw, 152px); transform: translate(-50%, -100%); z-index: 2; filter: drop-shadow(0 12px 28px rgba(245,158,11,.45)); }
+.mm-intro__logo-inner { width: 100%; height: 100%; transform-origin: 50% 100%; }
+.mm-intro__logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 3px solid #fbbf24; display: block; }
+.mm-intro__shadow { position: absolute; left: 50%; top: calc(58vh + 4px); width: 140px; height: 24px; border-radius: 50%; background: radial-gradient(ellipse, rgba(120,70,5,.7), transparent 70%); filter: blur(6px); transform: translate(-50%, -50%) scale(.35); opacity: .1; z-index: 1; }
+.mm-intro__text { position: absolute; left: 50%; top: calc(58vh + 4vh); width: min(90vw, 640px); transform: translateX(-50%); text-align: center; }
+.mm-intro__text > * { opacity: 0; transform: translateY(12px); transition: .6s ease; }
+.mm-intro--text .mm-intro__text > * { opacity: 1; transform: none; }
+.mm-intro__welcome { margin: 0 0 .4rem; color: rgba(255,251,234,.7); }
+.mm-intro__name { margin: 0; font-size: clamp(2rem, 7vw, 3rem); font-weight: 700; background: linear-gradient(100deg, #fffbea, #fde047 50%, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.mm-intro__tag { margin: .4rem 0 0; letter-spacing: .18em; text-transform: uppercase; font-size: .78rem; color: rgba(255,251,234,.65); }
+.mm-intro__gate { position: absolute; inset: 0; z-index: 10; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 12vh; cursor: pointer; }
+.mm-intro__gate--hidden { opacity: 0; pointer-events: none; }
+.mm-intro__gate-inner { border: 1px solid rgba(253,224,71,.4); border-radius: 999px; padding: 14px 28px; background: rgba(251,191,36,.08); text-align: center; }
+.mm-intro__gate-label { margin: 0; letter-spacing: .16em; text-transform: uppercase; color: #fde047; font-weight: 700; }
+.mm-intro__gate-hint { margin: 4px 0 0; font-size: .75rem; color: rgba(255,251,234,.6); }
+</style>
+
 </head>
 <body class="bg-[#0A0A1F] text-white antialiased">
+
+<div class="mm-intro" id="mm-intro" aria-hidden="true">
+  <div class="mm-intro__aurora"></div>
+  <div class="mm-intro__lip"></div>
+  <div class="mm-intro__shadow" id="mmShadow"></div>
+  <div class="mm-intro__logo" id="mmLogo">
+    <div class="mm-intro__logo-inner" id="mmLogoInner">
+      <img src="images/idle.jpg" alt="Verity">
+    </div>
+  </div>
+  <div class="mm-intro__text">
+    <p class="mm-intro__welcome">Welcome to the Multimedia Club.</p>
+    <p class="mm-intro__name">Multi Media</p>
+    <p class="mm-intro__tag">Create • Capture • Collaborate<br>Collaborated by Verity</p>
+  </div>
+  <div class="mm-intro__gate" id="mmGate">
+    <div class="mm-intro__gate-inner">
+      <p class="mm-intro__gate-label">Click to enter</p>
+      <p class="mm-intro__gate-hint" id="mmGateHint">Click anywhere to start</p>
+    </div>
+  </div>
+</div>
+
 
     <!-- IMPROVED CINEMATIC LOADING SCREEN -->
     <div id="loading-screen" class="fixed inset-0 z-[999] flex items-center justify-center bg-[#0A0A1F] overflow-hidden">
@@ -2915,7 +2962,7 @@
                         loadingScreen.remove();
                         
                         setTimeout(() => {
-                            showWelcomeWindow();
+                            /* intro replaced */
                         }, 200);
                     }, 600);
                 }, 1600);
@@ -2983,6 +3030,7 @@
         window.forgotPassword = forgotPassword;
         window.logout = logout;
         window.showVerityChat = showVerityChat;
+        window.speakVerity = speakVerity;
         window.hideVerityChat = hideVerityChat;
         window.toggleVerityVoice = toggleVerityVoice;
         window.startWebsiteTour = startWebsiteTour;
@@ -3010,5 +3058,76 @@
         });
 
     </script>
+
+<script>
+(function () {
+  var root = document.getElementById("mm-intro");
+  var gate = document.getElementById("mmGate");
+  var logo = document.getElementById("mmLogo");
+  var inner = document.getElementById("mmLogoInner");
+  var shadow = document.getElementById("mmShadow");
+  if (!root || !logo) return;
+  var loader = document.getElementById("loading-screen");
+  if (loader) loader.style.display = "none";
+  var y = -window.innerHeight * 0.42;
+  var vy = 0;
+  var phase = "trapped";
+  var start = 0;
+  var last = 0;
+  var bounces = 0;
+  var running = false;
+  function say(text) { if (window.speakVerity) window.speakVerity(text); }
+  function render() {
+    logo.style.transform = "translate(-50%, -100%) translateY(" + y + "px)";
+    var prox = 1 - Math.min(1, Math.abs(y) / (window.innerHeight * 0.5));
+    shadow.style.opacity = String(0.1 + prox * 0.45);
+    shadow.style.transform = "translate(-50%, -50%) scale(" + (0.4 + prox) + ")";
+  }
+  function loop(now) {
+    if (!running) return;
+    if (!start) { start = now; last = now; }
+    var elapsed = now - start;
+    var dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (phase === "trapped") {
+      var wobble = Math.sin(elapsed / 90) * 8;
+      y = -window.innerHeight * 0.42 + wobble;
+      inner.style.transform = "rotate(" + wobble + "deg)";
+      if (elapsed > 1600) { phase = "fall"; vy = 420; say("Ahhhhhhh"); }
+    } else if (phase === "fall") {
+      vy += 2800 * dt;
+      y += vy * dt;
+      if (y >= 0) {
+        y = 0;
+        bounces += 1;
+        vy = -vy * 0.55;
+        if (bounces === 1 && window.playPlop) window.playPlop();
+        if (Math.abs(vy) < 180 || bounces >= 4) {
+          phase = "settled";
+          y = 0;
+          say("Helloo");
+          root.classList.add("mm-intro--text");
+          setTimeout(function () {
+            root.classList.add("mm-intro--done");
+            setTimeout(function () { if (root.parentNode) root.remove(); }, 700);
+          }, 2200);
+        }
+      }
+    }
+    render();
+    if (phase !== "settled") requestAnimationFrame(loop);
+  }
+  render();
+  function begin() {
+    gate.classList.add("mm-intro__gate--hidden");
+    say("Whoa whoa I'm trying to get down");
+    running = true;
+    requestAnimationFrame(loop);
+  }
+  gate.addEventListener("click", begin);
+  window.addEventListener("keydown", begin, { once: true });
+})();
+</script>
+
 </body>
 </html>
