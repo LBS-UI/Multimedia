@@ -16,20 +16,20 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
         
         :root {
-            --gold: #FFD700;
-            --gold-dark: #E6B800;
-            --amber: #FFC107;
-            --yellow: #FFEA00;
-            --yellow-light: #FFF59D;
-            --dark-bg: #0A0A1F;
-            --dark-surface: #111133;
-            --dark-card: #1A1A3A;
-            --glass-bg: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 215, 0, 0.2);
-            --text-primary: #F8F9FA;
-            --text-secondary: #B8B8D0;
-            --neon-glow: 0 0 10px rgba(255, 215, 0, 0.6), 0 0 20px rgba(255, 215, 0, 0.3);
-            --neon-glow-strong: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.5);
+            --gold: #fbbf24;
+            --gold-dark: #f59e0b;
+            --amber: #f59e0b;
+            --yellow: #fde047;
+            --yellow-light: #fffbea;
+            --dark-bg: #0a0803;
+            --dark-surface: #1a1208;
+            --dark-card: #24180c;
+            --glass-bg: rgba(251, 191, 36, 0.06);
+            --glass-border: rgba(253, 224, 71, 0.28);
+            --text-primary: #fffbea;
+            --text-secondary: rgba(255, 251, 234, 0.62);
+            --neon-glow: 0 0 12px rgba(251, 191, 36, 0.45);
+            --neon-glow-strong: 0 0 22px rgba(253, 224, 71, 0.55);
         }
 
         * {
@@ -38,10 +38,23 @@
         }
 
         body {
-            font-family: 'Inter', system_ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #0a0803;
+            color: #fffbea;
             overflow-x: hidden;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -20%;
+            z-index: -1;
+            background:
+                radial-gradient(closest-side at 28% 18%, rgba(251,191,36,.28), transparent 70%),
+                radial-gradient(closest-side at 75% 70%, rgba(253,224,71,.16), transparent 72%),
+                linear-gradient(rgba(253,224,71,.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(253,224,71,.04) 1px, transparent 1px);
+            background-size: auto, auto, 46px 46px, 46px 46px;
+            pointer-events: none;
         }
 
         .font-display {
@@ -94,7 +107,7 @@
         /* Futuristic Buttons */
         .btn-gold {
             background: linear-gradient(135deg, var(--gold), var(--amber));
-            color: #0A0A1F;
+            color: #0a0803;
             font-weight: 600;
             transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
             position: relative;
@@ -249,7 +262,7 @@
         #verity-orb-bubble {
             display: none;
             max-width: min(280px, 68vw);
-            background: #1A1A3A;
+            background: #24180c;
             color: #F8F9FA;
             border: 1px solid rgba(255, 215, 0, 0.45);
             border-radius: 18px 18px 18px 6px;
@@ -267,12 +280,12 @@
         .welcome-verity.is-landed { animation: none; opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
         .welcome-hi, .welcome-log { opacity: 0; }
         .welcome-hi.is-on, .welcome-log.is-on { opacity: 1; transition: opacity 0.35s ease; }
-        #welcome-swirl { position: fixed; inset: -20%; z-index: 89; pointer-events: none; background: radial-gradient(circle, rgba(255,215,0,0.35), #0A0A1F 55%); opacity: 0; }
+        #welcome-swirl { position: fixed; inset: -20%; z-index: 89; pointer-events: none; background: radial-gradient(circle, rgba(255,215,0,0.35), #0a0803 55%); opacity: 0; }
         @keyframes swirl-out { to { transform: scale(8) rotate(28deg); opacity: 0; } }
         #welcome-swirl.is-on { opacity: 1; animation: swirl-out 0.9s ease forwards; }
         #verity-orb-status { display: none; padding: 0.3rem 0.7rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
         #verity-orb-status.is-visible { display: block; }
-        #verity-orb-status.is-generating { color: #0A0A1F; background: #FFD700; }
+        #verity-orb-status.is-generating { color: #0a0803; background: #FFD700; }
         #verity-orb-status.is-complete { color: #052e1b; background: #34d399; }
         #verity-voice-status.is-visible { display: block; }
         #verity-voice-status.is-generating { color: #FFD700; background: rgba(255,215,0,0.12); }
@@ -288,7 +301,7 @@
         /* Chat Bubbles */
         .chat-bubble-user {
             background: linear-gradient(135deg, var(--gold), var(--amber));
-            color: #0A0A1F;
+            color: #0a0803;
             border-radius: 20px 20px 4px 20px;
             padding: 12px 18px;
             max-width: 75%;
@@ -408,7 +421,7 @@
 
         .filter-chip.active, .filter-chip:hover {
             background: var(--gold);
-            color: #0A0A1F;
+            color: #0a0803;
             border-color: var(--gold);
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
         }
@@ -450,7 +463,7 @@
         }
 
         .multimedia-bg {
-            background: radial-gradient(circle at center, #1A1A3A 0%, #0A0A1F 70%);
+            background: radial-gradient(circle at center, #24180c 0%, #0a0803 70%);
         }
 
         @media (max-width: 768px) {
@@ -506,13 +519,13 @@
         .status-Rejected { background: rgba(248,113,113,0.18); color: #fca5a5; }
         .drop-zone { border: 1.5px dashed rgba(255,215,0,0.45); border-radius: 1.5rem; padding: 2.5rem 1rem; text-align: center; cursor: pointer; }
         .drop-zone.is-over { background: rgba(255,215,0,0.08); }
-        .portal-page { position: fixed; inset: 0; z-index: 74; overflow: auto; background: #0A0A1F; }
+        .portal-page { position: fixed; inset: 0; z-index: 74; overflow: auto; background: #0a0803; }
         .req-table { width: 100%; min-width: 720px; border-collapse: collapse; }
         .req-table th, .req-table td { text-align: left; padding: 0.85rem 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
-        .timeline-step { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.7rem; color: #B8B8D0; }
+        .timeline-step { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.7rem; color: #fffbea; }
         .timeline-step.is-done { color: #FFD700; }
         .chip { border: 1px solid rgba(255,215,0,0.35); border-radius: 999px; padding: 0.35rem 0.75rem; font-size: 0.8rem; }
-        .chip.is-active { background: #FFD700; color: #0A0A1F; }
+        .chip.is-active { background: #FFD700; color: #0a0803; }
 
     </style>
 
@@ -547,7 +560,7 @@
 </style>
 
 </head>
-<body class="bg-[#0A0A1F] text-white antialiased">
+<body class="text-white antialiased">
 
 <div class="intro" id="intro">
   <div class="intro__aurora"></div>
@@ -569,7 +582,7 @@
 
 
 <!-- IMPROVED CINEMATIC LOADING SCREEN -->
-    <div id="loading-screen" class="fixed inset-0 z-[999] flex items-center justify-center bg-[#0A0A1F] overflow-hidden">
+    <div id="loading-screen" class="fixed inset-0 z-[999] flex items-center justify-center bg-[#0a0803] overflow-hidden">
         <!-- Background Effects -->
         <div class="absolute inset-0 futuristic-grid opacity-30"></div>
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,#FFD70010_0%,transparent_70%)]"></div>
@@ -594,7 +607,7 @@
                     </defs>
                     
                     <!-- Background circle -->
-                    <circle cx="48" cy="48" r="42" fill="#111133" stroke="#FFD700" stroke-width="2.5"/>
+                    <circle cx="48" cy="48" r="42" fill="#1a1208" stroke="#FFD700" stroke-width="2.5"/>
                     
                     <!-- Inner film reel circle -->
                     <circle cx="48" cy="48" r="30" fill="none" stroke="#FFD700" stroke-width="1.5" stroke-opacity="0.6"/>
@@ -611,7 +624,7 @@
                     
                     <!-- Center glowing core -->
                     <circle cx="48" cy="48" r="11" fill="#FFD700"/>
-                    <circle cx="48" cy="48" r="7" fill="#0A0A1F"/>
+                    <circle cx="48" cy="48" r="7" fill="#0a0803"/>
                     
                     <!-- Play icon -->
                     <polygon points="42,40 42,56 56,48" fill="#FFD700"/>
@@ -627,7 +640,7 @@
                     <span class="text-white">Multi</span>
                     <span class="bg-gradient-to-r from-[#FFD700] via-[#FFEA00] to-[#FFD700] bg-clip-text text-transparent">Media</span>
                 </div>
-                <div class="mt-1 text-sm tracking-[4px] text-[#B8B8D0] font-medium">SCHOOL MULTIMEDIA HUB</div>
+                <div class="mt-1 text-sm tracking-[4px] text-[#fffbea] font-medium">SCHOOL MULTIMEDIA HUB</div>
             </div>
             
             <!-- Elegant Loading Bar -->
@@ -660,7 +673,7 @@
                             <!-- Outer glow ring -->
                             <circle cx="22" cy="22" r="20" fill="#FFD700" fill-opacity="0.15"/>
                             <!-- Main circle -->
-                            <circle cx="22" cy="22" r="17" fill="#111133" stroke="#FFD700" stroke-width="2.5"/>
+                            <circle cx="22" cy="22" r="17" fill="#1a1208" stroke="#FFD700" stroke-width="2.5"/>
                             <!-- Inner film reel style -->
                             <circle cx="22" cy="22" r="11" fill="none" stroke="#FFD700" stroke-width="1.5"/>
                             <!-- Camera aperture blades -->
@@ -675,7 +688,7 @@
                             <!-- Center dot -->
                             <circle cx="22" cy="22" r="3.5" fill="#FFD700"/>
                             <!-- Play triangle -->
-                            <polygon points="19,18 19,26 26,22" fill="#0A0A1F"/>
+                            <polygon points="19,18 19,26 26,22" fill="#0a0803"/>
                         </svg>
                     </div>
                     <div>
@@ -711,7 +724,7 @@
                                 <span class="font-semibold">Background Music</span>
                                 <button onclick="event.stopImmediatePropagation(); toggleMusic()" class="text-xs px-3 py-1 rounded-full bg-white/10">Close</button>
                             </div>
-                            <select id="music-track" onchange="changeMusicTrack()" class="w-full bg-[#1A1A3A] border border-white/20 rounded-2xl px-4 py-2 text-sm mb-3">
+                            <select id="music-track" onchange="changeMusicTrack()" class="w-full bg-[#24180c] border border-white/20 rounded-2xl px-4 py-2 text-sm mb-3">
                                 <option value="welcome">Welcome Theme</option>
                                 <option value="creative">Creative Focus</option>
                                 <option value="digital">Digital Campus</option>
@@ -719,7 +732,7 @@
                             </select>
                             <div class="flex items-center gap-x-3">
                                 <button onclick="toggleMusic()" id="music-play-btn" 
-                                        class="flex-1 flex items-center justify-center gap-x-2 px-4 py-2 rounded-2xl bg-[#FFD700] text-[#0A0A1F] font-semibold text-sm">
+                                        class="flex-1 flex items-center justify-center gap-x-2 px-4 py-2 rounded-2xl bg-[#FFD700] text-[#0a0803] font-semibold text-sm">
                                     <i class="fa-solid fa-play mr-1"></i> <span>Play</span>
                                 </button>
                                 <input type="range" id="music-volume" min="0" max="1" step="0.05" value="0.6" 
@@ -764,7 +777,7 @@
                         Meets <span class="bg-gradient-to-r from-[#FFD700] via-[#FFEA00] to-[#FFC107] bg-clip-text text-transparent">Collaboration</span>
                     </h1>
                     
-                    <p class="max-w-lg mx-auto lg:mx-0 text-xl text-[#B8B8D0] mb-8">
+                    <p class="max-w-lg mx-auto lg:mx-0 text-xl text-[#fffbea] mb-8">
                         The official portal for the Multi Media Club. 
                         Collaborate on creative projects, stay updated with events, and grow your skills.
                     </p>
@@ -783,7 +796,7 @@
                     <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 aspect-[16/10]">
                         <img src="images/class-photo.jpg" 
                              class="w-full h-full object-cover brightness-[0.85]" alt="Multimedia hero banner">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-[#0A0A1F] via-[#0A0A1F]/70 to-transparent"></div>
+                        <div class="absolute inset-0 bg-gradient-to-tr from-[#0a0803] via-[#0a0803]/70 to-transparent"></div>
                         
                         <div class="absolute bottom-6 left-6 glass px-5 py-3 rounded-2xl flex items-center gap-x-3">
                             <div>
@@ -804,7 +817,7 @@
             <div class="lg:col-span-7">
                 <div class="uppercase tracking-[3px] text-[#FFD700] text-sm font-semibold mb-3">EST. 2025 • CREATIVE MEDIA ARTS</div>
                 <h2 class="section-header mb-5">We turn moments into<br>memories that matter.</h2>
-                <p class="text-[#B8B8D0] max-w-prose text-[15px]">
+                <p class="text-[#fffbea] max-w-prose text-[15px]">
                     Multi Media is the beating heart of our school's creative ecosystem.
                 </p>
             </div>
@@ -819,9 +832,9 @@
                         <div class="flex-1">
                             <div class="flex items-center gap-x-2 mb-1">
                                 <span class="font-semibold text-xl">Verity</span>
-                                <span class="px-2.5 py-px text-[10px] font-mono tracking-widest bg-[#FFD700] text-[#0A0A1F] rounded">AI GUIDE</span>
+                                <span class="px-2.5 py-px text-[10px] font-mono tracking-widest bg-[#FFD700] text-[#0a0803] rounded">AI GUIDE</span>
                             </div>
-                            <p class="text-[#B8B8D0] text-sm">Helloo im Verity your personal hover friend. Ask me anything. I know everything. Well except for everything. Hahaha.</p>
+                            <p class="text-[#fffbea] text-sm">Helloo im Verity your personal hover friend. Ask me anything. I know everything. Well except for everything. Hahaha.</p>
                             <button onclick="showVerityChat()" class="mt-3 text-sm text-[#FFD700] hover:text-[#FFEA00] font-medium flex items-center gap-x-1">
                                 CHAT WITH ME <i class="fa-solid fa-arrow-right ml-1"></i>
                             </button>
@@ -842,7 +855,7 @@
                     <i class="fa-solid fa-calendar text-3xl"></i>
                 </div>
                 <div class="font-semibold text-xl mb-2">Upcoming Events</div>
-                <p class="text-sm text-[#B8B8D0]">Live countdowns and details</p>
+                <p class="text-sm text-[#fffbea]">Live countdowns and details</p>
             </div>
             
             <div onclick="document.getElementById('announcements').scrollIntoView({ behavior: 'smooth' })" class="nav-card cursor-pointer rounded-3xl p-6 border border-white/10">
@@ -850,7 +863,7 @@
                     <i class="fa-solid fa-bullhorn text-3xl"></i>
                 </div>
                 <div class="font-semibold text-xl mb-2">Announcements</div>
-                <p class="text-sm text-[#B8B8D0]">Stay updated with the latest news</p>
+                <p class="text-sm text-[#fffbea]">Stay updated with the latest news</p>
             </div>
             
             <div onclick="showVerityChat()" class="nav-card cursor-pointer rounded-3xl p-6 border border-white/10">
@@ -858,7 +871,7 @@
                     <i class="fa-solid fa-robot text-3xl"></i>
                 </div>
                 <div class="font-semibold text-xl mb-2">Talk to Verity</div>
-                <p class="text-sm text-[#B8B8D0]">Your intelligent AI guide</p>
+                <p class="text-sm text-[#fffbea]">Your intelligent AI guide</p>
             </div>
             
             <div onclick="if (currentUser) showDashboard(); else showLoginModal()" class="nav-card cursor-pointer rounded-3xl p-6 border border-white/10">
@@ -866,7 +879,7 @@
                     <i class="fa-solid fa-user-astronaut text-3xl"></i>
                 </div>
                 <div class="font-semibold text-xl mb-2">Member Dashboard</div>
-                <p class="text-sm text-[#B8B8D0]">Your personal hub</p>
+                <p class="text-sm text-[#fffbea]">Your personal hub</p>
             </div>
         </div>
     </section>
@@ -888,7 +901,7 @@
         <div class="flex justify-between items-end mb-6">
             <h2 class="section-header">School Announcements</h2>
             <button onclick="if (currentUser && (currentUser.role === 'Editor' || currentUser.role === 'Admin')) showCreateAnnouncementModal(); else alert('Editor/Admin only')" 
-                    class="px-5 py-2 rounded-2xl bg-[#FFD700] text-[#0A0A1F] text-sm font-semibold flex items-center gap-x-2">
+                    class="px-5 py-2 rounded-2xl bg-[#FFD700] text-[#0a0803] text-sm font-semibold flex items-center gap-x-2">
                 <i class="fa-solid fa-plus"></i> Publish
             </button>
         </div>
@@ -906,7 +919,7 @@
     <section class="max-w-screen-2xl mx-auto px-6 pb-16 border-t border-white/10 pt-10">
         <div class="text-center mb-8">
             <h2 class="section-header mb-2">Stay Connected</h2>
-            <p class="text-[#B8B8D0]">Follow us on our social media channels</p>
+            <p class="text-[#fffbea]">Follow us on our social media channels</p>
         </div>
         
         <div class="flex justify-center gap-x-8">
@@ -942,17 +955,17 @@
                 <figure class="text-center">
                     <img id="developer-portrait" src="images/developer.jpg" alt="Ron Matthew Ferreras" class="portrait-frame mx-auto">
                     <figcaption class="mt-3 font-semibold">Ron Matthew Ferreras</figcaption>
-                    <p class="text-xs text-[#B8B8D0]">Developer</p>
+                    <p class="text-xs text-[#fffbea]">Developer</p>
                 </figure>
                 <figure class="text-center">
                     <img id="verity-portrait" src="images/idle.jpg" alt="Verity, Multimedia Club assistant" class="portrait-frame mx-auto">
                     <figcaption class="mt-3 font-semibold">Verity</figcaption>
-                    <p class="text-xs text-[#B8B8D0]">Club assistant</p>
+                    <p class="text-xs text-[#fffbea]">Club assistant</p>
                 </figure>
             </div>
             <div class="max-w-3xl mx-auto text-center sm:text-left">
                 <h3 class="font-display text-3xl font-semibold mb-3">Ron Matthew Ferreras</h3>
-                <p class="text-[#B8B8D0] mb-6">
+                <p class="text-[#fffbea] mb-6">
                     I made this website so that students can have a centralized hub for all multimedia activities. As a passionate developer and designer, I wanted to create an interactive and engaging platform that fosters creativity and collaboration among students. This project is a testament to the power of technology in enhancing educational experiences.
                 </p>
                 
@@ -981,7 +994,7 @@
                     <button onclick="hideRequestsPage()" class="px-4 py-2 rounded-2xl border border-white/20">Close</button>
                 </div>
             </div>
-            <div id="requests-empty" class="glass rounded-3xl p-8 text-[#B8B8D0] hidden">No requests yet. Create one when you need help from the club.</div>
+            <div id="requests-empty" class="glass rounded-3xl p-8 text-[#fffbea] hidden">No requests yet. Create one when you need help from the club.</div>
             <div class="overflow-x-auto glass rounded-3xl">
                 <table class="req-table">
                     <thead><tr><th>Request ID</th><th>Title</th><th>Category</th><th>Date</th><th>Status</th><th></th></tr></thead>
@@ -1014,7 +1027,7 @@
     <div id="request-review-modal" class="hidden fixed inset-0 z-[79] flex items-center justify-center bg-black/70 p-4">
         <div class="glass w-full max-w-lg rounded-3xl p-6">
             <h3 class="text-2xl font-semibold mb-4">Review request</h3>
-            <div id="request-review-body" class="space-y-2 text-sm text-[#B8B8D0] mb-6"></div>
+            <div id="request-review-body" class="space-y-2 text-sm text-[#fffbea] mb-6"></div>
             <div class="flex gap-2">
                 <button onclick="confirmRequest()" class="btn-gold flex-1 py-3 rounded-2xl">Confirm & Submit</button>
                 <button onclick="hideRequestReview()" class="flex-1 py-3 rounded-2xl border border-white/20">Cancel</button>
@@ -1035,21 +1048,21 @@
             </div>
             <div id="drop-zone" class="drop-zone mb-4" onclick="document.getElementById('file-input').click()">
                 <div class="text-lg font-semibold">Drop a file here or click to choose</div>
-                <p class="text-sm text-[#B8B8D0] mt-2">PDF, JPG, JPEG, PNG, DOC, DOCX up to 5 MB</p>
+                <p class="text-sm text-[#fffbea] mt-2">PDF, JPG, JPEG, PNG, DOC, DOCX up to 5 MB</p>
             </div>
             <input id="file-input" type="file" class="hidden" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,application/pdf,image/jpeg,image/png,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
             <div id="file-preview" class="hidden glass rounded-3xl p-4 mb-4"></div>
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-xl font-semibold">Uploaded Files</h3>
-                <span id="file-count" class="text-sm text-[#B8B8D0]">0 files</span>
+                <span id="file-count" class="text-sm text-[#fffbea]">0 files</span>
             </div>
-            <div id="files-empty" class="glass rounded-3xl p-6 text-[#B8B8D0]">No files have been uploaded.</div>
+            <div id="files-empty" class="glass rounded-3xl p-6 text-[#fffbea]">No files have been uploaded.</div>
             <div id="files-list" class="space-y-3"></div>
         </div>
     </div>
 
     <div id="welcome-swirl"></div>
-    <div id="welcome-window" class="hidden fixed inset-0 z-[88] flex items-start justify-center bg-[#0A0A1F] p-4 pt-16">
+    <div id="welcome-window" class="hidden fixed inset-0 z-[88] flex items-start justify-center bg-[#0a0803] p-4 pt-16">
         <div class="w-full max-w-lg text-center">
             <div class="welcome-stage">
                 <img id="welcome-verity" src="images/idle.jpg" alt="Verity" class="welcome-verity portrait-frame" style="width:150px;height:150px;min-width:150px;">
@@ -1062,7 +1075,7 @@
                 <p class="mt-3 text-sm text-[#FFD700]">Collaborated by Verity</p>
                 <div class="text-left glass rounded-2xl p-4 mt-5">
                     <div class="text-xs tracking-wide text-[#FFD700] mb-2">UPDATE LOG</div>
-                    <p class="text-sm text-[#B8B8D0]">Voice tour, requests, and file uploads are ready for members.</p>
+                    <p class="text-sm text-[#fffbea]">Voice tour, requests, and file uploads are ready for members.</p>
                 </div>
                 <button onclick="closeWelcomeWindow()" class="btn-gold w-full py-3 rounded-2xl mt-5 font-semibold">Enter the site</button>
             </div>
@@ -1082,7 +1095,7 @@
         <div onclick="event.stopImmediatePropagation()" class="login-card glass w-full max-w-md rounded-3xl p-8">
             <div class="login-mark" aria-hidden="true"><i class="fa-solid fa-clapperboard text-[#FFD700] text-2xl"></i></div>
             <h3 class="font-display text-3xl font-semibold text-center">Welcome back</h3>
-            <p class="text-center text-sm text-[#B8B8D0] mt-1 mb-6">Sign in to the Multi Media Club portal</p>
+            <p class="text-center text-sm text-[#fffbea] mt-1 mb-6">Sign in to the Multi Media Club portal</p>
             <form id="login-form" onsubmit="handleLogin(event)" novalidate>
                 <label class="text-xs tracking-wide text-[#FFD700] mb-2 block" for="login-email">Email or Username</label>
                 <div class="login-field mb-1"><i class="fa-solid fa-user text-[#FFD700]"></i><input type="text" id="login-email" placeholder="name@school.edu" autocomplete="username"></div>
@@ -1094,12 +1107,12 @@
                 <label class="text-xs tracking-wide text-white/50 mb-2 mt-3 block" for="login-access-code">Admin or Developer code</label>
                 <div class="login-field mb-4"><i class="fa-solid fa-key text-white/40"></i><input type="password" id="login-access-code" placeholder="Only if your role needs it"></div>
                 <div class="flex items-center justify-between mb-5 text-sm">
-                    <label class="flex items-center gap-2 text-[#B8B8D0]"><input id="remember-me" class="login-check" type="checkbox" checked> Remember me</label>
+                    <label class="flex items-center gap-2 text-[#fffbea]"><input id="remember-me" class="login-check" type="checkbox" checked> Remember me</label>
                     <button type="button" onclick="forgotPassword()" class="text-[#FFD700] hover:underline">Forgot password?</button>
                 </div>
                 <button type="submit" class="btn-gold w-full py-4 rounded-2xl font-semibold">Log In</button>
             </form>
-            <p class="text-center mt-5 text-sm text-[#B8B8D0]">Need an account? <button onclick="hideLoginModal(); showRegisterModal()" class="text-[#FFD700] font-semibold">Create an account</button></p>
+            <p class="text-center mt-5 text-sm text-[#fffbea]">Need an account? <button onclick="hideLoginModal(); showRegisterModal()" class="text-[#FFD700] font-semibold">Create an account</button></p>
         </div>
     </div>
 
@@ -1168,7 +1181,7 @@
             <div class="px-8 py-5 border-b border-white/10 flex justify-between items-center">
                 <div class="flex items-center gap-x-4">
                     <span class="font-display text-2xl font-bold">Member Portal</span>
-                    <span id="dashboard-role-badge" class="px-3 py-1 text-xs rounded-full bg-[#FFD700] text-[#0A0A1F] font-bold"></span>
+                    <span id="dashboard-role-badge" class="px-3 py-1 text-xs rounded-full bg-[#FFD700] text-[#0a0803] font-bold"></span>
                 </div>
                 <div>
                     <button onclick="logout()" class="px-4 py-2 text-sm rounded-2xl border border-white/20 mr-3">Logout</button>
@@ -1189,7 +1202,7 @@
     <!-- ADMIN PANEL -->
     <div id="admin-panel" class="hidden fixed inset-0 bg-black/95 z-[85] flex">
         <div class="w-full max-w-[1200px] mx-auto my-8 glass rounded-3xl overflow-hidden flex flex-col">
-            <div class="px-8 py-5 border-b flex justify-between items-center bg-[#111133]">
+            <div class="px-8 py-5 border-b flex justify-between items-center bg-[#1a1208]">
                 <div class="flex items-center gap-x-3">
                     <i class="fa-solid fa-shield-halved text-[#FFD700] text-2xl"></i>
                     <span class="font-display text-2xl font-bold">Admin Control Center</span>
@@ -1443,7 +1456,7 @@
             pendingFile = file;
             const ext = (file.name.split(".").pop() || "").toUpperCase();
             document.getElementById("file-preview").classList.remove("hidden");
-            document.getElementById("file-preview").innerHTML = "<div class='flex items-center justify-between gap-3'><div><div class='text-[#FFD700] font-bold'>" + ext + "</div><div class='font-semibold'>" + file.name + "</div><div class='text-sm text-[#B8B8D0]'>" + ext + " · " + readableSize(file.size) + "</div></div><div class='flex gap-2'><button onclick='uploadSelectedFile()' class='btn-gold px-4 py-2 rounded-2xl'>Upload File</button><button onclick='cancelSelectedFile()' class='px-4 py-2 rounded-2xl border border-white/20'>Cancel</button></div></div>";
+            document.getElementById("file-preview").innerHTML = "<div class='flex items-center justify-between gap-3'><div><div class='text-[#FFD700] font-bold'>" + ext + "</div><div class='font-semibold'>" + file.name + "</div><div class='text-sm text-[#fffbea]'>" + ext + " · " + readableSize(file.size) + "</div></div><div class='flex gap-2'><button onclick='uploadSelectedFile()' class='btn-gold px-4 py-2 rounded-2xl'>Upload File</button><button onclick='cancelSelectedFile()' class='px-4 py-2 rounded-2xl border border-white/20'>Cancel</button></div></div>";
         }
         function cancelSelectedFile() {
             pendingFile = null;
@@ -1466,7 +1479,7 @@
             document.getElementById("file-count").textContent = count + (count === 1 ? " file" : " files");
             document.getElementById("files-empty").classList.toggle("hidden", count > 0);
             document.getElementById("files-list").innerHTML = list.map(function (file) {
-                return "<div class='glass rounded-2xl p-4 flex items-center justify-between gap-3'><div><div class='text-[#FFD700] font-bold'>" + file.type + "</div><div class='font-semibold'>" + file.name + "</div><div class='text-sm text-[#B8B8D0]'>" + file.type + " · " + readableSize(file.size) + " · " + file.date.slice(0, 10) + "</div></div><button onclick='removeUploadedFile(" + file.id + ")' class='px-3 py-2 rounded-2xl border border-white/20'>Remove</button></div>";
+                return "<div class='glass rounded-2xl p-4 flex items-center justify-between gap-3'><div><div class='text-[#FFD700] font-bold'>" + file.type + "</div><div class='font-semibold'>" + file.name + "</div><div class='text-sm text-[#fffbea]'>" + file.type + " · " + readableSize(file.size) + " · " + file.date.slice(0, 10) + "</div></div><button onclick='removeUploadedFile(" + file.id + ")' class='px-3 py-2 rounded-2xl border border-white/20'>Remove</button></div>";
             }).join("");
         }
         function removeUploadedFile(id) {
@@ -1886,7 +1899,7 @@
                         <button onclick="toggleUserStatus(${user.id})" class="text-xs px-4 py-1.5 border border-white/20 rounded-xl hover:bg-white/5">
                             ${user.active !== false ? 'Disable' : 'Enable'}
                         </button>
-                        <button onclick="showAssignOfficerModal(${user.id})" class="text-xs px-4 py-1.5 bg-[#FFD700] text-[#0A0A1F] rounded-xl font-medium">Position</button>
+                        <button onclick="showAssignOfficerModal(${user.id})" class="text-xs px-4 py-1.5 bg-[#FFD700] text-[#0a0803] rounded-xl font-medium">Position</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -2276,13 +2289,13 @@
                 const card = document.createElement('div');
                 card.className = `card glass rounded-3xl overflow-hidden border border-white/10`;
                 card.innerHTML = `
-                    <div class="h-36 flex items-center justify-center" style="background: linear-gradient(135deg, ${ev.posterColor || '#FFD700'}22, #111133)">
+                    <div class="h-36 flex items-center justify-center" style="background: linear-gradient(135deg, ${ev.posterColor || '#FFD700'}22, #1a1208)">
                         <i class="fa-solid fa-film text-5xl opacity-40" style="color:${ev.posterColor || '#FFD700'}"></i>
                     </div>
                     <div class="p-5">
                         <div class="font-semibold text-xl mb-1">${ev.name}</div>
                         <div class="text-xs text-white/50 mb-3">${new Date(ev.date).toLocaleDateString()}</div>
-                        <p class="text-sm text-[#B8B8D0] line-clamp-2 mb-4">${ev.description}</p>
+                        <p class="text-sm text-[#fffbea] line-clamp-2 mb-4">${ev.description}</p>
                         <div class="flex justify-between items-center">
                             <div class="countdown text-sm font-mono">
                                 ${remaining.expired ? 'ENDED' : `${remaining.days}d ${remaining.hours}h ${remaining.minutes}m`}
@@ -2370,7 +2383,7 @@
                             <span class="px-3 py-px text-xs rounded-full bg-white/10">${ann.category}</span>
                             ${ann.pinned ? '<span class="ml-2 text-[#FFD700] text-xs">📌 PINNED</span>' : ''}
                             <h4 class="font-semibold text-xl mt-2">${ann.title}</h4>
-                            <p class="text-[#B8B8D0] mt-1">${ann.content}</p>
+                            <p class="text-[#fffbea] mt-1">${ann.content}</p>
                         </div>
                         ${currentUser && (currentUser.role === 'Editor' || currentUser.role === 'Admin') ? `
                         <div class="flex flex-col gap-2">
@@ -2628,7 +2641,7 @@
                     const chatContainer = document.getElementById("chat-messages");
                     const replyDiv = document.createElement("div");
                     replyDiv.className = "flex gap-2 mt-2 verity-quick-replies";
-                    replyDiv.innerHTML = '<button onclick="startWebsiteTour();" class="px-4 py-1.5 text-sm rounded-2xl bg-[#FFD700] text-[#0A0A1F] font-medium">Show me around</button><button onclick="hideVerityChat()" class="px-4 py-1.5 text-sm rounded-2xl border border-white/30">No thanks</button>';
+                    replyDiv.innerHTML = '<button onclick="startWebsiteTour();" class="px-4 py-1.5 text-sm rounded-2xl bg-[#FFD700] text-[#0a0803] font-medium">Show me around</button><button onclick="hideVerityChat()" class="px-4 py-1.5 text-sm rounded-2xl border border-white/30">No thanks</button>';
                     if (chatContainer) chatContainer.appendChild(replyDiv);
                 }
                 showVerityChat();
@@ -2647,7 +2660,7 @@
                 const chatContainer = document.getElementById("chat-messages");
                 const replyDiv = document.createElement("div");
                 replyDiv.className = "flex gap-2 mt-2 verity-quick-replies";
-                replyDiv.innerHTML = '<button onclick="startWebsiteTour();" class="px-4 py-1.5 text-sm rounded-2xl bg-[#FFD700] text-[#0A0A1F] font-medium">Show me around</button><button onclick="hideVerityChat()" class="px-4 py-1.5 text-sm rounded-2xl border border-white/30">No thanks</button>';
+                replyDiv.innerHTML = '<button onclick="startWebsiteTour();" class="px-4 py-1.5 text-sm rounded-2xl bg-[#FFD700] text-[#0a0803] font-medium">Show me around</button><button onclick="hideVerityChat()" class="px-4 py-1.5 text-sm rounded-2xl border border-white/30">No thanks</button>';
                 if (chatContainer) chatContainer.appendChild(replyDiv);
             }
             showVerityChat();
@@ -2825,7 +2838,7 @@
                     <div class="glass p-8 rounded-3xl mb-6 text-center">
                         <div class="text-6xl mb-4">👥</div>
                         <h4 class="text-xl font-semibold mb-2">Member Directory</h4>
-                        <p class="text-[#B8B8D0] mb-6">See all active members and their status</p>
+                        <p class="text-[#fffbea] mb-6">See all active members and their status</p>
                         
                         <button onclick="switchDashboardTab('members')" 
                                 class="btn-gold px-8 py-3 rounded-2xl font-semibold flex items-center gap-x-2 mx-auto">
@@ -2842,7 +2855,7 @@
                     </div>
                     <div class="glass p-5 rounded-3xl mb-6">
                         <div class="flex justify-between mb-3"><h4 class="font-semibold">Recent Requests</h4><button onclick="hideDashboard(); showRequestsPage()" class="text-[#FFD700] text-sm">View all</button></div>
-                        ${portalStats().recent.length ? portalStats().recent.map(item => `<div class="flex justify-between py-2 border-b border-white/10"><span>${item.id} · ${item.title}</span><button class="text-[#FFD700]" onclick="hideDashboard(); openRequestDetail('${item.id}')">View</button></div>`).join('') : '<p class="text-[#B8B8D0]">No requests yet.</p>'}
+                        ${portalStats().recent.length ? portalStats().recent.map(item => `<div class="flex justify-between py-2 border-b border-white/10"><span>${item.id} · ${item.title}</span><button class="text-[#FFD700]" onclick="hideDashboard(); openRequestDetail('${item.id}')">View</button></div>`).join('') : '<p class="text-[#fffbea]">No requests yet.</p>'}
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="glass p-5 rounded-3xl">
@@ -2883,7 +2896,7 @@
                 activeUsers.forEach(member => {
                     const isOnline = member.online;
                     const officerBadge = member.officerRole 
-                        ? `<span class="px-2.5 py-px text-[10px] rounded bg-[#FFD700] text-[#0A0A1F] font-bold">${member.officerRole}</span>` 
+                        ? `<span class="px-2.5 py-px text-[10px] rounded bg-[#FFD700] text-[#0a0803] font-bold">${member.officerRole}</span>` 
                         : '';
                     
                     html += `
