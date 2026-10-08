@@ -3286,7 +3286,8 @@
       requestAnimationFrame(loop);
     });
   }
-  setTimeout(begin, 400);
+  gate.addEventListener("click", begin);
+  window.addEventListener("keydown", begin);
 })();
 </script>
 
