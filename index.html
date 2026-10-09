@@ -745,7 +745,8 @@
                 </div>
 
                 <!-- Right Side Actions -->
-                <div class="flex items-center gap-x-3">
+                <div class="flex items-center gap-x-2">
+                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="md:hidden w-10 h-10 rounded-2xl glass text-[#FFD700]"><i class="fa-solid fa-bars"></i></button>
                     <!-- Music Toggle -->
                     <div class="relative group">
                         <button onclick="toggleMusic()" id="music-btn"
@@ -788,6 +789,15 @@
             </div>
         </div>
     </nav>
+    <div id="mobile-menu" class="hidden md:hidden fixed top-16 inset-x-3 z-40 glass rounded-3xl p-4 space-y-2">
+        <a href="#events" class="block py-2" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Events</a>
+        <a href="#announcements" class="block py-2" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Announcements</a>
+        <button class="block py-2" onclick="showVerityChat(); document.getElementById('mobile-menu').classList.add('hidden')">Verity</button>
+        <button class="block py-2" onclick="showRequestsPage(); document.getElementById('mobile-menu').classList.add('hidden')">Requests</button>
+        <button class="block py-2" onclick="showUploadsPage(); document.getElementById('mobile-menu').classList.add('hidden')">Uploads</button>
+        <button class="block py-2" onclick="showDashboard(); document.getElementById('mobile-menu').classList.add('hidden')">My account</button>
+        <button id="mobile-admin-tools" class="hidden py-2 text-[#FFD700]" onclick="showAdminPanel(); document.getElementById('mobile-menu').classList.add('hidden')">Admin tools</button>
+    </div>
 
     <!-- HERO SECTION -->
     <section id="home" class="min-h-[100dvh] pt-16 relative flex items-center justify-center overflow-hidden multimedia-bg">
@@ -1233,7 +1243,7 @@
     </div>
 
     <!-- ADMIN PANEL -->
-    <div id="admin-panel" class="hidden fixed inset-0 bg-black/95 z-[85] flex">
+    <div id="admin-panel" class="hidden fixed inset-0 bg-black/95 z-[85] overflow-y-auto">
         <div class="w-full max-w-[1200px] mx-auto my-8 glass rounded-3xl overflow-hidden flex flex-col">
             <div class="px-8 py-5 border-b flex justify-between items-center bg-[#1a1208]">
                 <div class="flex items-center gap-x-3">
@@ -1804,7 +1814,7 @@
         let adminRefreshInterval = null;
 
         function showAdminPanel() {
-            if (!currentUser || currentUser.role !== "Admin") {
+            if (!currentUser || (currentUser.role !== "Admin" && currentUser.role !== "Developer")) {
                 showToast("Admin access required.", "error");
                 return;
             }
@@ -1915,7 +1925,7 @@
                     <td class="py-4 px-6">
                         <div class="flex items-center gap-x-3">
                             <img src="https://i.pravatar.cc/32?u=${user.id}" class="w-8 h-8 rounded-xl">
-                            <span class="font-medium">${user.username}</span>
+                            <span class="font-medium">${roleSymbol(user.role)} ${user.username}</span>
                         </div>
                     </td>
                     <td class="py-4 text-sm text-white/70">${user.email}</td>
@@ -1957,7 +1967,7 @@
                     <div class="flex items-center gap-x-3">
                         <img src="https://i.pravatar.cc/28?u=${user.id}" class="w-7 h-7 rounded-lg">
                         <div>
-                            <div class="font-medium text-sm">${user.username}</div>
+                            <div class="font-medium text-sm">${roleSymbol(user.role)} ${user.username}</div>
                             <div class="text-xs text-white/50">${user.role}</div>
                         </div>
                     </div>
@@ -2188,19 +2198,27 @@
             safeStorage.setItem('mm_media', JSON.stringify(mediaItems));
         }
 
+        function roleSymbol(role) {
+            const icons = { Admin: "fa-shield-halved", Developer: "fa-screwdriver-wrench", Editor: "fa-pen-nib", Photographer: "fa-camera", Member: "fa-user" };
+            return '<i class="fa-solid ' + (icons[role] || "fa-user") + ' text-[#FFD700]" title="' + (role || "Member") + '"></i>';
+        }
         function updateNavUser() {
             const el = document.getElementById('nav-user-section');
             if (!currentUser) {
                 el.innerHTML = '';
                 return;
             }
-            
-            const roleColor = currentUser.role === 'Admin' ? 'text-[#FFD700]' : 'text-white/70';
-            
+            const adminBtn = (currentUser.role === "Admin" || currentUser.role === "Developer")
+                ? '<button onclick="showAdminPanel()" class="text-xs px-3 py-1 rounded-full bg-[#FFD700] text-[#0a0803] font-semibold">Tools</button>'
+                : '';
+            const mobileAdmin = document.getElementById("mobile-admin-tools");
+            if (mobileAdmin) mobileAdmin.classList.toggle("hidden", !(currentUser.role === "Admin" || currentUser.role === "Developer"));
             el.innerHTML = `
-                <div class="flex items-center gap-x-2">
-                    <button onclick="showDashboard()" class="text-sm font-medium">${currentUser.username}</button>
-                    <button onclick="logout()" class="text-xs px-3 py-1 rounded-full border border-white/20">Log out</button>
+                <div class="flex items-center gap-1 max-w-[46vw] sm:max-w-none">
+                    ${roleSymbol(currentUser.role)}
+                    <button onclick="showDashboard()" class="text-sm font-medium truncate">${currentUser.username}</button>
+                    ${adminBtn}
+                    <button onclick="logout()" class="text-xs px-2 py-1 rounded-full border border-white/20">Out</button>
                 </div>
             `;
         }
@@ -2987,6 +3005,7 @@
                             
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-x-2">
+                                    ${roleSymbol(member.role)}
                                     <span class="font-semibold">${member.username}</span>
                                     ${officerBadge}
                                 </div>
