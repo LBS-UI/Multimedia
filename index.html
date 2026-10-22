@@ -1812,6 +1812,8 @@
 
         // Admin Panel
         let adminRefreshInterval = null;
+        let loginHistory = [];
+        try { loginHistory = JSON.parse(safeStorage.getItem("mm_login_history") || "[]"); } catch (e) { loginHistory = []; }
 
         function showAdminPanel() {
             if (!currentUser || (currentUser.role !== "Admin" && currentUser.role !== "Developer")) {
@@ -2191,12 +2193,12 @@
             }
         }
 
-        const SUPABASE_URL = "https://YOUR_PROJECT.supabase.co";
+        const SUPABASE_URL = "https://novvmyjfmlcmxqfewvyb.supabase.co";
         const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
         window.SUPABASE_URL = SUPABASE_URL;
         window.SUPABASE_ANON_KEY = SUPABASE_ANON_KEY;
-        if (window.Verity && !SUPABASE_URL.includes("YOUR_PROJECT")) Verity.config.endpoint = SUPABASE_URL + "/functions/v1/chat";
-        const supabaseClient = (SUPABASE_URL.includes("YOUR_PROJECT") || typeof supabase === "undefined") ? null : supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        if (window.Verity) Verity.config.endpoint = SUPABASE_URL + "/functions/v1/chat";
+        const supabaseClient = (SUPABASE_ANON_KEY.includes("YOUR_SUPABASE") || typeof supabase === "undefined") ? null : supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         async function refreshClubToken() {
             if (!currentUser) return;
         }
