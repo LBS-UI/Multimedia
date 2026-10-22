@@ -2194,10 +2194,12 @@
         }
 
         const SUPABASE_URL = "https://novvmyjfmlcmxqfewvyb.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vdnZteWpmbWxjbXhxZmV3dnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2MzA5MTYsImV4cCI6MjEwODIwNjkxNn0.8oa5vQxP6M3LxQA5DSm6djGDZgFZx7vnV-oO6JzK-zw";
+        const NETLIFY_API = "https://YOUR-SITE.netlify.app";
+        const apiUrl = function (path) { return (NETLIFY_API && !NETLIFY_API.includes("YOUR-SITE") ? NETLIFY_API : "") + path; };
+        const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
         window.SUPABASE_URL = SUPABASE_URL;
         window.SUPABASE_ANON_KEY = SUPABASE_ANON_KEY;
-        if (window.Verity) Verity.config.endpoint = SUPABASE_URL + "/functions/v1/chat";
+        if (window.Verity) Verity.config.endpoint = apiUrl("/api/chat");
         const supabaseClient = (SUPABASE_ANON_KEY.includes("YOUR_SUPABASE") || typeof supabase === "undefined") ? null : supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         async function refreshClubToken() {
             if (!currentUser) return;
@@ -2786,7 +2788,7 @@
             const token = ++veritySpeechToken;
             setVoiceStatus("generating");
             try {
-                const response = await fetch(SUPABASE_URL + "/functions/v1/tts", {
+                const response = await fetch(apiUrl("/api/tts"), {
                     method: "POST",
                     headers: { "Content-Type": "application/json", Authorization: "Bearer " + SUPABASE_ANON_KEY, apikey: SUPABASE_ANON_KEY },
                     body: JSON.stringify({ text })
@@ -3102,7 +3104,7 @@
                     if (verityVoiceEnabled) {
                         try {
                             setVoiceStatus("generating");
-                            const response = await fetch(SUPABASE_URL + "/functions/v1/tts", { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + SUPABASE_ANON_KEY, apikey: SUPABASE_ANON_KEY }, body: JSON.stringify({ text: step.text }) });
+                            const response = await fetch(apiUrl("/api/tts"), { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + SUPABASE_ANON_KEY, apikey: SUPABASE_ANON_KEY }, body: JSON.stringify({ text: step.text }) });
                             if (!response.ok) throw new Error("TTS failed");
                             const bytes = await response.arrayBuffer();
                             setVoiceStatus("complete");
