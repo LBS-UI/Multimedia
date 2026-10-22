@@ -2,7 +2,7 @@
   "name": "multimedia",
   "private": true,
   "scripts": {
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy --config wrangler.toml --assets ./public"
   },
   "devDependencies": {
     "wrangler": "^4.20.0"
