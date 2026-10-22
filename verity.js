@@ -23,7 +23,12 @@ const Verity = (function () {
     return [{ role: "system", content: systemContent }].concat(history);
   }
   async function transportProxy(messages) {
-    const res = await fetch(VERITY_CONFIG.endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages }) });
+    const headers = { "Content-Type": "application/json" };
+    if (window.SUPABASE_ANON_KEY) {
+      headers.Authorization = "Bearer " + window.SUPABASE_ANON_KEY;
+      headers.apikey = window.SUPABASE_ANON_KEY;
+    }
+    const res = await fetch(VERITY_CONFIG.endpoint, { method: "POST", headers, body: JSON.stringify({ messages }) });
     if (!res.ok) throw new Error("Verity proxy error: " + res.status);
     const data = await res.json();
     return data.reply || data.message || data.content || (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "";
