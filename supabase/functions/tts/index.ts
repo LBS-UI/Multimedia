@@ -1,6 +1,13 @@
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Max-Age": "86400"
+};
+
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: cors() });
+    return new Response("ok", { status: 200, headers: corsHeaders });
   }
   if (request.method !== "POST") {
     return json(405, { error: "Method not allowed" });
@@ -16,18 +23,20 @@ Deno.serve(async (request) => {
     headers: {
       Authorization: "Bearer " + apiKey,
       "Content-Type": "application/json",
-      Accept: "audio/mpeg",
       model: "s2.1-pro-free"
     },
-    body: JSON.stringify({ text: text.slice(0, 1200), format: "mp3", mp3_bitrate: 128, latency: "low", chunk_length: 80, prosody: { speed: 1.35 }, reference_id: referenceId })
+    body: JSON.stringify({
+      text: text.slice(0, 1200),
+      format: "mp3",
+      mp3_bitrate: 128,
+      latency: "low",
+      reference_id: referenceId
+    })
   });
   if (!res.ok) return json(502, { error: "Voice provider failed" });
-  return new Response(await res.arrayBuffer(), { status: 200, headers: { ...cors(), "Content-Type": "audio/mpeg" } });
+  return new Response(await res.arrayBuffer(), { status: 200, headers: { ...corsHeaders, "Content-Type": "audio/mpeg" } });
 });
 
-function cors() {
-  return { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, content-type, apikey", "Access-Control-Allow-Methods": "POST, OPTIONS" };
-}
 function json(status, body) {
-  return new Response(JSON.stringify(body), { status, headers: { ...cors(), "Content-Type": "application/json" } });
+  return new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
