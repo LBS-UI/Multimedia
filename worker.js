@@ -66,14 +66,13 @@ async function handleTts(request, env) {
     DEFAULT_REFERENCE_ID;
 
   const endpoint = (env.TTS_API_URL || DEFAULT_API_URL).replace(/\/$/, "");
-  const model = env.TTS_MODEL || DEFAULT_MODEL;
+  const model = (env.TTS_MODEL && env.TTS_MODEL !== referenceId) ? env.TTS_MODEL : DEFAULT_MODEL;
   const requestBody = {
     text,
     format: "mp3",
     mp3_bitrate: 128,
-    latency: "low",
-    chunk_length: 80,
-    prosody: { speed: 1.35 },
+    latency: "normal",
+    chunk_length: 200,
     reference_id: referenceId,
   };
 
@@ -91,7 +90,7 @@ async function handleTts(request, env) {
     if (!providerRes.ok) {
       const detail = await providerRes.text();
       console.warn("Verity TTS provider error:", providerRes.status, String(detail).slice(0, 200));
-      return json(mapProviderStatus(providerRes.status), { error: safeProviderMessage(providerRes.status) });
+      return json(mapProviderStatus(providerRes.status), { error: safeProviderMessage(providerRes.status), detail: String(detail).slice(0, 180) });
     }
     return new Response(await providerRes.arrayBuffer(), {
       status: 200,
