@@ -628,7 +628,7 @@
   <div class="intro__ripple" id="ripple1"></div>
   <div class="intro__ripple" id="ripple2"></div>
   <div class="intro__shadow" id="introShadow"></div>
-  <div class="intro__logo" id="introLogo"><div class="intro__logo-inner" id="introLogoInner"><img src="images/idle.jpg" alt="Verity"></div></div>
+  <div class="intro__logo" id="introLogo"><div class="intro__logo-inner" id="introLogoInner"><img src="verity-faces/idle.jpg" alt="Verity"></div></div>
   <div class="intro__text">
     <p class="intro__welcome">Welcome to the Multimedia Club.</p>
     <p class="intro__name"><img src="images/logo.jpg" alt="Multimedia logo"><span>Multimedia</span></p>
@@ -867,7 +867,7 @@
                 <!-- Hero Image -->
                 <div class="lg:col-span-5 relative">
                     <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 aspect-[16/10]">
-                        <img src="images/idle.jpg" 
+                        <img src="images/class-photo.jpg" 
                              class="w-full h-full object-cover brightness-[0.85]" alt="Multimedia hero banner">
                         <div class="absolute inset-0 bg-gradient-to-tr from-[#0a0803] via-[#0a0803]/70 to-transparent"></div>
                         
@@ -900,7 +900,7 @@
                 <div class="glass rounded-3xl p-8 border border-[#FFD700]/20">
                     <div class="flex items-start gap-x-5">
                         <div onclick="showVerityChat()" class="verity-orb verity-card-face flex-shrink-0 mt-1" role="button" aria-label="Open Verity chat">
-                            <img src="images/idle.jpg" class="verity-avatar-img" alt="Verity, Multimedia Club AI guide">
+                            <img src="verity-faces/idle.jpg" class="verity-avatar-img" alt="Verity, Multimedia Club AI guide">
                         </div>
                         <div class="flex-1">
                             <div class="flex items-center gap-x-2 mb-1">
@@ -1026,12 +1026,12 @@
         <div class="max-w-5xl mx-auto">
             <div class="flex flex-col sm:flex-row items-center justify-center gap-10 mb-10">
                 <figure class="text-center">
-                    <img id="developer-portrait" src="images/idle.jpg" alt="Ron Matthew Ferreras" class="portrait-frame mx-auto">
+                    <img id="developer-portrait" src="images/developer.jpg" alt="Ron Matthew Ferreras" class="portrait-frame mx-auto">
                     <figcaption class="mt-3 font-semibold">Ron Matthew Ferreras</figcaption>
                     <p class="text-xs text-[#fffbea]">Developer</p>
                 </figure>
                 <figure class="text-center">
-                    <img id="verity-portrait" src="images/idle.jpg" alt="Verity, Multimedia Club assistant" class="portrait-frame mx-auto">
+                    <img id="verity-portrait" src="verity-faces/idle.jpg" alt="Verity, Multimedia Club assistant" class="portrait-frame mx-auto">
                     <figcaption class="mt-3 font-semibold">Verity</figcaption>
                     <p class="text-xs text-[#fffbea]">Club assistant</p>
                 </figure>
@@ -1138,7 +1138,7 @@
     <div id="welcome-window" class="hidden fixed inset-0 z-[88] flex items-start justify-center bg-[#0a0803] p-4 pt-16">
         <div class="w-full max-w-lg text-center">
             <div class="welcome-stage">
-                <img id="welcome-verity" src="images/idle.jpg" alt="Verity" class="welcome-verity portrait-frame" style="width:150px;height:150px;min-width:150px;">
+                <img id="welcome-verity" src="verity-faces/idle.jpg" alt="Verity" class="welcome-verity portrait-frame" style="width:150px;height:150px;min-width:150px;">
                 <div class="welcome-ground"></div>
             </div>
             <div id="welcome-hi" class="welcome-hi mt-4 inline-block glass rounded-3xl px-5 py-3 text-lg">Ahhhhhhh</div>
@@ -1156,7 +1156,7 @@
     </div>
     <div id="floating-verity" class="fixed z-[60]">
         <div onclick="showVerityChat()" class="verity-orb" role="button" aria-label="Open Verity chat">
-            <img src="images/idle.jpg" class="verity-avatar-img" alt="Verity, Multimedia Club AI guide">
+            <img src="verity-faces/idle.jpg" class="verity-avatar-img" alt="Verity, Multimedia Club AI guide">
         </div>
         <div id="verity-bubble-wrap">
             <div id="verity-orb-status" aria-live="polite"></div>
@@ -1263,7 +1263,7 @@
             <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center">
                 <div class="flex items-center gap-x-3">
                     <div class="verity-orb" style="width:40px;height:40px;min-width:40px;min-height:40px;animation:none;">
-                        <img src="images/idle.jpg" class="verity-avatar-img" alt="Verity">
+                        <img src="verity-faces/idle.jpg" class="verity-avatar-img" alt="Verity">
                     </div>
                     <div>
                         <div class="font-semibold">Verity <span class="text-emerald-400 text-xs">ONLINE</span></div>
@@ -2224,6 +2224,10 @@
             safeStorage.setItem('mm_media', JSON.stringify(mediaItems));
         }
 
+        function roleBadge(role) {
+            const file = role === "Admin" ? "Admin.jpg" : role === "Developer" ? "Developer.jpg" : "Member.jpg";
+            return "badges/" + file;
+        }
         function roleSymbol(role) {
             const icons = { Admin: "fa-shield-halved", Developer: "fa-screwdriver-wrench", Editor: "fa-pen-nib", Photographer: "fa-camera", Member: "fa-user" };
             return '<i class="fa-solid ' + (icons[role] || "fa-user") + ' text-[#FFD700]" title="' + (role || "Member") + '"></i>';
@@ -2244,10 +2248,11 @@
             el.innerHTML = `
                 <div class="flex items-center justify-end gap-1">
                     <label class="relative w-8 h-8 rounded-full overflow-hidden border border-[#FFD700]/40 cursor-pointer" title="Drop a photo to change your picture">
-                        <img id="nav-avatar" src="${currentUser.avatar || 'images/idle.jpg'}" class="w-full h-full object-cover" alt="">
+                        <img id="nav-avatar" src="${currentUser.avatar || 'verity-faces/idle.jpg'}" class="w-full h-full object-cover" alt="">
                         <input type="file" accept="image/*" class="hidden" onchange="setProfilePicture(this.files[0])">
                     </label>
                     ${roleSymbol(currentUser.role)}
+                    <img src="${roleBadge(currentUser.role)}" alt="${currentUser.role} badge" class="w-7 h-7 rounded-full object-cover border border-[#FFD700]/40">
                     <button onclick="showDashboard()" class="text-sm font-medium truncate">${currentUser.username}</button>
                     ${adminBtn}
                     <button onclick="logout()" class="text-xs px-2 py-1 rounded-full border border-white/20">Log out</button>
@@ -2700,10 +2705,20 @@
         }
 
         // Verity Chat + voice
-        const VERITY_IDLE_SRC = "images/idle.jpg";
-        const VERITY_TALKING_SRC = "images/talking.jpg";
-        const VERITY_SAD_SRC = "images/sad.jpg";
-        const VERITY_ANGRY_SRC = "images/angry.jpg";
+        const VERITY_FACES = {
+            idle: "verity-faces/idle.jpg",
+            talking: "verity-faces/talking.jpg",
+            smiling: "verity-faces/smiling.jpg",
+            disappointed: "verity-faces/disappointed.jpg",
+            frustrated: "verity-faces/frustrated.jpg",
+            yelling: "verity-faces/yelling.jpg",
+            confused: "verity-faces/uhhh....jpg",
+            wincing: "verity-faces/wincing.jpg"
+        };
+        const VERITY_IDLE_SRC = VERITY_FACES.idle;
+        const VERITY_TALKING_SRC = VERITY_FACES.talking;
+        const VERITY_SAD_SRC = VERITY_FACES.disappointed;
+        const VERITY_ANGRY_SRC = VERITY_FACES.yelling;
         const CLUB_JOIN_CODE = "MMC-JOIN-4821";
         const ADMIN_ACCESS_CODE = "MMC-ADMIN-7394";
         const DEVELOPER_ACCESS_CODE = "MMC-DEV-1560";
@@ -2732,9 +2747,22 @@
             if (!verityVoiceEnabled) stopVeritySpeaking();
         }
         function verityImageForState() {
-            if (verityMood === "sad") return VERITY_SAD_SRC;
-            if (verityMood === "angry") return VERITY_ANGRY_SRC;
-            return verityIsTalking ? VERITY_TALKING_SRC : VERITY_IDLE_SRC;
+            if (verityMood === "sad" || verityMood === "disappointed") return VERITY_FACES.disappointed;
+            if (verityMood === "frustrated") return VERITY_FACES.frustrated;
+            if (verityMood === "angry" || verityMood === "yelling") return VERITY_FACES.yelling;
+            if (verityMood === "smiling") return VERITY_FACES.smiling;
+            if (verityMood === "confused") return VERITY_FACES.confused;
+            if (verityMood === "wincing") return VERITY_FACES.wincing;
+            return verityIsTalking ? VERITY_FACES.talking : VERITY_FACES.idle;
+        }
+        function pickVerityMood(message, reply) {
+            const q = (message || "").toLowerCase();
+            const a = (reply || "").toLowerCase();
+            if (isInappropriateMessage(q)) return veritySwearStrikes >= 2 ? "yelling" : "disappointed";
+            if (q.includes("hello") || q.includes("hi ") || q === "hi" || q.includes("thanks") || q.includes("thank you")) return "smiling";
+            if (a.includes("sorry") || a.includes("not sure") || a.includes("don't know") || a.includes("dont know")) return "confused";
+            if (a.includes("stop")) return "yelling";
+            return "idle";
         }
         function setVerityMood(mood) { verityMood = mood || "idle"; setVerityTalking(verityIsTalking); }
         function setVerityTalking(isTalking) {
@@ -2789,7 +2817,7 @@
             try {
                 const response = await fetch(apiUrl("/api/tts"), {
                     method: "POST",
-                    headers: { "Content-Type": "application/json", Authorization: "Bearer " + SUPABASE_ANON_KEY, apikey: SUPABASE_ANON_KEY },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ text })
                 });
                 if (token !== veritySpeechToken) return;
@@ -2984,8 +3012,8 @@
             if (isInappropriateMessage(lowerMsg)) {
                 veritySwearStrikes += 1;
                 verityChatHistory.push({ role: "user", content: "..." });
-                if (veritySwearStrikes >= 2) { setVerityMood("angry"); addVerityMessage("Stop.."); }
-                else { setVerityMood("sad"); addVerityMessage("Please don't say that."); }
+                if (veritySwearStrikes >= 2) { setVerityMood("yelling"); addVerityMessage("Stop.."); }
+                else { setVerityMood("disappointed"); addVerityMessage("Please don't say that."); }
                 return;
             }
             veritySwearStrikes = 0;
@@ -3001,6 +3029,7 @@
                 try { response = await Verity.send(message); } catch (e) { response = ""; }
             }
             if (!response) response = getVerityResponse(message);
+            setVerityMood(pickVerityMood(message, response));
             if (lowerMsg.includes("tour") || lowerMsg.includes("show me around") || lowerMsg.includes("show around") || lowerMsg.includes("around")) setTimeout(startWebsiteTour, 200);
             addVerityMessage(response);
         }
@@ -3179,9 +3208,9 @@
                     <h3 class="text-2xl font-semibold mb-4">Welcome back, ${currentUser.username}!</h3>
                     
                     <div class="glass p-8 rounded-3xl mb-6 text-center">
-                        <div class="text-6xl mb-4">👥</div>
-                        <h4 class="text-xl font-semibold mb-2">Member Directory</h4>
-                        <p class="text-[#fffbea] mb-6">See all active members and their status</p>
+                        <img src="${roleBadge(currentUser.role)}" alt="${currentUser.role} badge" class="w-28 h-28 mx-auto mb-4 rounded-2xl object-cover border border-[#FFD700]/40">
+                        <h4 class="text-xl font-semibold mb-2">${currentUser.role} badge</h4>
+                        <p class="text-[#fffbea] mb-6">This badge is on your member profile while you are logged in.</p>
                         
                         <button onclick="switchDashboardTab('members')" 
                                 class="btn-gold px-8 py-3 rounded-2xl font-semibold flex items-center gap-x-2 mx-auto">
@@ -3460,7 +3489,7 @@
   if (loader) loader.style.display = "none";
   function setFace(talking) {
     var img = logo.querySelector("img");
-    if (img) img.src = talking ? "images/talking.jpg" : "images/idle.jpg";
+    if (img) img.src = talking ? "verity-faces/talking.jpg" : "verity-faces/idle.jpg";
   }
   function playLine(text, rate) {
     var startResolve, endResolve;

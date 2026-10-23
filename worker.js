@@ -109,7 +109,7 @@ async function handleTts(request, env) {
 async function handleChat(request, env) {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
   if (request.method !== "POST") return json(405, { error: "Method not allowed" });
-  const apiKey = env.CHAT_API_KEY;
+  const apiKey = env.CHAT_API_KEY || env.OPENAI_API_KEY;
   if (!apiKey) return json(503, { error: "Chat not configured" });
   let payload;
   try { payload = await request.json(); } catch (e) { return json(400, { error: "Invalid JSON" }); }
