@@ -3487,9 +3487,12 @@
   if (!root || !logo) return;
   var loader = document.getElementById("loading-screen");
   if (loader) loader.style.display = "none";
-  function setFace(talking) {
+  function setFace(mode) {
     var img = logo.querySelector("img");
-    if (img) img.src = talking ? "verity-faces/talking.jpg" : "verity-faces/idle.jpg";
+    if (!img) return;
+    if (mode === "talking") img.src = "verity-faces/talking.jpg";
+    else if (mode === "wincing") img.src = "verity-faces/wincing.jpg";
+    else img.src = "verity-faces/idle.jpg";
   }
   function playLine(text, rate) {
     var startResolve, endResolve;
@@ -3497,7 +3500,7 @@
     var end = new Promise(function (r) { endResolve = r; });
     if (!window.speakVerity) { startResolve(); endResolve(); return { start: start, end: end }; }
     gateHint.textContent = "Generating...";
-    window.speakVerity(text, { rate: rate || 1, onStart: function () { setFace(true); gateHint.textContent = ""; startResolve(); } }).then(function () { setFace(false); startResolve(); endResolve(); }, function () { setFace(false); startResolve(); endResolve(); });
+    window.speakVerity(text, { rate: rate || 1, onStart: function () { setFace("talking"); gateHint.textContent = ""; startResolve(); } }).then(function () { setFace("idle"); startResolve(); endResolve(); }, function () { setFace("idle"); startResolve(); endResolve(); });
     return { start: start, end: end };
   }
   function playPlop() {
@@ -3536,6 +3539,7 @@
     el.style.animation = "ripple .7s ease both";
   }
   function onImpact() {
+    setFace("wincing");
     if (bounceCount === 0) { sx = 1.42; sy = 0.62; playPlop(); flash(0); playLine("oof", 1); }
     else { sx = 1.24; sy = 0.8; if (bounceCount < 3) flash(bounceCount); }
   }
