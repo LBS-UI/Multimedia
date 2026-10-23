@@ -109,7 +109,7 @@ async function handleTts(request, env) {
 async function handleChat(request, env) {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
   if (request.method !== "POST") return json(405, { error: "Method not allowed" });
-  const apiKey = env.CHAT_API_KEY || env.OPENAI_API_KEY;
+  const apiKey = String(env.CHAT_API_KEY || env.OPENAI_API_KEY || "").trim();
   if (!apiKey) return json(503, { error: "Chat not configured" });
   let payload;
   try { payload = await request.json(); } catch (e) { return json(400, { error: "Invalid JSON" }); }
@@ -121,7 +121,10 @@ async function handleChat(request, env) {
       headers: { Authorization: "Bearer " + apiKey, "Content-Type": "application/json" },
       body: JSON.stringify({ model, temperature: 0.8, messages: payload.messages || [] })
     });
-    if (!res.ok) return json(502, { error: "Chat provider failed" });
+    if (!res.ok) {
+      const detail = await res.text();
+      return json(502, { error: "Chat provider failed", status: res.status, detail: String(detail).slice(0, 240) });
+    }
     const data = await res.json();
     const reply = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
     return json(200, { reply: reply || "" });
