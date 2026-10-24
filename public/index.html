@@ -306,6 +306,7 @@
         .welcome-stage { position: relative; height: 280px; margin-top: 4vh; overflow: visible; }
         .welcome-ground { position: absolute; left: 18%; right: 18%; bottom: 16px; height: 5px; border-radius: 999px; background: #FFD700; box-shadow: 0 0 18px rgba(255,215,0,0.7); }
         @keyframes verity-drop { from { opacity: 0; transform: translateX(-50%) translateY(-110vh) rotate(-12deg); } to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.14, 0.78); } }
+        @keyframes joinSpin { to { transform: rotateY(360deg); } }
         @keyframes verity-bounce { 0% { transform: translateX(-50%) translateY(0) scale(1.14, 0.78); } 18% { transform: translateX(-50%) translateY(-70px) scale(0.96, 1.06); } 36% { transform: translateX(-50%) translateY(0) scale(1.1, 0.86); } 52% { transform: translateX(-50%) translateY(-36px) scale(0.98, 1.04); } 68% { transform: translateX(-50%) translateY(0) scale(1.06, 0.92); } 82% { transform: translateX(-50%) translateY(-14px) scale(1, 1.02); } 100% { transform: translateX(-50%) translateY(0) scale(1); } }
         .welcome-verity { position: absolute; left: 50%; bottom: 21px; margin: 0; opacity: 0; transform: translateX(-50%) translateY(-110vh); }
         .welcome-verity.is-dropping { animation: verity-drop 0.7s cubic-bezier(0.45, 0, 1, 1) forwards; }
@@ -954,6 +955,35 @@
                 <div class="font-semibold text-xl mb-2">Member Dashboard</div>
                 <p class="text-sm text-[#fffbea]">Your personal hub</p>
             </div>
+        </div>
+    </section>
+
+    <section id="join" class="max-w-screen-2xl mx-auto px-6 py-16 border-t border-white/10">
+        <div class="text-center mb-8">
+            <p class="uppercase tracking-[3px] text-[#FFD700] text-sm font-semibold">Official membership</p>
+            <h2 class="section-header">Join Multimedia Club</h2>
+            <p class="text-[#fffbea] max-w-2xl mx-auto">Sign up for a free digital member badge. Want the real button pin? Request the exclusive pin for 45 PHP.</p>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-10 items-center">
+            <div class="flex flex-col items-center">
+                <div class="flex gap-2 mb-4">
+                    <button type="button" onclick="setJoinBadge('member')" class="px-4 py-2 rounded-full border border-[#FFD700]/40">Member</button>
+                    <button type="button" onclick="setJoinBadge('admin')" class="px-4 py-2 rounded-full border border-[#FFD700]/40">Admin</button>
+                </div>
+                <div id="join-stage" style="width:min(320px,80vw);height:min(320px,80vw);perspective:900px;">
+                    <img id="join-badge" src="badges/Member.jpg" alt="Multimedia Club member badge" style="width:100%;height:100%;object-fit:cover;border-radius:50%;border:8px solid #fbbf24;animation:joinSpin 8s linear infinite;box-shadow:0 18px 40px rgba(0,0,0,.45);">
+                </div>
+                <p id="join-badge-note" class="text-sm text-white/70 mt-4 text-center">Your digital badge appears here after you join.</p>
+            </div>
+            <form id="join-form" class="glass rounded-3xl p-6" onsubmit="submitClubJoin(event)">
+                <label class="block text-sm mb-2">Name</label>
+                <input id="join-name" required class="input-gold w-full px-4 py-3 rounded-2xl mb-4" placeholder="Your name">
+                <label class="block text-sm mb-2">Email</label>
+                <input id="join-email" type="email" required class="input-gold w-full px-4 py-3 rounded-2xl mb-4" placeholder="you@school.edu">
+                <label class="flex items-center gap-2 mb-4 text-sm"><input id="join-pin" type="checkbox"> I want the exclusive button pin for 45 PHP</label>
+                <button class="btn-gold px-6 py-3 rounded-2xl font-semibold">Get my digital badge</button>
+                <p id="join-result" class="mt-4 text-sm"></p>
+            </form>
         </div>
     </section>
 
@@ -3305,7 +3335,27 @@
         }
 
         // Modals
-        function showLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); document.getElementById('login-modal').classList.add('flex'); }
+        function setJoinBadge(kind) {
+            const img = document.getElementById("join-badge");
+            if (img) img.src = kind === "admin" ? "badges/Admin.jpg" : "badges/Member.jpg";
+        }
+        function submitClubJoin(event) {
+            event.preventDefault();
+            const name = document.getElementById("join-name").value.trim();
+            const email = document.getElementById("join-email").value.trim();
+            const pin = document.getElementById("join-pin").checked;
+            const id = "MMC-" + new Date().getFullYear() + "-" + String(Date.now()).slice(-4);
+            const record = { name, email, id, pin, createdAt: new Date().toISOString() };
+            const list = JSON.parse(safeStorage.getItem("mm_join_requests") || "[]");
+            list.push(record);
+            safeStorage.setItem("mm_join_requests", JSON.stringify(list));
+            setJoinBadge("member");
+            document.getElementById("join-badge-note").textContent = name + " · " + id;
+            document.getElementById("join-result").textContent = pin
+                ? "Digital badge ready. Pin request saved. Pay 45 PHP to a club officer to claim the physical button pin."
+                : "Digital badge ready. You can request the 45 PHP button pin anytime.";
+            showToast("Welcome to Multimedia Club.");
+        } document.getElementById('login-modal').classList.remove('hidden'); document.getElementById('login-modal').classList.add('flex'); }
         function hideLoginModal() { document.getElementById('login-modal').classList.remove('flex'); document.getElementById('login-modal').classList.add('hidden'); }
         function showRegisterModal() { document.getElementById('register-modal').classList.remove('hidden'); document.getElementById('register-modal').classList.add('flex'); }
         function hideRegisterModal() { document.getElementById('register-modal').classList.remove('flex'); document.getElementById('register-modal').classList.add('hidden'); }
