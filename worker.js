@@ -279,6 +279,22 @@ async function handleSaveAnnouncement(request, env) {
   await env.DB.prepare("INSERT OR REPLACE INTO announcements (id, title, content, image, category, date, posted_at, pinned, author, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").bind(String(item.id || Date.now()), String(item.title).slice(0, 160), String(item.content || "").slice(0, 4000), item.image || "", item.category || "General", item.date || now, now, item.pinned ? 1 : 0, item.author || session.username || "", now).run();
   return json(200, { ok: true });
 }
+async function handleJoin(request, env) {
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
+  if (!env.DB) return json(503, { error: "D1 database is not bound" });
+  if (request.method === "GET") {
+    const rows = await env.DB.prepare("SELECT display_name, membership_id, pin_requested, created_at FROM join_requests ORDER BY id DESC LIMIT 8").all();
+    return json(200, { requests: rows.results || [] });
+  }
+  if (request.method !== "POST") return json(405, { error: "Method not allowed" });
+  const body = await request.json().catch(function () { return {}; });
+  const name = String(body.display_name || "").trim().slice(0, 80);
+  const email = String(body.email || "").trim().slice(0, 120);
+  if (name.length < 2 || !email.includes("@")) return json(400, { error: "Name and email are required" });
+  const membershipId = "MMC-" + new Date().getFullYear() + "-" + String(Date.now()).slice(-4);
+  await env.DB.prepare("INSERT INTO join_requests (display_name, email, membership_id, pin_requested, created_at) VALUES (?, ?, ?, ?, ?)").bind(name, email, membershipId, body.pin_requested ? 1 : 0, new Date().toISOString()).run();
+  return json(200, { ok: true, display_name: name, membership_id: membershipId });
+}
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -292,6 +308,7 @@ export default {
     if (url.pathname === "/api/member-chat") return handleMemberChat(request, env);
     if (url.pathname === "/api/latest-alert") return handleLatestAlert(request, env);
     if (url.pathname === "/api/push-key") return json(200, { publicKey: env.VAPID_PUBLIC_KEY || "" });
+    if (url.pathname === "/api/join") return handleJoin(request, env);
     if (url.pathname.startsWith("/api/")) return json(request.method === "GET" ? 200 : 404, { error: "Unknown API route" });
     if (env.ASSETS) return env.ASSETS.fetch(request);
     return json(404, { error: "Not found" });

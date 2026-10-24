@@ -3339,22 +3339,35 @@
             const img = document.getElementById("join-badge");
             if (img) img.src = kind === "admin" ? "badges/Admin.jpg" : "badges/Member.jpg";
         }
-        function submitClubJoin(event) {
+        async function submitClubJoin(event) {
             event.preventDefault();
             const name = document.getElementById("join-name").value.trim();
             const email = document.getElementById("join-email").value.trim();
             const pin = document.getElementById("join-pin").checked;
-            const id = "MMC-" + new Date().getFullYear() + "-" + String(Date.now()).slice(-4);
-            const record = { name, email, id, pin, createdAt: new Date().toISOString() };
-            const list = JSON.parse(safeStorage.getItem("mm_join_requests") || "[]");
-            list.push(record);
-            safeStorage.setItem("mm_join_requests", JSON.stringify(list));
+            const response = await fetch("/api/join", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ display_name: name, email: email, pin_requested: pin })
+            });
+            const data = await response.json().catch(function () { return {}; });
+            if (!response.ok) {
+                document.getElementById("join-result").textContent = data.error || "Could not save the join request.";
+                return;
+            }
             setJoinBadge("member");
-            document.getElementById("join-badge-note").textContent = name + " · " + id;
+            document.getElementById("join-badge-note").textContent = data.display_name + " · " + data.membership_id;
             document.getElementById("join-result").textContent = pin
-                ? "Digital badge ready. Pin request saved. Pay 45 PHP to a club officer to claim the physical button pin."
-                : "Digital badge ready. You can request the 45 PHP button pin anytime.";
-            showToast("Welcome to Multimedia Club.");
+                ? "Saved live. Digital badge ready. Pay 45 PHP to a club officer for the pin."
+                : "Saved live. Your digital badge is ready.";
+            showToast("Join request saved.");
+            loadJoinShowcase();
+        }
+        async function loadJoinShowcase() {
+            const response = await fetch("/api/join");
+            if (!response.ok) return;
+            const data = await response.json();
+            const note = document.getElementById("join-badge-note");
+            if (note && data.requests && data.requests.length) note.textContent = data.requests.map(function (row) { return row.display_name + " · " + row.membership_id; }).join("  •  ");
         } document.getElementById('login-modal').classList.remove('hidden'); document.getElementById('login-modal').classList.add('flex'); }
         function hideLoginModal() { document.getElementById('login-modal').classList.remove('flex'); document.getElementById('login-modal').classList.add('hidden'); }
         function showRegisterModal() { document.getElementById('register-modal').classList.remove('hidden'); document.getElementById('register-modal').classList.add('flex'); }
@@ -3422,7 +3435,7 @@
             loadData();
             refreshClubToken();
             loadLiveData();
-            loadLiveData();
+            loadJoinShowcase();
             setInterval(loadLiveData, 8000);
             updateNavUser();
             renderEvents();
